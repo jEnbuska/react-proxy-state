@@ -1,0 +1,76 @@
+@import "./common";
+
+.input-default {
+  transition: all $defaultTransitionTime;
+  display: block;
+  padding: 0.25em;
+  border-radius: 0.25em;
+  font-size: inherit;
+  margin: 0.25em;
+  font-family: inherit;
+  box-shadow: 5px 5px 5px $neutralGrey;
+  &:focus{
+    box-shadow: 8px 8px 8px $neutralGrey;
+  }
+  &:enabled:hover{
+    @extend input:focus;
+  }
+}
+
+.input-invalid{
+  background: #ffecec;
+  animation: .2s pop-focus;
+}
+.input-required{
+  animation: .3s shudder;
+}
+
+@keyframes pop-focus {
+  0%   { transform: scale(1.0);; }
+  50%   { transform: scale(1.1);; }
+  100%   { transform: scale(1.0);; }
+}
+@keyframes shudder {
+  10%, 90% {
+    transform: translate(-1px);
+  }
+
+  20%, 80% {
+    transform: translate(1px);
+  }
+
+
+  30%, 50%, 70% {
+    transform: translate(-1px);
+  }
+
+  40%, 60% {
+    transform: translate(1px);
+  }
+}
+
+@mixin checkbox{
+  box-shadow: 2px 2px 2px $neutralGrey;
+}
+input[type='checkbox']{
+  @include checkbox;
+  &:disabled{
+    opacity: .2;
+    box-shadow: 2px 2px 2px $neutralGrey;
+  }
+}
+
+input[type='range']{
+  padding:0;
+  box-shadow: 3px 3px 3px $neutralGrey;
+  &:focus{
+    box-shadow: 5px 5px 5px $neutralGrey;
+  }
+}
+
+input[type='checkbox']:hover{
+  @include checkbox
+}
+input[type='checkbox']:focus{
+  @include checkbox
+}

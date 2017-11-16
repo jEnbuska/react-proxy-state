@@ -1,0 +1,19 @@
+.div-default{
+  border: 1px solid black;
+  border-radius: .3em;
+  background: white;
+  box-shadow: 5px 5px 5px  #a1a1a1;
+  padding: .5em;
+};
+
+.flex{
+  display: flex;
+  justify-content: space-around;
+}
+
+.form{
+  @extend .div-default;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}

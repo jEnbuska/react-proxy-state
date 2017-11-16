@@ -1,0 +1,13 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["ie >= 10"]
+      },
+      "modules": "commonjs",
+      "useBuiltIns": true,
+      "debug": true
+    }
+    ], "react", "stage-0"
+    ]
+}

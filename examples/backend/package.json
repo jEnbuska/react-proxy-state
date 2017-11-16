@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for examples",
+  "main": "index.js",
+  "scripts": {
+    "dev:server": "nodemon ./src/index.js",
+    "json:server": "json-server --watch ./src/data/storage.json"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "graphql": "^0.10.5",
+    "json-server": "^0.12.0",
+    "koa": "^2.3.0",
+    "koa-graphql": "^0.7.1",
+    "nodemon": "^1.11.0"
+  }
+}

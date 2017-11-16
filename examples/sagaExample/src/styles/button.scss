@@ -1,0 +1,39 @@
+@import './common';
+
+.button-default {
+  padding: 0.25em;
+  margin: 0.25em;
+  box-shadow: 5px 5px 5px black;
+  font-family: inherit;
+  font-size: inherit;
+  min-height: 30px;
+  border: 0.1em solid black;
+  border-radius: 5px;
+  outline: none;
+  transition: all $defaultTransitionTime;
+  &:disabled {
+    box-shadow: 2px 2px 2px 2px;
+    background: #C0C0C0;
+    color: #a8a8a8;
+  }
+  &:hover:enabled {
+    border: 0.1em solid black;
+  }
+  &:hover:enabled:active {
+    transition: scale .1s, box-shadow .0s;
+    box-shadow: 2px 2px 2px $neutralGrey;
+    transform: scale(.97);
+  }
+}
+
+.button-primary {
+  @extend .button-default;
+  background: $backgroundPrimary;
+  color: #ffffff;
+}
+
+.button-warning {
+  @extend .button-default;
+  background: $backgroundWarning;
+  color: #ffffff;
+}
