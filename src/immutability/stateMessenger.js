@@ -1,11 +1,14 @@
 import {
     SUBJECT,
     GET_STATE,
+    SET_STATE,
+    CLEAR_STATE,
+    REPLACE,
+    REMOVE,
     PARAM,
     findChild,
     branchPrivates,
-    SET_STATE,
-    CLEAR_STATE,
+
     identityPrivates,
     poorSet,
 } from '../common';
@@ -15,29 +18,44 @@ const {removeChild, renameSelf} = identityPrivates;
 
 const {entries} = Object;
 
-export default function createStateMessenger(root) {
+export default function createStateMessenger(root, onChange = function () {
+}) {
     // eslint-disable-next-line consistent-return
     return function stateManager(action) {
-        const {type, [SUBJECT]: path, [PARAM]: param} = action;
+        const {type, path, [PARAM]: param} = action;
         if (action.type === GET_STATE) {
-            return findChild(root[accessState], action[SUBJECT]);
+            return findChild(root[accessState], path);
         }
         const trace = createTraceablePath(root, path);
         const target = trace[trace.length - 1];
-        if (type === SET_STATE) {
-            onProxySetState(target.identifier, param, target.state);
-            target.state = {...target.state, ...param};
-        } else if (type === CLEAR_STATE) {
-            onProxyClearState(target.identifier, param, target.state);
-            target.state = param;
-        } else if (target.state instanceof Array) { // REMOVE (from array)
-            target.state = onProxyArrayRemove(target.identifier, param, target.state);
-        } else { // REMOVE (from object)
-            onProxyObjectRemove(target.identifier, param);
-            const rReducer = removeReducer.bind(poorSet(param));
-            target.state = entries(target.state).reduce(rReducer, {});
+        switch (type) {
+            case REPLACE:
+            case SET_STATE: {
+                onProxySetState(target.identifier, param, target.state);
+                target.state = {...target.state, ...param};
+                break;
+            }
+            case CLEAR_STATE: {
+                onProxyClearState(target.identifier, param, target.state);
+                target.state = param;
+                break;
+            }
+            case REMOVE: {
+                if (target.state instanceof Array) {
+                    target.state = onProxyArrayRemove(target.identifier, param, target.state);
+                } else {
+                    onProxyObjectRemove(target.identifier, param);
+                    const rReducer = removeReducer.bind(poorSet(param));
+                    target.state = entries(target.state).reduce(rReducer, {});
+                }
+                break;
+            }
+            default:
+                throw new Error('Action ' + type + ' not implemented');
+
         }
         root[accessState] = createNextState(trace);
+        onChange(root[accessState]);
     };
 }
 

@@ -7,7 +7,7 @@ import {
     REMOVE,
     PARAM,
     GET_STATE,
-    valueCanBeBranch,
+    valueIsAssignable,
     onAccessingRemovedBranch,
 } from '../common';
 import ProxyInterface from './ProxyInterface';
@@ -33,7 +33,7 @@ export default class Branch {
     get state() {
         const resolved = this[identity][resolve]();
         if (resolved) {
-            return ProxyInterface.messenger({type: GET_STATE, [SUBJECT]: resolved});
+            return ProxyInterface.messenger({type: GET_STATE, path: resolved});
         }
         return onAccessingRemovedBranch(this[identity].getId(), 'state');
     }
@@ -41,15 +41,15 @@ export default class Branch {
     assign(value) {
         const identifier = this[identity][resolve]();
         if (!identifier) {
-            throw new Error('Cannot call assign to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
-        } else if (!valueCanBeBranch(value)) {
+            throw new Error('Cannot call assign to removed Node. Got:', `${value}. Id: "${this[identity].getId()}"`);
+        } else if (!valueIsAssignable(value)) {
             throw new Error('Branch does not take leafs as assign parameters. Got:', `${value}. Identity: "${this[identity][resolve]().join(', ')}"`);
         } else if (value instanceof Array) {
-            throw new Error(`Target: "${identifier.join(', ')}"\nCannot call set state parameter is Array`);
+            throw new Error(`Target: "${identifier.join(', ')}"\nAssign does not take Arrays as parameters`);
         }
         ProxyInterface.messenger({
             type: SET_STATE,
-            [SUBJECT]: identifier,
+            path: identifier,
             [PARAM]: value,
         });
         return this;
@@ -58,13 +58,11 @@ export default class Branch {
     clear(value) {
         const identifier = this[identity][resolve]();
         if (!identifier) {
-            throw new Error('Cannot call clear to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
-        } else if (!valueCanBeBranch(value)) {
-            throw new Error('Branch does not take leafs as clear parameters. Got:', `${value}. Identity: "${this[identity][resolve]().join(', ')}"`);
+            throw new Error('Cannot call clear to removed Node. Got:', `${value}. Id: "${this[identity].getId()}"`);
         }
         ProxyInterface.messenger({
             type: CLEAR_STATE,
-            [SUBJECT]: identifier,
+            path: identifier,
             [PARAM]: value,
         });
         return this;
@@ -77,7 +75,7 @@ export default class Branch {
         }
         ProxyInterface.messenger({
             type: REMOVE,
-            [SUBJECT]: identifier,
+            path: identifier,
             [PARAM]: keys,
         });
         return this;

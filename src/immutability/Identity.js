@@ -5,7 +5,7 @@ const id = 'IDENTITY:id';
 const removed = 'IDENTITY::removed';
 const parent = 'IDENTITY::parent';
 
-const {push, removeChild, renameSelf, resolve, branch} = identityPrivates;
+const {push, removeChild, renameSelf, resolve} = identityPrivates;
 
 export default class Identity {
 
@@ -13,7 +13,6 @@ export default class Identity {
         defineProperties(this, {
             [id]: {value: key, writable: true, configurable: true},
             [parent]: {value: prev, writable: true, configurable: true},
-            [branch]: {value: undefined, writable: true, configurable: true},
         });
     }
 

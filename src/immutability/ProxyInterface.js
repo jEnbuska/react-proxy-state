@@ -1,9 +1,9 @@
 import {
     branchPrivates,
     identityPrivates,
-    SUBJECT,
     GET_STATE,
-    CLEAR_STATE, PARAM,
+    REPLACE,
+    PARAM,
     onAccessingRemovedBranch,
 } from '../common';
 
@@ -21,24 +21,24 @@ export default class ProxyInterface {
     static messenger;
 
     static proxyTemplate = {
-        set: ProxyInterface.set,
-        get: ProxyInterface.get,
+        set: ProxyInterface.onSet,
+        get: ProxyInterface.onGet,
     };
 
-    static set(target, property, value) {
+    static onSet(target, property, value) {
         const identifier = target[identity][resolve]();
         if (!identifier) {
             throw new Error('Cannot call clear state of non existing Branch');
         }
         ProxyInterface.messenger({
-            type: CLEAR_STATE,
-            [SUBJECT]: identifier,
+            type: REPLACE,
+            path: identifier,
             [PARAM]: {[property]: value},
         });
         return true;
     }
 
-    static get(target, k, receiver) {
+    static onGet(target, k, receiver) {
         if (k === identity) {
             return target[k];
         } else if (instanceMethods[k]) {
@@ -49,7 +49,7 @@ export default class ProxyInterface {
         }
         const resolved = target[identity][resolve]();
         if (resolved) {
-            const state = ProxyInterface.messenger({type: GET_STATE, [SUBJECT]: resolved});
+            const state = ProxyInterface.messenger({type: GET_STATE, path: resolved});
             k += ''; // find single child
             if (k in state) {
                 const createChildProxy = Reflect.get(target, '_createChildProxy', receiver);

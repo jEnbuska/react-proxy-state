@@ -1,11 +1,10 @@
-export const SET_STATE = 'NONEDUX::SET_STATE';
-export const CLEAR_STATE = 'NONEDUX::CLEAR_STATE';
-export const REMOVE = 'NONEDUX::REMOVE';
-export const GET_STATE = 'NONEDUX::GET_STATE';
-export const SUBJECT = 'NONEDUX::SUBJECT';
-export const PARAM = 'NONEDUX::PARAM';
+export const SET_STATE = 'IMMUTABLE::SET_STATE';
+export const CLEAR_STATE = 'IMMUTABLE::CLEAR_STATE';
+export const REMOVE = 'IMMUTABLE::REMOVE';
+export const GET_STATE = 'IMMUTABLE::GET_STATE';
+export const REPLACE = 'IMMUTABLE::REPLACE';
+export const PARAM = 'IMMUTABLE::PARAM';
 
-export const has = Object.prototype.hasOwnProperty;
 const {getPrototypeOf} = Object;
 
 export function onAccessingRemovedBranch(property) {
@@ -23,7 +22,7 @@ export const invalidParents = {
     Error: true,
 };
 
-export function valueCanBeBranch(value) {
+export function valueIsAssignable(value) {
     return value && value instanceof Object && !invalidParents[getPrototypeOf(value).constructor.name];
 }
 
@@ -44,26 +43,14 @@ export function findChild(value, path) {
 }
 
 export const branchPrivates = {
-    subscribers: 'NONEDUX::SUBSCRIBERS',
-    children: 'NONEDUX::children',
-    identity: 'NONEDUX::identity',
-    accessState: 'NONEDUX::state',
-    accessPrevState: 'NONEDUX::prevState',
-    accessPendingState: 'NONEDUX::accessPendingState',
-    onSetState: 'NONEDUX::onSetState',
-    onClearState: 'NONEDUX::onClearState',
-    onRemove: 'NONEDUX::onRemove',
-    dispatcher: 'NONEDUX::dispatcher',
-    onRemoveChild: 'NONEDUX::onRemoveChild',
-    handleChange: 'NONEDUX::handleChange',
-    targetBranch: 'NONEDUX::targetBranch',
+    identity: 'IMMUTABLE::identity',
+    accessState: 'IMMUTABLE::state',
 };
 
 export const identityPrivates = {
     id: 'IDENTITY:id',
     removed: 'IDENTITY::removed',
     parent: 'IDENTITY::parent',
-    branch: 'IDENTITY::branch',
     resolve: 'IDENTITY::resolve',
     push: 'IDENTITY::createChild',
     renameSelf: 'IDENTITY::renameChild',
