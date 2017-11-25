@@ -20,15 +20,15 @@ class Sidebar extends React.Component {
   componentWillMount() {
     const { location, history, } = this.props;
 
-    this.setState({ pathname: location.pathname, });
-    this.routeSubscription = history.listen(({ pathname, }) => this.setState({ pathname, }));
+    this.assign({ pathname: location.pathname, });
+    this.routeSubscription = history.listen(({ pathname, }) => this.assign({ pathname, }));
   }
 
   render() {
     const { pathname, showMobileSidebar, } = this.state;
     return (
       <span>
-        <i name='bars' className={`mobile-toggle-sidebar${showMobileSidebar ? '' : '-inactive'}`} onClick={() => this.setState({ showMobileSidebar: !showMobileSidebar, })} />
+        <i name='bars' className={`mobile-toggle-sidebar${showMobileSidebar ? '' : '-inactive'}`} onClick={() => this.assign({ showMobileSidebar: !showMobileSidebar, })} />
         <aside id='sidebar' className={`sidebar ${showMobileSidebar ? 'sidebar-active' : 'sidebar-hidden-on-mobile'}`}>
           <div className='sidebar-small-item-row'>
             <SidebarSmallItem
@@ -59,7 +59,7 @@ class Sidebar extends React.Component {
   }
 
   onLinkClick = (path) => {
-    this.setState({ showMobileSidebar: false, });
+    this.assign({ showMobileSidebar: false, });
   }
 
 }

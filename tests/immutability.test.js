@@ -1,43 +1,43 @@
-import {createStoreWithNonedux} from './utils';
+/* eslint-disable no-return-assign */
+import change from '../src';
 
-const init = state => createStoreWithNonedux(state);
 describe('immutability', () => {
     test('previous states should not be changed',
         () => {
-            const {subject,} = init({
+            const subject = change({
                 a: 1,
-                b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1,}, j: {z: -0,},},},},
+                b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
             });
-            const {state: initialState,} = subject;
-            const {state: bInitialState,} = subject.b;
-            subject.setState({a: 2,});
+            const {state: initialState} = subject;
+            const {state: bInitialState} = subject.b;
+            subject.assign({a: 2});
             expect(initialState).not.toEqual(subject.state);
             expect(bInitialState).toEqual(subject.b.state);
         });
 
     test('subjects other children should remain unchanged',
         () => {
-            const {subject,} = createStoreWithNonedux({
+            const subject = change({
                 a: 1,
-                b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1,}, j: {z: -0,},},},},
+                b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
             });
-            const {state: bInitialState,} = subject.b;
-            subject.setState({a: 2,});
+            const {state: bInitialState} = subject.b;
+            subject.assign({a: 2});
             expect(bInitialState).toEqual(subject.b.state);
             expect(bInitialState === subject.state.b);
         });
 
     test('changing deep state',
         () => {
-            const {subject,} = init({
+            const subject = change({
                 a: 1,
-                b: {c: 2, d: {}, e: {f: 4, g: 7, h: {i: 100, x: {t: -1,}, j: {z: -0,},},},},
+                b: {c: 2, d: {}, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
             });
             const bOrg = subject.b.state;
             const dOrg = subject.b.d.state;
             const eOrg = subject.b.e.state;
             const hOrg = subject.b.e.h.state;
-            subject.setState({b: {c: 3, d: {}, e: {f: 4, g: 7, h: {i: 101, x: {t: -1,}, j: {z: -0,},},},},});
+            subject.assign({b: {c: 3, d: {}, e: {f: 4, g: 7, h: {i: 101, x: {t: -1}, j: {z: -0}}}}});
             expect(subject.b.state !== bOrg, 'b').toBeTruthy();
             expect(subject.b.d.state !== dOrg, 'd').toBeTruthy();
             expect(subject.b.e.state !== eOrg, 'e').toBeTruthy();
@@ -45,15 +45,15 @@ describe('immutability', () => {
         });
 
     test('changing deep state by children', () => {
-        const {subject,} = init({a: 1, b: {c: 2, d: {}, e: {f: 4, g: 7, h: {i: 100, x: {t: -1,}, j: {z: -0,},},},},});
+        const subject = change({a: 1, b: {c: 2, d: {}, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}}});
         const bOrg = subject.b.state;
         const dOrg = subject.b.d.state;
         const eOrg = subject.b.e.state;
         const hOrg = subject.b.e.h.state;
 
-        const {b,} = subject;
-        b.setState({c: 3,});
-        b.e.h.setState({i: 101,});
+        const {b} = subject;
+        b.assign({c: 3});
+        b.e.h.assign({i: 101});
 
         expect(subject.b.state !== bOrg, 'b').toBeTruthy();
         expect(subject.b.d.state === dOrg, 'd').toBeTruthy();
@@ -62,8 +62,8 @@ describe('immutability', () => {
     });
 
     test('parameters passed to subject should never mutate any values', () => {
-        const initialState = {val: {a: 1, b: {c: 2, d: {e: 3,},},},};
-        const {val: valState,} = initialState;
+        const initialState = {val: {a: 1, b: {c: 2, d: {e: 3}}}};
+        const {val: valState} = initialState;
         Object.defineProperty(valState.b.d, 'e', {
             writable: false,
             value: initialState.val.b.d.e,
@@ -89,8 +89,8 @@ describe('immutability', () => {
         expect(() => valState.b.c = '').toThrow(Error);
         expect(() => valState.b = '').toThrow(Error);
         expect(() => valState.a = '').toThrow(Error);
-        const {subject: {val,},} = init(initialState);
-        const nextState = {a: 2, b: {c: {x: 1,}, d: 1,}, e: 3,};
+        const {val} = change(initialState);
+        const nextState = {a: 2, b: {c: {x: 1}, d: 1}, e: 3};
         Object.defineProperty(nextState, 'a', {
             writable: false,
             value: nextState.a,
@@ -120,7 +120,7 @@ describe('immutability', () => {
         expect(() => nextState.b.c.x = '').toThrow(Error);
         expect(() => nextState.b.d = '').toThrow(Error);
         expect(() => nextState.b = '').toThrow(Error);
-        val.setState(nextState);
+        val.assign(nextState);
 
         Object.defineProperty(val.state.b.c, 'x', {
             writable: false,
@@ -158,6 +158,6 @@ describe('immutability', () => {
             writable: false,
             value: val.state.b,
         });
-        val.setState({b: {c: 1,},});
+        val.assign({b: {c: 1}});
     });
 });

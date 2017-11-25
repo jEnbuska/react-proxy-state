@@ -4,13 +4,13 @@ export function addUser() {
   return function ({ users, selections, todosByUser, }) {
     const id = uuid();
     const { single, ...rest } = selections.user.state;
-    const { [id]: newUser, }= users.content.setState({ [id]: { id, ...rest, single: !!single, pending: true, }, });
-    selections.user.setState({ pending: true, });
+    const { [id]: newUser, }= users.content.assign({ [id]: { id, ...rest, single: !!single, pending: true, }, });
+    selections.user.assign({ pending: true, });
     return new Promise(res => {
       setTimeout(() => {
-        todosByUser.content.setState({ [id]: {}, });
+        todosByUser.content.assign({ [id]: {}, });
         selections.user.clearState({});
-        newUser.setState({ pending: false, });
+        newUser.assign({ pending: false, });
         localStorage.setItem('todosContent', JSON.stringify(todosByUser.content.state));
         localStorage.setItem('users', JSON.stringify(users.content.state));
         res();
@@ -21,15 +21,15 @@ export function addUser() {
 
 export function modifySelectedUser(obj) {
   return function ({ selections: { user, }, }) {
-    user.setState(obj);
+    user.assign(obj);
   };
 }
 
 export function saveUserChanges() {
   return function ({ selections: { user: selectedUser, }, users, }) {
-    const { state, } = selectedUser.setState({ pending: true, });
+    const { state, } = selectedUser.assign({ pending: true, });
     const user = users.content[state.id];
-    user.setState(state);
+    user.assign(state);
     return new Promise(res => setTimeout(() => {
       user.remove('pending');
       selectedUser.remove('pending');
@@ -48,7 +48,7 @@ export function clearUserModification() {
 
 export function removeUser(id) {
   return function ({ users, }) {
-    users.content[id].setState({ pending: true, });
+    users.content[id].assign({ pending: true, });
     return new Promise(res => {
       users.content.remove(id);
       localStorage.setItem('users', JSON.stringify(users.content.state));
@@ -59,21 +59,21 @@ export function removeUser(id) {
 
 export function selectUser(id) {
   return function ({ selections, users: { content, }, }) {
-    selections.setState({ user: content[id].state, });
+    selections.assign({ user: content[id].state, });
   };
 }
 
 export function fetchUsers() {
   return async function (store) {
     const { users, todosByUser, } = store;
-    users.status.setState({ pending: false, });
-    todosByUser.status.setState({ pending: true, });
+    users.status.assign({ pending: false, });
+    todosByUser.status.assign({ pending: true, });
     await new Promise(res => setTimeout(res, 800));
     let userData = localStorage.getItem('users');
     userData = userData ? JSON.parse(userData) : {};
     let todoData = localStorage.getItem('todosContent');
     todoData = todoData ? JSON.parse(todoData) : {};
-    users.setState({ content: userData, status: { pending: false, }, });
-    todosByUser.setState({ content: todoData, status: { pending: false, }, });
+    users.assign({ content: userData, status: { pending: false, }, });
+    todosByUser.assign({ content: todoData, status: { pending: false, }, });
   };
 }

@@ -34,7 +34,7 @@ export default class Login extends React.Component {
               id={k}
               missing={missing[k]}
               invalid={invalids[k]}
-              onFocus={() => this.setState({ missing: { ...missing, [k]: false, }, })}
+              onFocus={() => this.assign({ missing: { ...missing, [k]: false, }, })}
               onBlur={() => this.onBlur(k)}
               key={k}
               type={k === 'password' ? 'password': 'text'}
@@ -61,16 +61,16 @@ export default class Login extends React.Component {
     } else if (missing[key] && value) {
       missing = { ...missing, [key]: false, };
     }
-    this.setState({ texts, invalids, missing, });
+    this.assign({ texts, invalids, missing, });
   }
 
   onBlur(key) {
     const { texts, invalids, missing, } = this.state;
     const value = texts[key];
     if (value && !validators[key].test(value)) {
-      this.setState({ invalids: { ...invalids, [key]: true, }, });
+      this.assign({ invalids: { ...invalids, [key]: true, }, });
     } else if (!value) {
-      this.setState({ missing: { ...missing, [key]: true, }, });
+      this.assign({ missing: { ...missing, [key]: true, }, });
     }
   }
 
@@ -88,7 +88,7 @@ export default class Login extends React.Component {
     if (isEmpty(invalids) && isEmpty(missing)) {
       this.props.dispatch({ type: LOGIN_REQUEST, ...texts, });
     } else {
-      this.setState({ invalids, missing, });
+      this.assign({ invalids, missing, });
     }
   }
 

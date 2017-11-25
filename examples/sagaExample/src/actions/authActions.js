@@ -1,18 +1,18 @@
 export function onSignInSuccess(token, user) {
   return function ({ auth, }) {
-    auth.setState({ pending: false, token, user: { ...user, token, termsAccepted: false, }, });
+    auth.assign({ pending: false, token, user: { ...user, token, termsAccepted: false, }, });
   };
 }
 
 export function onLeaveAuth() {
   return function ({ auth, }) {
-    auth.setState({ error: false, pending: false, });
+    auth.assign({ error: false, pending: false, });
   };
 }
 
 export function setInteractionBlock(blockContentInteraction) {
   return function (dux) {
-    dux.setState({ blockContentInteraction, });
+    dux.assign({ blockContentInteraction, });
   };
 }
 
@@ -28,7 +28,7 @@ export function changeState() {
     const aState = a.state;
     const bState = a.b.state;
 
-    a.b.setState({ x: 1, });
+    a.b.assign({ x: 1, });
 
     log(a.b.state === bState);       // false
     log(a.state === aState);         // false
@@ -55,10 +55,10 @@ export function browseState() {
 export function juggleMess() {
   // initialState = { mess: {} }
   return function (dux) {
-    let mess = dux.mess.setState({ depth: 0, });
+    let mess = dux.mess.assign({ depth: 0, });
     while (mess.state.depth < 3) {
       const { depth, } = mess.state;
-      mess = mess.setState({ mess: { depth: depth+1, }, }).mess;
+      mess = mess.assign({ mess: { depth: depth+1, }, }).mess;
     }
     console.log(dux.state);
     /* {

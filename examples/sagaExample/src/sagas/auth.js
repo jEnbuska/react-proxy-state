@@ -25,7 +25,7 @@ function* authFlow() {
         yield cancel(task);
         break;
       } case LOGIN_REQUEST: {
-        yield put(auth.setState({ pending: true, }));
+        yield put(auth.assign({ pending: true, }));
         const task = yield fork(login, { email, password, });
         yield take([ LOGOUT, LOGIN_ERROR, ]);
         yield cancel(task);
@@ -38,9 +38,9 @@ function* authFlow() {
 
 function* handleInitialFlow({ email, password, firstname, lastname, zip, city, address, }) {
   try {
-    yield put(auth.setState({ pending: true, }));
+    yield put(auth.assign({ pending: true, }));
     const { token, } = yield call(client.signup, { email, password, firstname, lastname, zip, city, address, });
-    yield put(auth.setState({ pending: false, token, user: { token, email, firstname, lastname, zip, city, address, termsAccepted: false, }, }));
+    yield put(auth.assign({ pending: false, token, user: { token, email, firstname, lastname, zip, city, address, termsAccepted: false, }, }));
     yield call(client.storeItem, { token, });
     yield put({ type: REQUEST_TERMS_ACCEPTANCE, });
   } catch (error) {
@@ -52,7 +52,7 @@ function* handleInitialFlow({ email, password, firstname, lastname, zip, city, a
 function* login({ email, password, }) {
   try {
     const { firstname, lastname, termsAccepted, token, city, zip, address, } = yield call(client.login, { email, password, });
-    yield put(auth.setState({ token, user: { email, firstname, lastname, city, zip, address, termsAccepted, }, }));
+    yield put(auth.assign({ token, user: { email, firstname, lastname, city, zip, address, termsAccepted, }, }));
     yield call(client.storeItem, { token, });
     if (!termsAccepted) {
       yield put({ type: REQUEST_TERMS_ACCEPTANCE, });
@@ -66,7 +66,7 @@ function* login({ email, password, }) {
 function* handleAuthError() {
   while (true) {
     yield take([ LOGIN_ERROR, SIGNUP_ERROR, ]);
-    yield put(auth.setState({ error: true, pending: false, token: null, }));
+    yield put(auth.assign({ error: true, pending: false, token: null, }));
   }
 }
 
@@ -75,7 +75,7 @@ function* handleTokenRefresh() {
     while (true) {
       yield delay(client.timeUntilTokenExpiration);
       const { token, } = yield call(client.refreshToken);
-      yield put(auth.setState({ token, }, true));
+      yield put(auth.assign({ token, }, true));
       yield call(client.storeItem, { token, });
     }
   } catch (error) {
@@ -86,19 +86,19 @@ function* handleTokenRefresh() {
 function* handleTerms() {
   while (true) {
     yield take(REQUEST_TERMS_ACCEPTANCE);
-    yield put(dux.setState({ blockContentInteraction: true, }));
+    yield put(dux.assign({ blockContentInteraction: true, }));
     yield take(ON_TERMS_ACCEPTED);
     const { email, } = auth.user.state;
     yield call(client.onTermsAccepted, { email, });
-    yield put(auth.user.setState({ termsAccepted: true, }));
-    yield put(dux.setState({ blockContentInteraction: false, }));
+    yield put(auth.user.assign({ termsAccepted: true, }));
+    yield put(dux.assign({ blockContentInteraction: false, }));
   }
 }
 
 function* handleLeaveAuth() {
   while (true) {
     yield take([ ON_LEAVE_LOGIN, ON_LEAVE_SIGNUP, ]);
-    yield put(auth.setState({ error: false, pending: false, }));
+    yield put(auth.assign({ error: false, pending: false, }));
   }
 }
 
@@ -111,6 +111,6 @@ function* handleLogout() {
 }
 
 function* handleLoginError() {
-  yield put(auth.setState({ pending: false, error: true, token: null, }));
+  yield put(auth.assign({ pending: false, error: true, token: null, }));
   yield put({ type: LOGIN_ERROR, });
 }

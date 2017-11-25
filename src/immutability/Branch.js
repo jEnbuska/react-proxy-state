@@ -6,22 +6,20 @@ import {
     CLEAR_STATE,
     REMOVE,
     PARAM,
-    PUBLISH_NOW,
     GET_STATE,
-    COMMIT_TRANSACTION,
-    ROLLBACK,
-    invalidParents,
-    _README_URL_
+    valueCanBeBranch,
+    onAccessingRemovedBranch,
 } from '../common';
+import branchProxy from './branchProxy';
 
-const {identity, dispatcher,} = branchPrivates;
-const {resolve,} = identityPrivates;
-const {getPrototypeOf, defineProperties,} = Object;
+const {identity, dispatcher} = branchPrivates;
+const {resolve} = identityPrivates;
+const {defineProperties} = Object;
 // Saga state mapper does not dispatch its own actions, instead it should be used like:
-// yield put(target.setState, {a:1,b: {}})
+// yield put(target.assign, {a:1,b: {}})
 export default class Branch {
 
-    constructor(_identity, _dispatched) {
+    constructor(_identity, _dispatcher) {
         defineProperties(this, {
             [identity]: {
                 value: _identity,
@@ -29,9 +27,9 @@ export default class Branch {
                 configurable: true,
             },
             [dispatcher]: {
-                value: _dispatched,
+                value: _dispatcher,
                 enumerable: false,
-                configurable: true,
+                writable: true,
             },
         });
     }
@@ -39,9 +37,9 @@ export default class Branch {
     get state() {
         const resolved = this[identity][resolve]();
         if (resolved) {
-            return this[dispatcher].dispatch({type: GET_STATE, [SUBJECT]: resolved,});
+            return this[dispatcher]({type: GET_STATE, [SUBJECT]: resolved});
         }
-        return Branch.onAccessingRemovedBranch(this.getId(), 'state');
+        return onAccessingRemovedBranch(this.getId(), 'state');
     }
 
     getId() {
@@ -52,60 +50,57 @@ export default class Branch {
         return this[identity][resolve]();
     }
 
-    setState(value) {
+    assign(value) {
         const identifier = this[identity][resolve]();
         if (!identifier) {
-            throw new Error('Cannot call setState to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
-        } else if (!Branch.valueCanBeBranch(value)) {
-            throw new Error('Branch does not take leafs as setState parameters. Got:', `${value}. Identity: "${this.getIdentity().join(', ')}"`);
+            throw new Error('Cannot call assign to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
+        } else if (!valueCanBeBranch(value)) {
+            throw new Error('Branch does not take leafs as assign parameters. Got:', `${value}. Identity: "${this.getIdentity().join(', ')}"`);
         } else if (value instanceof Array) {
             throw new Error(`Target: "${identifier.join(', ')}"\nCannot call set state parameter is Array`);
         }
-        return {
+        this[dispatcher]({
             type: SET_STATE,
             [SUBJECT]: identifier,
             [PARAM]: value,
-            [PUBLISH_NOW]: !this[dispatcher].onGoingTransaction,
-        };
+        });
+        return this;
     }
 
     clearState(value) {
         const identifier = this[identity][resolve]();
         if (!identifier) {
             throw new Error('Cannot call clearState to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
-        } else if (!Branch.valueCanBeBranch(value)) {
+        } else if (!valueCanBeBranch(value)) {
             throw new Error('Branch does not take leafs as clearState parameters. Got:', `${value}. Identity: "${this.getIdentity().join(', ')}"`);
         }
-        return {
+        this[dispatcher]({
             type: CLEAR_STATE,
             [SUBJECT]: identifier,
             [PARAM]: value,
-            [PUBLISH_NOW]: !this[dispatcher].onGoingTransaction,
-        };
+        });
+        return this;
     }
 
-    remove(keys) {
+    remove(...keys) {
         const identifier = this[identity][resolve]();
         if (!identifier) {
             throw new Error('Cannot call remove on removed Node. Got:', `${keys}. Id: "${this.getId()}"`);
         }
-        return {
+        this[dispatcher]({
             type: REMOVE,
             [SUBJECT]: identifier,
             [PARAM]: keys,
-            [PUBLISH_NOW]: !this[dispatcher].onGoingTransaction,
-        };
+        });
+        return this;
     }
 
-    static _onGetChildrenRecursively(acc, child) {
-        return [...acc, child, ...child._getChildrenRecursively(),];
+    _createChildProxy(dispatcher, childIdentity) {
+        const child = new Branch(childIdentity, dispatcher);
+        return child._createProxy();
     }
 
-    static valueCanBeBranch(value) {
-        return value && value instanceof Object && !invalidParents[getPrototypeOf(value).constructor.name];
-    }
-
-    static onAccessingRemovedBranch(property) {
-        console.error('Accessing ' + property + ' of removed Branch');
+    _createProxy() {
+        return new Proxy(this, branchProxy);
     }
 }

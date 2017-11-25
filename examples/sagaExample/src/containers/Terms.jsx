@@ -59,7 +59,7 @@ export default class Terms extends React.Component {
           </div>
           <div className='flex'>
             <div>
-              <Input disabled={pending} id='acceptTerms' type='checkbox' checked={termsAccepted} onChange={() => this.setState({ termsAccepted: !termsAccepted, })} />
+              <Input disabled={pending} id='acceptTerms' type='checkbox' checked={termsAccepted} onChange={() => this.assign({ termsAccepted: !termsAccepted, })} />
               <label htmlFor='acceptTerms'>
                 accept terms
               </label>
@@ -76,7 +76,7 @@ export default class Terms extends React.Component {
   }
 
   onSubmit = () => {
-    this.setState({ pending: true, });
+    this.assign({ pending: true, });
     this.props.dispatch({ type: ON_TERMS_ACCEPTED, });
   }
 }

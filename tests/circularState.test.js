@@ -1,16 +1,13 @@
-import {createStoreWithNonedux,} from './utils';
+import change from '../src';
 
-const init = state => createStoreWithNonedux(state);
 describe('circular state', () => {
-
-    test('circular state should not be cause exception',
-        () => {
-            const circular = {};
-            circular.circular = circular;
-            const {subject,} = init(circular);
-            let child = subject;
-            for (let i = 0; i < 43; i++) {
-                child = child.circular;
-            }
-        });
+    test('circular state should not be cause exception', () => {
+        const circular = {};
+        circular.circular = circular;
+        const subject = change(circular);
+        let child = subject;
+        for (let i = 0; i < 43; i++) {
+            child = child.circular;
+        }
+    });
 });

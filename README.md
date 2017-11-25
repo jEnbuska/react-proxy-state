@@ -6,7 +6,7 @@ Alternative for 'redux-thunk'
 
 Application state can be changed directly from actions creators
 
-Action objects are auto generated and dispatched  when (***setState / clearState / remove***) functions are invoked
+Action objects are auto generated and dispatched  when (***assign / clearState / remove***) functions are invoked
 
 Immutability is taken care of by middlewares and published by child reducers
 
@@ -17,7 +17,7 @@ function grow() {
     console.log(nonedux.state); // {subState: {}}
     let child = nonedux.subState;
     [1,2,3].forEach(n => {
-      child.setState({[n]: {}});
+      child.assign({[n]: {}});
       child = child[n];
     })
     console.log(nonedux.state) // {subState: {1: {2: {3: {}}}}}
@@ -30,7 +30,7 @@ function generateMessState(depth = 3, height = 0) {
     const { mess, } = nonedux;
     let child = mess;
     for (let i = 0; i<depth && child; i++) {
-      child = child.setState({ [height]: dispatch(generateMessState(i, i+1)) })[height]
+      child = child.assign({ [height]: dispatch(generateMessState(i, i+1)) })[height]
     }
     return nonedux.mess.state;
   };
@@ -73,7 +73,7 @@ const root = (
 ```
 
 ## Action examples
-##### ***setState*** ***remove***, ***clearState*** can be called to nonedux objects and arrays from inside action creators:
+##### ***assign*** ***remove***, ***clearState*** can be called to nonedux objects and arrays from inside action creators:
 ###### All Promises used inside Actions must be returned. Further details after next example
 ```
 // actions 1st argument is nonedux reference, 2nd one is redux store
@@ -83,7 +83,7 @@ export function removeUser(userId) {
    return function (nonedux, {dispatch}) {
        const {users, todosByUser} = nonedux;
        const user = users[userId];      
-       user.setState({ verified: false, });
+       user.assign({ verified: false, });
        //All promises must be returned
        return api.deleteUser(userId)
         .then(()=> {;
@@ -98,15 +98,15 @@ function createPayment(userId, data){
     return function({users, transactions}){  
     const user = users[userId];
     if(!user.state.pendingPayment){     
-        user.setState({pendingPaymend: true})
+        user.assign({pendingPaymend: true})
         const id = uuid(); 
-        const {[id]: transaction} = transactions[userId].setState({
+        const {[id]: transaction} = transactions[userId].assign({
             [id]: {id, ...data, userId, validated: false, }
         })     
         return api.postTransactions(transaction.state)
           .then(() => {
-              transaction.setState({validated: true})
-              user.setState({pendingPayment: false})
+              transaction.assign({validated: true})
+              user.assign({pendingPayment: false})
           })
           .catch(err => { ... })
         }
@@ -121,34 +121,34 @@ Alternative use async await and call await to all promises.
 
 function returnPromisesAsynAwait() {
     return async function ({ data, notifications, }) {
-        notifications.setState({ dataFetch: 'pending', });
+        notifications.assign({ dataFetch: 'pending', });
         try {
             const dataResult = await api.fetchData();
-            data.setState(dataResult.data);
-            notifications.setState({ dataFetch: 'success', });
+            data.assign(dataResult.data);
+            notifications.assign({ dataFetch: 'success', });
             await sleep();
-            notifications.setState({ dataFetch: '', })
+            notifications.assign({ dataFetch: '', })
         } catch (e) {
-            notifications.setState({ dataFetch: 'error', });
+            notifications.assign({ dataFetch: 'error', });
             await sleep();
-            notifications.setState({ dataFetch: '', });
+            notifications.assign({ dataFetch: '', });
         }
     };
 }
 
 function returnPromisesTraditional() {
   return function ({ data, notifications, }) {
-    notifications.setState({ dataFetch: 'pending', });
+    notifications.assign({ dataFetch: 'pending', });
     return api.fetchData() // return Promise                         
       .then((result) => {
-        data.setState(result.data);
-        notifications.setState({ dataFetch: 'success', });
+        data.assign(result.data);
+        notifications.assign({ dataFetch: 'success', });
         return sleep() // return Promise                             
-          .then(() => notifications.setState({ dataFetch: '', }))
+          .then(() => notifications.assign({ dataFetch: '', }))
       }).catch(() => {
-        notifications.setState({ dataFetch: 'error', });
+        notifications.assign({ dataFetch: 'error', });
         return sleep()  // return Promise
-          .then(() => notifications.setState({ dataFetch: '', }))
+          .then(() => notifications.assign({ dataFetch: '', }))
       });
   };
 }
@@ -156,26 +156,26 @@ function returnPromisesTraditional() {
 ```
 
 ## Functions
-##### Calling functions like ***setState*** returns the same instance
+##### Calling functions like ***assign*** returns the same instance
 ```
 const {child} = nonedux;
-child.setState({subChild: {}}).subChild.setState({noChild: null})
+child.assign({subChild: {}}).subChild.assign({noChild: null})
 
 console.log(child.state); 
 // { child: { subChild: { noChild: null} } }
 ```
 
-##### setState
+##### assign
 ```
 console.log(target.state); // { a: 1, b: {} }
 
-// setState does shallow merge
-target.setState({ a: 2, c: 3 });
+// assign does shallow merge
+target.assign({ a: 2, c: 3 });
 console.log(target.state) // { a: 2, b: {}, c: 3 }
 
-// setState takes Objects as parameters
-target.setState('test'); //Error("[...]")
-target.setState([ 1, 'abc', {} ]); //Error("[...]")
+// assign takes Objects as parameters
+target.assign('test'); //Error("[...]")
+target.assign([ 1, 'abc', {} ]); //Error("[...]")
 ```
  
 ##### clearState
@@ -187,7 +187,7 @@ target.setState([ 1, 'abc', {} ]); //Error("[...]")
  console.log(target.state); // { b: 2 }
  
 // clearState takes both Object or Array as parameter
- target.setState('text'); //Error("[...]")
+ target.assign('text'); //Error("[...]")
 ```
 #### remove
 ```
@@ -212,7 +212,7 @@ target.remove(...[1,2,3]);
 }
 ...
 {
-  const {data} = nonedux.data.setState({ str: 'abc' });
+  const {data} = nonedux.data.assign({ str: 'abc' });
   
   console.log(data.str); // undefined
    
@@ -222,7 +222,7 @@ target.remove(...[1,2,3]);
 }
 ...
 {
-  const { data } = nonedux.data.setState({ obj: { str: 'ok' } })
+  const { data } = nonedux.data.assign({ obj: { str: 'ok' } })
    
   console.log(data.obj) //Branch: ...
    
@@ -277,7 +277,7 @@ replace with something like
  //actions nonedux
  function updateUser(id, changes){
     return function({users}){
-      users[id].setState(changes);
+      users[id].assign(changes);
     }
  } 
 ```
@@ -393,9 +393,9 @@ Wont work:
 function playWithTransaction(){
   return function(nonedux){
     nonedux.transaction(({ users }) => {
-      users.setState({ a:{}, b: {} })
-      users.setState({ c:{} })
-      users.c.setState({ todos:{} })
+      users.assign({ a:{}, b: {} })
+      users.assign({ c:{} })
+      users.c.assign({ todos:{} })
     }) // --> update store state
   }
 }
@@ -404,9 +404,9 @@ function playWithTransaction(){
 function playWithRollback(){
   return function(nonedux){    
     nonedux.transaction(({ users }) => {
-      users.setState({ a:{}, b: {} })
-      users.setState({ c:{} })
-      nonedux.c.setState({ todos:{} })
+      users.assign({ a:{}, b: {} })
+      users.assign({ c:{} })
+      nonedux.c.assign({ todos:{} })
       throw new Error();    // ROLLBACK ALL
     }) // --> no published changes
   }
@@ -416,7 +416,7 @@ function playWithRollback(){
 function rollbackAdvanced(){
   return function(nonedux, {dispatch}){    
     nonedux.transaction(({ users }) => {
-      users.setState({ a:{} })
+      users.assign({ a:{} })
       try{
         dispatch(doChangesAndThrowError());
       }catch(ignore){ /* explicitly thrown error */ }
@@ -427,10 +427,10 @@ function rollbackAdvanced(){
 function doChangesAndThrowError(){
   return function(nonedux){
      nonedux.transaction(({ users }) => {
-        users.a.setState({ todos: {} })
+        users.a.assign({ todos: {} })
         users.a.transaction(({ todos }) => {
           const id = uuid();
-          todos.setState({[id]: id, done: false, description: 'Buy milk'})
+          todos.assign({[id]: id, done: false, description: 'Buy milk'})
         }) // --> rollback scopes changes
      })
   }
@@ -439,7 +439,7 @@ function doChangesAndThrowError(){
 ## Arrays
 Arrays are not shallow merged like objects
 
-'setState' and 'remove' can be expensive if run on older browsers, that do not support es6 Proxy
+'assign' and 'remove' can be expensive if run on older browsers, that do not support es6 Proxy
 
 The technical details about why this is so, boils down to same reasons, why React is advices to not use index as 'key':s for component when creating list of components
 
@@ -476,7 +476,7 @@ function removeRetiringEmployee_better(){
 function fetchEmployees(){
   return function({employees}){            
     return api.fetchEmployees(({data}) => {
-      employees.setState(data);
+      employees.assign(data);
       // assuming there is entries 1000 and every empty on data is object
       // takes about 0.75ms on modern browser
       // on legacy browser <7ms 
@@ -487,7 +487,7 @@ function fetchEmployees(){
 function fetchEmployees_better(){
   return function(nonedux){         
     return api.fetchEmployees(({data}) => {
-      nonedux.setState({employees: data});
+      nonedux.assign({employees: data});
       // assuming there is entries 1000 and every empty on data is object
       // in avg good case takes about 0.1ms on modern browser
       // good case on legacy browser <7ms
@@ -527,7 +527,7 @@ leafs.MyClass = true;
 
 ...
 
-nonedux.subState.setState({child: new MyClass()};)
+nonedux.subState.assign({child: new MyClass()};)
 nonedux.subState.child; //undefined
 nonedux.subState.state.child; // MyClass...
 ```
@@ -540,12 +540,12 @@ Note that performance is not great on old browsers. This should not be an issue 
 #### 2. All keys must be strings or numbers
 ```
 const key = () => console.log('I'm key');
-target.setState({[key]: {} }) // This will result in bugs
+target.assign({[key]: {} }) // This will result in bugs
 ```
 
 #### 3. nonedux values are not enumerable
 ```
-const {a, b, ...rest} = target.setState({ a:{}, b: {}, c: {}, d: {} })
+const {a, b, ...rest} = target.assign({ a:{}, b: {}, c: {}, d: {} })
 Object.keys(rest).length  // 0
 
 for(const child in target){
@@ -555,13 +555,13 @@ for(const child in target){
 
 ##### Accessing all children
 ```
-target.setState({ a:{}, b: {}, c: {}, d: {} })
+target.assign({ a:{}, b: {}, c: {}, d: {} })
 const {a, b, ...rest} = target.getChildren()
 Object.keys(rest).length  // 2
 
 //or
 
-const {state} = target.setState({ a:{}, b: {}, c: {}, d: {} })
+const {state} = target.assign({ a:{}, b: {}, c: {}, d: {} })
 const children = Object.keys(state).map(k => targe[k]);
 ```
 ###### Accessing all children could be inefficient. Do it only with small sets of objects
@@ -573,7 +573,7 @@ const children = Object.keys(state).map(k => targe[k]);
 #### 6. Comparison instances
 ```
 // In modern browsers next evaluates to false
-target.setState({a: {}})
+target.assign({a: {}})
 target.a === target.a
 // in old browsers the same evaluates to true
 ```
@@ -634,7 +634,7 @@ function fetchCustomerData_Lightweight(){
         associations = createLeaf(associations)
         
         const {statistics} = nonedux;
-        statistics.setState({transactions, associations}). //no direct refence to children;
+        statistics.assign({transactions, associations}). //no direct refence to children;
         
         statistics.transactions //undefined
         statistics.associations //undefined
@@ -677,7 +677,7 @@ const {subject, middlewares} = nonedux({
 ```
 ##### 3. children are not enumerable
 ```
-const {a, b, ...rest} = target.setState({ a:{}, b: {}, c: {}, d: {} })
+const {a, b, ...rest} = target.assign({ a:{}, b: {}, c: {}, d: {} })
 Object.keys(rest).length  // 0
 
 for(const child in target){
@@ -689,12 +689,12 @@ for(const child in target){
 const {a, b, ...rest} = target.getChildren()
 Object.keys(rest).length  // 2
 //or as Array
-const {state} = target.setState({ a:{}, b: {}, c: {}, d: {} })
+const {state} = target.assign({ a:{}, b: {}, c: {}, d: {} })
 const children = Object.keys(state).map(k => targe[k]);
 ```
 ##### 4. No references are stored, when modern browsers are used. This makes almost everything bizillion times faster
 ```
-target.setState({ a:{} });
+target.assign({ a:{} });
 target.a // instance created
 target.a // instance created again
 target.a === target.a // false

@@ -49,7 +49,7 @@ export default class Signup extends React.Component {
               id={k}
               missing={!!missing[k]}
               invalid={!!invalids[k]}
-              onFocus={() => this.setState({ missing: { ...missing, [k]: false, }, })}
+              onFocus={() => this.assign({ missing: { ...missing, [k]: false, }, })}
               onBlur={() => this.onBlur(k)}
               key={k}
               type={types[k]}
@@ -77,16 +77,16 @@ export default class Signup extends React.Component {
     } else if (missing[key] && value) {
       missing = { ...missing, [key]: false, };
     }
-    this.setState({ texts, invalids, missing, });
+    this.assign({ texts, invalids, missing, });
   }
 
   onBlur(key) {
     const { texts, invalids, missing, } = this.state;
     const value = texts[key];
     if (value && validators[key] && !validators[key](texts)) {
-      this.setState({ invalids: { ...invalids, [key]: true, }, });
+      this.assign({ invalids: { ...invalids, [key]: true, }, });
     } else if (!value && requiredFields[key]) {
-      this.setState({ missing: { ...missing, [key]: true, }, });
+      this.assign({ missing: { ...missing, [key]: true, }, });
     }
   }
 
@@ -105,7 +105,7 @@ export default class Signup extends React.Component {
       const {rePassword, ...rest} = texts;
       this.props.dispatch({ type: SIGNUP_REQUEST, ...rest, });
     } else {
-      this.setState({ invalids, missing, });
+      this.assign({ invalids, missing, });
     }
   }
 

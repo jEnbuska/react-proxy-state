@@ -19,7 +19,7 @@ export default class AddTodo extends React.Component {
     const { description, } = this.state;
     return (
       <Form onSubmit={this.onSubmit}>
-        <Input placeholder='description' onChange={description => this.setState({ description, })} value={description} />
+        <Input placeholder='description' onChange={description => this.assign({ description, })} value={description} />
         <Button
           primary
           type='submit'
@@ -31,6 +31,6 @@ export default class AddTodo extends React.Component {
 
   onSubmit = () => {
     this.props.addTodo(this.state.description, this.props.userId);
-    this.setState({ description: '', });
+    this.assign({ description: '', });
   }
 }
