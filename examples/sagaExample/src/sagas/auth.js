@@ -106,7 +106,7 @@ function* handleLogout() {
   while (true) {
     yield take(LOGOUT);
     yield call(client.clearItem, 'token');
-    yield put(auth.clearState({ user: {}, token: null, }));
+    yield put(auth.clear({ user: {}, token: null, }));
   }
 }
 

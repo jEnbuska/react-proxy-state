@@ -10,26 +10,22 @@ import {
     valueCanBeBranch,
     onAccessingRemovedBranch,
 } from '../common';
-import branchProxy from './branchProxy';
+import ProxyInterface from './ProxyInterface';
 
-const {identity, dispatcher} = branchPrivates;
+const {identity} = branchPrivates;
 const {resolve} = identityPrivates;
 const {defineProperties} = Object;
 // Saga state mapper does not dispatch its own actions, instead it should be used like:
 // yield put(target.assign, {a:1,b: {}})
+
 export default class Branch {
 
-    constructor(_identity, _dispatcher) {
+    constructor(_identity) {
         defineProperties(this, {
             [identity]: {
                 value: _identity,
                 enumerable: false,
                 configurable: true,
-            },
-            [dispatcher]: {
-                value: _dispatcher,
-                enumerable: false,
-                writable: true,
             },
         });
     }
@@ -37,17 +33,9 @@ export default class Branch {
     get state() {
         const resolved = this[identity][resolve]();
         if (resolved) {
-            return this[dispatcher]({type: GET_STATE, [SUBJECT]: resolved});
+            return ProxyInterface.messenger({type: GET_STATE, [SUBJECT]: resolved});
         }
-        return onAccessingRemovedBranch(this.getId(), 'state');
-    }
-
-    getId() {
-        return this[identity].getId();
-    }
-
-    getIdentity() {
-        return this[identity][resolve]();
+        return onAccessingRemovedBranch(this[identity].getId(), 'state');
     }
 
     assign(value) {
@@ -55,11 +43,11 @@ export default class Branch {
         if (!identifier) {
             throw new Error('Cannot call assign to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
         } else if (!valueCanBeBranch(value)) {
-            throw new Error('Branch does not take leafs as assign parameters. Got:', `${value}. Identity: "${this.getIdentity().join(', ')}"`);
+            throw new Error('Branch does not take leafs as assign parameters. Got:', `${value}. Identity: "${this[identity][resolve]().join(', ')}"`);
         } else if (value instanceof Array) {
             throw new Error(`Target: "${identifier.join(', ')}"\nCannot call set state parameter is Array`);
         }
-        this[dispatcher]({
+        ProxyInterface.messenger({
             type: SET_STATE,
             [SUBJECT]: identifier,
             [PARAM]: value,
@@ -67,14 +55,14 @@ export default class Branch {
         return this;
     }
 
-    clearState(value) {
+    clear(value) {
         const identifier = this[identity][resolve]();
         if (!identifier) {
-            throw new Error('Cannot call clearState to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
+            throw new Error('Cannot call clear to removed Node. Got:', `${value}. Id: "${this.getId()}"`);
         } else if (!valueCanBeBranch(value)) {
-            throw new Error('Branch does not take leafs as clearState parameters. Got:', `${value}. Identity: "${this.getIdentity().join(', ')}"`);
+            throw new Error('Branch does not take leafs as clear parameters. Got:', `${value}. Identity: "${this[identity][resolve]().join(', ')}"`);
         }
-        this[dispatcher]({
+        ProxyInterface.messenger({
             type: CLEAR_STATE,
             [SUBJECT]: identifier,
             [PARAM]: value,
@@ -85,9 +73,9 @@ export default class Branch {
     remove(...keys) {
         const identifier = this[identity][resolve]();
         if (!identifier) {
-            throw new Error('Cannot call remove on removed Node. Got:', `${keys}. Id: "${this.getId()}"`);
+            throw new Error('Cannot call remove on removed Node. Got:', `${keys}. Id: "${this[identity].getId()}"`);
         }
-        this[dispatcher]({
+        ProxyInterface.messenger({
             type: REMOVE,
             [SUBJECT]: identifier,
             [PARAM]: keys,
@@ -95,12 +83,12 @@ export default class Branch {
         return this;
     }
 
-    _createChildProxy(dispatcher, childIdentity) {
-        const child = new Branch(childIdentity, dispatcher);
+    _createChildProxy(childIdentity) {
+        const child = new Branch(childIdentity);
         return child._createProxy();
     }
 
     _createProxy() {
-        return new Proxy(this, branchProxy);
+        return new Proxy(this, ProxyInterface.proxyTemplate);
     }
 }

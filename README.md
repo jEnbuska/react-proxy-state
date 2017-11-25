@@ -6,7 +6,7 @@ Alternative for 'redux-thunk'
 
 Application state can be changed directly from actions creators
 
-Action objects are auto generated and dispatched  when (***assign / clearState / remove***) functions are invoked
+Action objects are auto generated and dispatched  when (***assign / clear / remove***) functions are invoked
 
 Immutability is taken care of by middlewares and published by child reducers
 
@@ -73,7 +73,7 @@ const root = (
 ```
 
 ## Action examples
-##### ***assign*** ***remove***, ***clearState*** can be called to nonedux objects and arrays from inside action creators:
+##### ***assign*** ***remove***, ***clear*** can be called to nonedux objects and arrays from inside action creators:
 ###### All Promises used inside Actions must be returned. Further details after next example
 ```
 // actions 1st argument is nonedux reference, 2nd one is redux store
@@ -178,15 +178,15 @@ target.assign('test'); //Error("[...]")
 target.assign([ 1, 'abc', {} ]); //Error("[...]")
 ```
  
-##### clearState
+##### clear
 ```
  console.log(target.state); //{ a: 1, b: { } }
  
  // clear state removes the previous states outer join
- target.clearState({ b: 2 });
+ target.clear({ b: 2 });
  console.log(target.state); // { b: 2 }
  
-// clearState takes both Object or Array as parameter
+// clear takes both Object or Array as parameter
  target.assign('text'); //Error("[...]")
 ```
 #### remove
@@ -503,7 +503,7 @@ Leafs are types that do not have children, nor they cannot be referenced directl
 ```
 ...
 const {child} = nonedux;
-child.clearState({
+child.clear({
   numb: 1, str: 'abc', 
   err: new Error(), date: Date.now(), 
   regexp: /nonedux/,
@@ -581,9 +581,9 @@ target.a === target.a
 #### 6. There is grey areas with **Arrays that contain other Objects/Arrays**
 ```
 const first = {a:1}, second = {b:2}, third = {c:3}
-target.clearState([ first, second, third, ]);
+target.clear([ first, second, third, ]);
 const { 0: firstChild, 1: secondChild, 2: thirdChild, } = target;
-target.clearState([ third, first, second, ]);  //switch order
+target.clear([ third, first, second, ]);  //switch order
 
 /* One might expect that 'firstChild' state, 
 would still points to 'first' value but it doesn't */
@@ -591,8 +591,8 @@ firstChild.state; // { c: 3, };
 secondChild.state; // { a: 1, };
 thirdChild.state; // { b: 2, };
 
-//From 'clearState:s' point of view the previous means:
-`target.clearState({0: first, 1: second, 2: third })`
+//From 'clear:s' point of view the previous means:
+`target.clear({0: first, 1: second, 2: third })`
 ```
 
 

@@ -9,7 +9,7 @@ export function addUser() {
     return new Promise(res => {
       setTimeout(() => {
         todosByUser.content.assign({ [id]: {}, });
-        selections.user.clearState({});
+        selections.user.clear({});
         newUser.assign({ pending: false, });
         localStorage.setItem('todosContent', JSON.stringify(todosByUser.content.state));
         localStorage.setItem('users', JSON.stringify(users.content.state));
@@ -42,7 +42,7 @@ export function saveUserChanges() {
 
 export function clearUserModification() {
   return function ({ selections: { user, }, }) {
-    user.clearState({});
+    user.clear({});
   };
 }
 

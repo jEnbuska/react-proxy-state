@@ -1,13 +1,14 @@
 import {branchPrivates} from './common';
 import Branch from './immutability/Branch';
 import Identity from './immutability/Identity';
-import createStateManager from './immutability/stateManager';
+import createStateMessenger from './immutability/stateMessenger';
+import ProxyInterface from './immutability/ProxyInterface';
 
-const {dispatcher, accessState} = branchPrivates;
+const {accessState} = branchPrivates;
 
 export default function immutable(state) {
     const subject = new Branch(new Identity());
-    subject[dispatcher] = createStateManager(subject);
+    ProxyInterface.messenger = createStateMessenger(subject);
     subject[accessState] = state;
     return subject._createProxy();
 }

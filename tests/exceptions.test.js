@@ -5,8 +5,8 @@ function verifyErrorOnChange(...params) {
     params.forEach(next => {
         expect(() => next.assign(1)).toThrow(Error);
         expect(() => next.assign({x: 100})).toThrow(Error);
-        expect(() => next.clearState(1)).toThrow(Error);
-        expect(() => next.clearState({x: 100})).toThrow(Error);
+        expect(() => next.clear(1)).toThrow(Error);
+        expect(() => next.clear({x: 100})).toThrow(Error);
         expect(() => next.remove('b')).toThrow(Error);
     });
 }
@@ -27,7 +27,7 @@ describe('exception', () => {
                 [GET_STATE]: () => {
                     throw new Error();
                 },
-            }
+            },
         );
     });
 
@@ -37,7 +37,7 @@ describe('exception', () => {
             const {a, c} = child;
             const {d} = c;
             child.remove('a');
-            child.remove(['c',]);
+            child.remove(['c']);
             verifyErrorOnChange(a, c, d);
         });
 
@@ -49,9 +49,9 @@ describe('exception', () => {
         expect(() => a.assign({})).toThrow(Error);
         expect(() => b.assign({})).toThrow(Error);
         expect(() => c.assign({})).toThrow(Error);
-        expect(() => a.clearState({})).toThrow(Error);
-        expect(() => b.clearState({})).toThrow(Error);
-        expect(() => c.clearState({})).toThrow(Error);
+        expect(() => a.clear({})).toThrow(Error);
+        expect(() => b.clear({})).toThrow(Error);
+        expect(() => c.clear({})).toThrow(Error);
 
         expect(() => a.remove('b')).toThrow(Error);
         expect(() => b.remove('val')).toThrow(Error);

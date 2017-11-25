@@ -1,4 +1,3 @@
-export const _README_URL_ = 'https://github.com/jEnbuska/none-dux';
 export const SET_STATE = 'NONEDUX::SET_STATE';
 export const CLEAR_STATE = 'NONEDUX::CLEAR_STATE';
 export const REMOVE = 'NONEDUX::REMOVE';
@@ -45,6 +44,7 @@ export function findChild(value, path) {
 }
 
 export const branchPrivates = {
+    subscribers: 'NONEDUX::SUBSCRIBERS',
     children: 'NONEDUX::children',
     identity: 'NONEDUX::identity',
     accessState: 'NONEDUX::state',
@@ -75,7 +75,7 @@ export const invalidReferenceHandler = {
         throw new Error('Cannot apply assign to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
     },
     [CLEAR_STATE](target, param) {
-        throw new Error('Cannot apply clearState to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
+        throw new Error('Cannot apply clear to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
     },
     [REMOVE](target, param) {
         throw new Error('Cannot apply remove to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));

@@ -13,7 +13,7 @@ const results = {
     removeSemi: {},
     create: {},
     createLeafs: {},
-    clearState: {},
+    clear: {},
     clearAccessedState: {},
     getNewChildren: {},
     reduxComparison: {},
@@ -36,35 +36,35 @@ describe('performance', () => {
         const time = new Date();
         for (let i = 0; i < 3000; i++) {
             if (i % 7 === 0) {
-                child.clearState({});
+                child.clear({});
             }
             if (i % 2 === 0) {
-                child.clearState(even);
+                child.clear(even);
                 child.companies[firstCompany].assign(odd[firstChildOdd]);
                 child.companies.remove([firstCompany]);
             } else {
-                child.clearState(odd);
+                child.clear(odd);
                 child[firstChildOdd].assign(even.companies[firstCompany]);
                 child.remove([firstChildOdd]);
             }
         }
         results.addAndRemove[name] = (new Date() - time) / 3000;
-        console.log(name + ' = ~ 3000 nodes merges, 3000 resets, 3000 removes Took total of: ', new Date() - time, 'ms');
+        console.log('= ~ 3000 nodes merges, 3000 resets, 3000 removes Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
-    test('clearState', () => {
+    test('clear', () => {
         const even = data;
         const odd = data2;
         const {child} = change({child: {}});
         const time = Date.now();
         for (let i = 0; i < 3000; i++) {
             if (i % 2 === 0) {
-                child.clearState(even);
+                child.clear(even);
             } else {
-                child.clearState(odd);
+                child.clear(odd);
             }
         }
-        results.clearState[name] = (new Date() - time) / 300;
+        results.clear[name] = (new Date() - time) / 300;
     });
 
     test('mixed + init children', () => {
@@ -77,20 +77,20 @@ describe('performance', () => {
         const time = new Date();
         for (let i = 0; i < 1500; i++) {
             if (i % 7 === 0) {
-                child.clearState({});
+                child.clear({});
             }
             if (i % 2 === 0) {
-                Object.keys(child.clearState(even).state).map(k => child[k]);
+                Object.keys(child.clear(even).state).map(k => child[k]);
                 Object.keys(child.companies[firstCompany].assign(odd[firstChildOdd]).state).map(k => child[k]);
                 child.companies.remove([firstCompany]);
             } else {
-                Object.keys(child.clearState(odd).state).map(k => child[k]);
+                Object.keys(child.clear(odd).state).map(k => child[k]);
                 Object.keys(child[firstChildOdd].assign(even.companies[firstCompany]).state).map(k => child[k]);
                 child.remove(firstChildOdd);
             }
         }
         results.addRemoveAndInit[name] = (new Date() - time) / 1500;
-        console.log(name + ' = ~ 1500 nodes merges, 1500 resets, 1500 removes, init of 8250x3 lazy children. Took total of: ', new Date() - time, 'ms');
+        console.log('= ~ 1500 nodes merges, 1500 resets, 1500 removes, init of 8250x3 lazy children. Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
     test('access', () => {
@@ -148,12 +148,11 @@ describe('performance', () => {
         h.assign(data);
 
         const time = new Date();
-        Object.keys(h.state)
-            .map(k => h[k])
-            .filter(({state}) => true)
-            .map((it) => h.remove(it.getId()));
+        Object.entries(h.state)
+            .filter(([k, {state}]) => true)
+            .map((k) => h.remove(k));
         results.removeWorst[name] = (new Date() - time);
-        console.log(name + ' = Remove 20000 children semi performance. Took total of: ', new Date() - time, 'ms');
+        console.log('= Remove 20000 children semi performance. Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
     test('create 50000 children', () => {
@@ -165,7 +164,7 @@ describe('performance', () => {
         const time = new Date();
         child.assign(data);
         results.create[name] = (new Date() - time);
-        console.log(name + ' = create 50000 lazy children. Took total of: ', new Date() - time, 'ms');
+        console.log('= create 50000 lazy children. Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
     test('create 50000 leaf children', () => {
@@ -177,7 +176,7 @@ describe('performance', () => {
         const time = new Date();
         child.assign(data);
         results.createLeafs[name] = (new Date() - time);
-        console.log(name + ' = create 50000 leaf children. Took total of: ', new Date() - time, 'ms');
+        console.log('= create 50000 leaf children. Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
 });

@@ -15,7 +15,7 @@ const {removeChild, renameSelf} = identityPrivates;
 
 const {entries} = Object;
 
-export default function createStateManager(root) {
+export default function createStateMessenger(root) {
     // eslint-disable-next-line consistent-return
     return function stateManager(action) {
         const {type, [SUBJECT]: path, [PARAM]: param} = action;
