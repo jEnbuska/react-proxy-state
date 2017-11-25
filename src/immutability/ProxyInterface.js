@@ -3,7 +3,6 @@ import {
     identityPrivates,
     GET_STATE,
     REPLACE,
-    PARAM,
     onAccessingRemovedBranch,
 } from '../common';
 
@@ -14,6 +13,7 @@ const instanceMethods = {
     assign: true,
     clear: true,
     remove: true,
+    toggle: true,
 };
 
 export default class ProxyInterface {
@@ -28,12 +28,12 @@ export default class ProxyInterface {
     static onSet(target, property, value) {
         const identifier = target[identity][resolve]();
         if (!identifier) {
-            throw new Error('Cannot call clear state of non existing Branch');
+            throw new Error('Cannot cannot set value for removed Branch');
         }
         ProxyInterface.messenger({
             type: REPLACE,
             path: identifier,
-            [PARAM]: {[property]: value},
+            param: {[property]: value},
         });
         return true;
     }
@@ -51,12 +51,13 @@ export default class ProxyInterface {
         if (resolved) {
             const state = ProxyInterface.messenger({type: GET_STATE, path: resolved});
             k += ''; // find single child
-            if (k in state) {
+            if (state && state instanceof Object && k in state) {
                 const createChildProxy = Reflect.get(target, '_createChildProxy', receiver);
                 return Reflect.apply(createChildProxy, target, [target[identity][k] || target[identity][push](k)]);
             }
         } else {
             return onAccessingRemovedBranch(target[identity].getId(), k);
         }
+        return undefined;
     }
 }

@@ -1,12 +1,11 @@
 import {
     branchPrivates,
     identityPrivates,
-    SUBJECT,
-    SET_STATE,
-    CLEAR_STATE,
+    ASSIGN,
+    CLEAR,
     REMOVE,
-    PARAM,
     GET_STATE,
+    TOGGLE,
     valueIsAssignable,
     onAccessingRemovedBranch,
 } from '../common';
@@ -48,9 +47,9 @@ export default class Branch {
             throw new Error(`Target: "${identifier.join(', ')}"\nAssign does not take Arrays as parameters`);
         }
         ProxyInterface.messenger({
-            type: SET_STATE,
+            type: ASSIGN,
             path: identifier,
-            [PARAM]: value,
+            param: value,
         });
         return this;
     }
@@ -61,9 +60,9 @@ export default class Branch {
             throw new Error('Cannot call clear to removed Node. Got:', `${value}. Id: "${this[identity].getId()}"`);
         }
         ProxyInterface.messenger({
-            type: CLEAR_STATE,
+            type: CLEAR,
             path: identifier,
-            [PARAM]: value,
+            param: value,
         });
         return this;
     }
@@ -76,9 +75,20 @@ export default class Branch {
         ProxyInterface.messenger({
             type: REMOVE,
             path: identifier,
-            [PARAM]: keys,
+            param: keys,
         });
         return this;
+    }
+
+    toggle() {
+        const identifier = this[identity][resolve]();
+        if (!identifier) {
+            throw new Error(`Cannot toggle removed Node. Id: "${this[identity].getId()}`);
+        }
+        ProxyInterface.messenger({
+            type: TOGGLE,
+            path: identifier,
+        });
     }
 
     _createChildProxy(childIdentity) {

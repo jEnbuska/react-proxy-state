@@ -13,7 +13,6 @@ class App extends React.Component {
     state = {input: ''};
 
     render() {
-        console.log('render App')
         const {state, props: {todos}, context: {addTodo, toggleTodo}} = this;
         return (
             <div>

@@ -4,8 +4,7 @@ describe('circular state', () => {
     test('circular state should not be cause exception', () => {
         const circular = {};
         circular.circular = circular;
-        const subject = change(circular);
-        let child = subject;
+        let child = change(circular);
         for (let i = 0; i < 43; i++) {
             child = child.circular;
         }

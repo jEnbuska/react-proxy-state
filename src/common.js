@@ -1,13 +1,14 @@
-export const SET_STATE = 'IMMUTABLE::SET_STATE';
-export const CLEAR_STATE = 'IMMUTABLE::CLEAR_STATE';
+export const ASSIGN = 'IMMUTABLE::ASSIGN';
+export const CLEAR = 'IMMUTABLE::CLEAR';
 export const REMOVE = 'IMMUTABLE::REMOVE';
 export const GET_STATE = 'IMMUTABLE::GET_STATE';
 export const REPLACE = 'IMMUTABLE::REPLACE';
-export const PARAM = 'IMMUTABLE::PARAM';
+export const TOGGLE = 'IMMUTABLE::TOGGLE';
 
 const {getPrototypeOf} = Object;
 
 export function onAccessingRemovedBranch(property) {
+    // eslint-disable-next-line no-console
     console.error('Accessing ' + property + ' of removed Branch');
 }
 
@@ -58,10 +59,10 @@ export const identityPrivates = {
 };
 
 export const invalidReferenceHandler = {
-    [SET_STATE](target, param) {
+    [ASSIGN](target, param) {
         throw new Error('Cannot apply assign to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
     },
-    [CLEAR_STATE](target, param) {
+    [CLEAR](target, param) {
         throw new Error('Cannot apply clear to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
     },
     [REMOVE](target, param) {

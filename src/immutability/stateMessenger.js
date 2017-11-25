@@ -1,15 +1,13 @@
 import {
-    SUBJECT,
+    branchPrivates,
+    identityPrivates,
     GET_STATE,
-    SET_STATE,
-    CLEAR_STATE,
+    ASSIGN,
+    CLEAR,
     REPLACE,
     REMOVE,
-    PARAM,
+    TOGGLE,
     findChild,
-    branchPrivates,
-
-    identityPrivates,
     poorSet,
 } from '../common';
 
@@ -22,20 +20,24 @@ export default function createStateMessenger(root, onChange = function () {
 }) {
     // eslint-disable-next-line consistent-return
     return function stateManager(action) {
-        const {type, path, [PARAM]: param} = action;
-        if (action.type === GET_STATE) {
+        const {type, path} = action;
+        let {param} = action;
+        if (type === GET_STATE) {
             return findChild(root[accessState], path);
         }
         const trace = createTraceablePath(root, path);
         const target = trace[trace.length - 1];
         switch (type) {
             case REPLACE:
-            case SET_STATE: {
+            case ASSIGN: {
                 onProxySetState(target.identifier, param, target.state);
                 target.state = {...target.state, ...param};
                 break;
             }
-            case CLEAR_STATE: {
+            case TOGGLE:
+                param = !target.state;
+                // eslint-disable-next-line no-fallthrough
+            case CLEAR: {
                 onProxyClearState(target.identifier, param, target.state);
                 target.state = param;
                 break;

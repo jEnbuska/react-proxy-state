@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import change from '../src';
 import {data, data2} from './resources';
 
@@ -16,7 +17,6 @@ const results = {
     clear: {},
     clearAccessedState: {},
     getNewChildren: {},
-    reduxComparison: {},
     access: {},
     assign: {},
     assignBetter: {},
@@ -49,7 +49,7 @@ describe('performance', () => {
             }
         }
         results.addAndRemove[name] = (new Date() - time) / 3000;
-        console.log('= ~ 3000 nodes merges, 3000 resets, 3000 removes Took total of: ', new Date() - time, 'ms');
+        console.log('~ 3000 nodes merges, 3000 resets, 3000 removes Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
     test('clear', () => {
@@ -90,7 +90,7 @@ describe('performance', () => {
             }
         }
         results.addRemoveAndInit[name] = (new Date() - time) / 1500;
-        console.log('= ~ 1500 nodes merges, 1500 resets, 1500 removes, init of 8250x3 lazy children. Took total of: ', new Date() - time, 'ms');
+        console.log('~ 1500 nodes merges, 1500 resets, 1500 removes, init of 8250x3 lazy children. Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
     test('access', () => {
@@ -103,6 +103,7 @@ describe('performance', () => {
         h.assign(data);
         const time = Date.now();
         for (let i = 0; i < 3000; i++) {
+            // eslint-disable-next-line no-unused-expressions
             const accessed = h[i];
         }
         results.access[name] = (Date.now() - time);
@@ -149,10 +150,11 @@ describe('performance', () => {
 
         const time = new Date();
         Object.entries(h.state)
+            // eslint-disable-next-line no-unused-vars
             .filter(([k, {state}]) => true)
             .map((k) => h.remove(k));
         results.removeWorst[name] = (new Date() - time);
-        console.log('= Remove 20000 children semi performance. Took total of: ', new Date() - time, 'ms');
+        console.log('~ Remove 20000 children semi performance. Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
     test('create 50000 children', () => {
@@ -164,7 +166,7 @@ describe('performance', () => {
         const time = new Date();
         child.assign(data);
         results.create[name] = (new Date() - time);
-        console.log('= create 50000 lazy children. Took total of: ', new Date() - time, 'ms');
+        console.log(' create 50000 lazy children. Took total of: ', new Date() - time, 'ms');
     }, 15000);
 
     test('create 50000 leaf children', () => {
@@ -176,8 +178,7 @@ describe('performance', () => {
         const time = new Date();
         child.assign(data);
         results.createLeafs[name] = (new Date() - time);
-        console.log('= create 50000 leaf children. Took total of: ', new Date() - time, 'ms');
+        console.log('~ create 50000 leaf children. Took total of: ', new Date() - time, 'ms');
     }, 15000);
-
 });
 

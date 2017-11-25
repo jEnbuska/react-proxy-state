@@ -8,7 +8,7 @@ describe('getState', () => {
 
     test('get previously primitive value proxy after removed', () => {
         const subject = change({a: 1});
-        subject.remove('a')
+        subject.remove('a');
         expect(subject.a).toBeUndefined();
     });
 

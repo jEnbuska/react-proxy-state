@@ -3,7 +3,6 @@ import change from '../src';
 describe('assign', () => {
     test('change root state', () => {
         const subject = change({a: 1});
-        console.log({subject})
         expect(subject.state).toEqual({a: 1});
         subject.assign({a: 2});
         expect(subject.state).toEqual({a: 2});

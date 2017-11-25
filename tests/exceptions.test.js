@@ -1,5 +1,5 @@
 import change from '../src';
-import {invalidReferenceHandler, SET_STATE, CLEAR_STATE, REMOVE, GET_STATE} from '../src/common';
+import {invalidReferenceHandler, ASSIGN, REMOVE, GET_STATE, CLEAR} from '../src/common';
 
 function verifyErrorOnChange(...params) {
     params.forEach(next => {
@@ -15,10 +15,10 @@ describe('exception', () => {
     beforeAll(() => {
         Object.assign(invalidReferenceHandler,
             {
-                [SET_STATE]: () => {
+                [ASSIGN]: () => {
                     throw new Error();
                 },
-                [CLEAR_STATE]: () => {
+                [CLEAR]: () => {
                     throw new Error();
                 },
                 [REMOVE]: () => {

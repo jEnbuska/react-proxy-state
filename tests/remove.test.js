@@ -1,7 +1,6 @@
 import change from '../src';
 
 describe('remove', () => {
-
     test('removing leaf from object', () => {
         const subject = change({a: 1, b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}}});
         subject.b.remove('d');

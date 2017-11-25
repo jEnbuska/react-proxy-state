@@ -1,21 +1,17 @@
 import React from 'react';
-import {object, number, func} from 'prop-types';
+import {func} from 'prop-types';
 import immutable from './index';
 
 const {assign, keys} = Object;
 
 let subscriptionsCount = 0;
 let lastUpdate = 0;
-export default (initialState, actions = {}) => {
-    actions = keys(actions).reduce((actions, name) => assign(actions, {[name]: func}), {});
+export default function (initialState, actionCreators = {}) {
+    const actionTypes = keys(actionCreators).reduce((types, name) => assign(types, {[name]: func}), {});
     return class Provider extends React.Component {
 
-        static propTypes = {
-            initialState: object,
-        };
-
         static childContextTypes = {
-            ...actions,
+            ...actionTypes,
             getVersion: func,
             subscribe: func,
             getState: func,
@@ -31,7 +27,7 @@ export default (initialState, actions = {}) => {
             };
         }
 
-        getVersion =() => this.version;
+        getVersion = () => this.version;
         getState = () => this.lastState;
 
         subscriptions = {};
@@ -40,9 +36,9 @@ export default (initialState, actions = {}) => {
         version = 0;
 
         componentWillMount() {
-            this.lastState = this.props.initialState;
-            this.proxy = immutable(this.props.initialState, this.onChange);
-            this.actions = Object.entries(this.props.actions)
+            this.lastState = initialState;
+            this.proxy = immutable(initialState, this.onChange);
+            this.actions = Object.entries(actionCreators)
                 .reduce((actions, [name, action]) =>
                         assign(actions, {
                             [name]: params => action(params)(this.proxy),
@@ -50,13 +46,15 @@ export default (initialState, actions = {}) => {
                     {});
         }
 
+        render() {
+            return this.props.children;
+        }
+
         subscribe = (callback) => {
             const key = ++subscriptionsCount;
             this.subscriptions[key] = callback;
             callback(this.lastState, this.version);
-            return () => {
-                delete this.subscriptions[key];
-            };
+            return () => delete this.subscriptions[key];
         };
 
         onChange = (state) => {
@@ -72,9 +70,5 @@ export default (initialState, actions = {}) => {
                 }
             }, 0);
         };
-
-        render() {
-            return this.props.children;
-        }
-    }
-};
+    };
+}

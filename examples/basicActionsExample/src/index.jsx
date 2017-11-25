@@ -2,13 +2,11 @@ import 'styles';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import * as actions from './actions'
-import {CreateProvider } from '../../../src';
 
-const Provider = CreateProvider({todos: {}}, actions);
+import Provider from './provider';
 
 const Root = () => (
-  <Provider initialState={{todos: {}}} actions={actions}>
+  <Provider>
     <App />
   </Provider>
 );
