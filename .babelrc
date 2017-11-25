@@ -2,7 +2,7 @@
   "presets": [
     ["env", {
       "targets": {
-        "browsers": ["ie >= 10"]
+        "browsers": ["chrome >= 52"]
       },
       "modules": "commonjs",
       "useBuiltIns": true,

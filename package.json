@@ -1,37 +1,23 @@
 {
-  "name": "none-dux",
-  "description": "less verbose react handling with redux react-redux & redux-thunk like syntax",
+  "name": "react-proxy-state",
+  "description": "",
   "main": "lib/index.js",
-  "version": "11.5.4",
+  "version": "0.0.1",
   "author": "jEnbuska <joonaenb@gmail.com>",
-  "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jEnbuska/none-dux"
+    "url": "https://github.com/jEnbuska/react-proxy-state"
   },
   "keywords": [
     "react",
-    "state",
-    "redux",
-    "react-redux",
-    "redux-thunk",
-    "redux-form"
+    "state"
   ],
   "scripts": {
-    "lint-fix": "eslint --ext .jsx --ext .js . --fix",
     "prepublish": "npm run build",
     "build": "cross-env NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib",
     "build-dev": "webpack",
     "test": "jest",
-    "test:watch": "npm run test -- --watch",
-    "update-readme": "npm publish --update-readme"
-  },
-  "dependencies": {
-    "babel-polyfill": "^6.23.0"
-  },
-  "peerDependencies": {
-    "react-redux": "^4.3.0 || ^5.0.0",
-    "redux": "^3.0.0"
+    "test:watch": "npm run test -- --watch"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -40,7 +26,6 @@
     "babel-jest": "^20.0.3",
     "babel-loader": "^6.2.10",
     "babel-preset-env": "^1.5.2",
-    "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
@@ -55,10 +40,10 @@
     "jest-cli": "^20.0.4",
     "nano-time": "^1.0.0",
     "react": "^15.6.1",
-    "redux": "^3.7.1",
     "rollup": "^0.43.0",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^2.6.1"
   },
-  "false": {}
+  "false": {},
+  "dependencies": {}
 }

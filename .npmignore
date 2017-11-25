@@ -11,3 +11,4 @@ webpack.config.js
 .gitignore
 yarn.lock
 package-lock.json
+.yarnclean
