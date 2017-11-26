@@ -19,6 +19,10 @@
     "test": "jest",
     "test:watch": "npm run test -- --watch"
   },
+  "dependencies": {
+    "prop-types": "^15.6.0",
+    "react": "^16.1.1"
+  },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.0",
@@ -29,8 +33,8 @@
     "babel-preset-env": "^1.5.2",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.24.1",
-    "babili-webpack-plugin": "^0.1.2",
     "clean-webpack-plugin": "^0.1.16",
+    "cross-env": "^5.1.1",
     "eslint": "^3.13.0",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
@@ -41,14 +45,8 @@
     "jest-cli": "^20.0.4",
     "nano-time": "^1.0.0",
     "node-gyp": "^3.6.2",
-    "react": "^16.1.1",
     "rollup": "^0.43.0",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^2.6.1"
-  },
-  "false": {},
-  "dependencies": {
-    "cross-env": "^5.1.1",
-    "prop-types": "^15.6.0"
   }
 }

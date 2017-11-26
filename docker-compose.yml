@@ -4,4 +4,4 @@ services:
       build: ./
       volumes:
           - ./:/usr/src/app
-      command: yarn build
+          - /usr/src/app/node_modules
