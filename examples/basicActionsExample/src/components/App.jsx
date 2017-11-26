@@ -18,9 +18,9 @@ class App extends React.Component {
             <div>
                 TODOS
                 {Object.values(todos).map(todo => (
-                    <div key={todo.id}>
+                    <div key={todo.ID}>
                         <p>{todo.description}</p>
-                        <p onClick={() => toggleTodo(todo.id)}>{'done: ' + todo.done}</p>
+                        <p onClick={() => toggleTodo(todo.ID)}>{'done: ' + todo.done}</p>
                     </div>
                 ))}
                 <Inner/>

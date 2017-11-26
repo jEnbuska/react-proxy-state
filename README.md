@@ -459,7 +459,7 @@ function removeRetiringEmployees(){
       // access single CHILD takes avg 0.005 - 0.02 ms
       .filter(employee => employee.state.age>=64) 
       // access to single STATE takes avg 0.002 - 0.04 ms
-      .forEach(employee => employees.remove(employee.getId()));
+      .forEach(employee => employees.remove(employee[ID]));
       // single object REMOVE takes avg 0.1 - 0.3 ms
   }
 }

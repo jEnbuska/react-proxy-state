@@ -1,62 +1,53 @@
 import {
     branchPrivates,
     identityPrivates,
-    GET_STATE,
-    REPLACE,
     onAccessingRemovedBranch,
+    eventTypes,
 } from '../common';
 
-const {identity} = branchPrivates;
-const {push, resolve} = identityPrivates;
-const instanceMethods = {
-    state: true,
-    assign: true,
-    clear: true,
-    remove: true,
-    toggle: true,
-};
+const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
+const {PUSH, RESOLVE, ID} = identityPrivates;
+const {GET_STATE, ASSIGN} = eventTypes;
 
 export default class ProxyInterface {
 
     static messenger;
 
     static proxyTemplate = {
-        set: ProxyInterface.onSet,
-        get: ProxyInterface.onGet,
+        set: ProxyInterface.setValue,
+        get: ProxyInterface.getProperty,
     };
 
-    static onSet(target, property, value) {
-        const location = target[identity][resolve]();
+    static setValue(target, property, value) {
+        const location = target[IDENTITY][RESOLVE]();
         if (!location) {
             throw new Error('Cannot cannot set value for removed Branch');
         }
         ProxyInterface.messenger({
-            type: REPLACE,
+            type: ASSIGN,
             location,
             param: {[property]: value},
         });
         return true;
     }
 
-    static onGet(target, k) {
-        if (k === identity) {
-            return target[k];
-        } else if (instanceMethods[k]) {
-            return Reflect.get(target, k);
+    static getProperty(target, property) {
+        if (property === IDENTITY) {
+            return target[property];
+        } else if (target[property]) {
+            return Reflect.get(target, property);
         }
-        if (typeof k === 'symbol') {
-            return k;
-        }
-        const location = target[identity][resolve]();
+
+        const location = target[IDENTITY][RESOLVE]();
         if (location) {
             const state = ProxyInterface.messenger({type: GET_STATE, location});
-            k += ''; // find single child
-            if (state && state instanceof Object && k in state) {
-                const createChildProxy = Reflect.get(target, '_createChildProxy');
-                return Reflect.apply(createChildProxy, target, [target[identity][k] || target[identity][push](k)]);
+            property += ''; // find single child
+            if (state && state instanceof Object && property in state) {
+                const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
+                return Reflect.apply(func, target, [target[IDENTITY][property] || target[IDENTITY][PUSH](property)]);
             }
         } else {
-            return onAccessingRemovedBranch(target[identity].getId(), k);
+            return onAccessingRemovedBranch(target[IDENTITY][ID], property);
         }
         return undefined;
     }

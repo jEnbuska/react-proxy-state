@@ -7,7 +7,7 @@ export const initialState = {
 export function addTodo(description) {
     return function ({todos}) {
         const id = uuid();
-        todos.assign({[id]: {id, description, done: false}});
+        todos.assign({[id]: {ID: id, description, done: false}});
     };
 }
 

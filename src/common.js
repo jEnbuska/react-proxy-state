@@ -1,18 +1,29 @@
-export const ASSIGN = 'IMMUTABLE::ASSIGN';
-export const CLEAR = 'IMMUTABLE::CLEAR';
-export const REMOVE = 'IMMUTABLE::REMOVE';
-export const GET_STATE = 'IMMUTABLE::GET_STATE';
-export const REPLACE = 'IMMUTABLE::REPLACE';
-export const TOGGLE = 'IMMUTABLE::TOGGLE';
+export const branchPrivates = {
+    IDENTITY: Symbol('IDENTITY'),
+    STATE: Symbol('ACCESS_STATE'),
+    PROXY_CONSTRUCTOR: Symbol('PROXY_CONSTRUCTOR'),
+};
 
-const {getPrototypeOf} = Object;
+export const identityPrivates = {
+    ID: Symbol('id'),
+    REMOVED: Symbol('REMOVED'),
+    PARENT: Symbol('PARENT'),
+    RESOLVE: Symbol('RESOLVE'),
+    PUSH: Symbol('PUSH'),
+    RENAME_SELF: Symbol('RENAME_CHILD'),
+    REMOVE_CHILD: Symbol('REMOVE_CHILD'),
+};
 
-export function onAccessingRemovedBranch(property) {
-    // eslint-disable-next-line no-console
-    console.error('Accessing ' + property + ' of removed Branch');
-}
+export const eventTypes = {
+    ASSIGN: Symbol('ASSIGN'),
+    CLEAR: Symbol('CLEAR'),
+    REMOVE: Symbol('REMOVE'),
+    GET_STATE: Symbol('GET_STATE'),
+    REPLACE: Symbol('REPLACE'),
+    TOGGLE: Symbol('TOGGLE'),
+};
 
-export const invalidParents = {
+export const invalidAssignableTypes = {
     Branch: true,
     Number: true,
     String: true,
@@ -23,8 +34,9 @@ export const invalidParents = {
     Error: true,
 };
 
+const {getPrototypeOf} = Object;
 export function valueIsAssignable(value) {
-    return value && value instanceof Object && !invalidParents[getPrototypeOf(value).constructor.name];
+    return value && value instanceof Object && !invalidAssignableTypes[getPrototypeOf(value).constructor.name];
 }
 
 export function stringify(obj) {
@@ -43,29 +55,14 @@ export function findChild(value, location) {
     return value;
 }
 
-export const branchPrivates = {
-    identity: 'IMMUTABLE::identity',
-    accessState: 'IMMUTABLE::state',
-};
-
-export const identityPrivates = {
-    id: 'IDENTITY:id',
-    removed: 'IDENTITY::removed',
-    parent: 'IDENTITY::parent',
-    resolve: 'IDENTITY::resolve',
-    push: 'IDENTITY::createChild',
-    renameSelf: 'IDENTITY::renameChild',
-    removeChild: 'IDENTITY::removeChild',
-};
-
 export const invalidReferenceHandler = {
-    [ASSIGN](target, param) {
+    [eventTypes.ASSIGN](target, param) {
         throw new Error('Cannot apply assign to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
     },
-    [CLEAR](target, param) {
+    [eventTypes.CLEAR](target, param) {
         throw new Error('Cannot apply clear to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
     },
-    [REMOVE](target, param) {
+    [eventTypes.REMOVE](target, param) {
         throw new Error('Cannot apply remove to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
     },
 };
@@ -77,5 +74,10 @@ export function poorSet(arr) {
 function poorSetReducer(acc, k) {
     acc[k + ''] = true;
     return acc;
+}
+
+export function onAccessingRemovedBranch(property) {
+    // eslint-disable-next-line no-console
+    console.error('Accessing ' + property + ' of removed Branch');
 }
 

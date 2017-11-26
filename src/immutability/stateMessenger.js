@@ -1,18 +1,14 @@
 import {
     branchPrivates,
     identityPrivates,
-    GET_STATE,
-    ASSIGN,
-    CLEAR,
-    REPLACE,
-    REMOVE,
-    TOGGLE,
+    eventTypes,
     findChild,
     poorSet,
 } from '../common';
 
-const {identity, accessState} = branchPrivates;
-const {removeChild, renameSelf} = identityPrivates;
+const {IDENTITY, STATE} = branchPrivates;
+const {REMOVE_CHILD, RENAME_SELF, CREATE_PROXY} = identityPrivates;
+const {GET_STATE, ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
 const {entries} = Object;
 
@@ -22,12 +18,11 @@ export default function createStateMessenger(root, onChange = function () {}) {
         const {type, location} = event;
         let {param} = event;
         if (type === GET_STATE) {
-            return findChild(root[accessState], location);
+            return findChild(root[STATE], location);
         }
         const trace = createTraceablePath(root, location);
         const target = trace[trace.length - 1];
         switch (type) {
-            case REPLACE:
             case ASSIGN: {
                 onSetState(target.identifier, param, target.state);
                 target.state = {...target.state, ...param};
@@ -54,14 +49,14 @@ export default function createStateMessenger(root, onChange = function () {}) {
             default:
                 throw new Error('Event-type' + type + ' not implemented');
         }
-        root[accessState] = createNextState(trace);
-        onChange(root[accessState]);
+        root[STATE] = createNextState(trace);
+        onChange(root[STATE]);
     };
 }
 
 function createTraceablePath(root, location) {
-    let state = root[accessState];
-    let identifier = root[identity];
+    let state = root[STATE];
+    let identifier = root[IDENTITY];
     const list = [{state, identifier}];
     for (let i = location.length - 1; i >= 0; i--) {
         const key = location[i];
@@ -79,7 +74,7 @@ function onSetState(identity, newState, prevState) {
             if (k in newState) {
                 onClearState(identity[k], newState[k], prevState[k]);
             } else {
-                identity[removeChild](k);
+                identity[REMOVE_CHILD](k);
             }
         }
     }
@@ -91,7 +86,7 @@ function onClearState(identity, newState = {}, prevState = {}) {
             if (k in newState) {
                 onClearState(identity[k], newState[k], prevState[k]);
             } else {
-                identity[removeChild](k);
+                identity[REMOVE_CHILD](k);
             }
         }
     }
@@ -117,7 +112,7 @@ function onRemoveFromObject(target, keys) {
     for (let k in keys) {
         k = keys[k] + '';
         if (target[k]) {
-            target[removeChild](k);
+            target[REMOVE_CHILD](k);
         }
     }
 }
@@ -131,11 +126,11 @@ function onRemoveFromArray(target, indexes, state) {
         const {length} = nextState;
         if (toBeRemoved[i]) {
             if (target[i]) {
-                target[removeChild](i);
+                target[REMOVE_CHILD](i);
             }
         } else {
             if (target[i] && i !== length) {
-                target[i][renameSelf](length + '');
+                target[i][RENAME_SELF](length + '');
             }
             nextState.push(state[i]);
         }

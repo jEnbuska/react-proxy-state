@@ -1,52 +1,41 @@
 import {identityPrivates} from '../common';
 
-const {defineProperties} = Object;
-const id = 'IDENTITY:id';
-const removed = 'IDENTITY::removed';
-const parent = 'IDENTITY::parent';
-
-const {push, removeChild, renameSelf, resolve} = identityPrivates;
+const {PUSH, REMOVE_CHILD, RENAME_SELF, RESOLVE, ID, REMOVED, PARENT} = identityPrivates;
 
 export default class Identity {
 
     constructor(key, prev) {
-        defineProperties(this, {
-            [id]: {value: key, writable: true, configurable: true},
-            [parent]: {value: prev, writable: true, configurable: true},
-        });
+        this[ID] = key;
+        this[PARENT] = prev;
     }
 
-    [push](key) {
+    [PUSH](key) {
         return (this[key] = new Identity(key, this));
     }
 
-    [renameSelf](key) {
-        if (this[parent]) {
-            delete this[parent][this[id]];
-            this[parent][key] = this;
+    [RENAME_SELF](key) {
+        if (this[PARENT]) {
+            delete this[PARENT][this[ID]];
+            this[PARENT][key] = this;
         }
-        this[id] = key;
+        this[ID] = key;
     }
 
-    [removeChild](key) {
-        this[key][removed] = true;
-        delete this[key][parent];
+    [REMOVE_CHILD](key) {
+        this[key][REMOVED] = true;
+        delete this[key][PARENT];
         delete this[key];
     }
 
-    [resolve](acc = []) {
-        if (this[removed]) {
+    [RESOLVE](acc = []) {
+        if (this[REMOVED]) {
             return false;
         }
-        if (this[id]) {
-            acc.push(this[id]);
-            return this[parent][resolve](acc);
+        if (this[ID]) {
+            acc.push(this[ID]);
+            return this[PARENT][RESOLVE](acc);
         }
         return acc;
-    }
-
-    getId() {
-        return this[id];
     }
 
 }

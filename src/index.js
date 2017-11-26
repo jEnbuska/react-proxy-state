@@ -4,14 +4,15 @@ import Identity from './immutability/Identity';
 import createStateMessenger from './immutability/stateMessenger';
 import ProxyInterface from './immutability/ProxyInterface';
 
-const {accessState} = branchPrivates;
+const {STATE, IDENTITY} = branchPrivates;
 
 export default function immutable(state, onChange) {
-    const subject = new Branch(new Identity());
-    ProxyInterface.messenger = createStateMessenger(subject, onChange);
-    subject[accessState] = state;
-    return subject._createProxy();
+    const root = new Branch();
+    ProxyInterface.messenger = createStateMessenger(root, onChange);
+    root[STATE] = state;
+    root[IDENTITY] = new Identity();
+    return new Proxy(root, ProxyInterface.proxyTemplate);
 }
-export {default as CreateProvider} from './CreateProvider';
+export {default as createProvider} from './CreateProvider';
 export {default as mapContextToProps} from './mapContextToProps';
 
