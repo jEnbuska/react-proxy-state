@@ -1,5 +1,6 @@
 src
 examples
+build.sh
 tests
 none-dux_sauli1.jpg
 node_modules
@@ -9,5 +10,4 @@ webpack.config.js
 .npmignore
 .gitignore
 yarn.lock
-package-lock.json
 .yarnclean

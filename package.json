@@ -3,6 +3,7 @@
   "description": "",
   "main": "lib/index.js",
   "version": "0.0.1",
+  "license": "MIT",
   "author": "jEnbuska <joonaenb@gmail.com>",
   "repository": {
     "type": "git",
@@ -13,7 +14,6 @@
     "state"
   ],
   "scripts": {
-    "prepublish": "npm run build",
     "build": "cross-env NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib",
     "build-dev": "webpack",
     "test": "jest",
@@ -29,7 +29,6 @@
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
-    "cross-env": "^5.0.1",
     "eslint": "^3.13.0",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
@@ -39,6 +38,7 @@
     "jest": "^20.0.4",
     "jest-cli": "^20.0.4",
     "nano-time": "^1.0.0",
+    "node-gyp": "^3.6.2",
     "react": "^16.1.1",
     "rollup": "^0.43.0",
     "uglifyjs-webpack-plugin": "^0.4.6",
@@ -46,6 +46,7 @@
   },
   "false": {},
   "dependencies": {
+    "cross-env": "^5.1.1",
     "prop-types": "^15.6.0"
   }
 }

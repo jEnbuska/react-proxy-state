@@ -5,26 +5,112 @@ import {data, data2} from './resources';
 const now = require('nano-time');
 
 const {keys} = Object;
-const results = {
-    addAndRemove: {},
-    createAndAccess: {},
-    addRemoveAndInit: {},
-    getState: {},
-    removeWorst: {},
-    removeSemi: {},
-    create: {},
-    createLeafs: {},
-    clear: {},
-    clearAccessedState: {},
-    getNewChildren: {},
-    access: {},
-    assign: {},
-    assignBetter: {},
-    assignBetterBadCase: {},
-    assignWithClearReferences: {},
-};
+
+function getDuration(start,count) {
+    return (((now() - start) / (10 ** 6)) / count) + 'ms';
+}
+
 describe('performance', () => {
-    afterAll(() => console.log(JSON.stringify(results, null, 2)));
+
+    test('read', () => {
+        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
+        const h = subject.a.b.c.d.e.f.g.h;
+        const data = {};
+        for (let i = 0; i < 3000; i++) {
+            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
+        }
+        h.assign(data);
+        const time = now();
+        for (let i = 0; i < 3000; i++) {
+            // eslint-disable-next-line no-unused-expressions
+            const accessed = h[i];
+        }
+        console.log('read avg:', getDuration(time, 3000));
+    }, 15000);
+
+    test('remove', () => {
+        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
+        const h = subject.a.b.c.d.e.f.g.h;
+        const data = {};
+        for (let i = 0; i < 3000; i++) {
+            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
+        }
+        h.assign(data);
+        const time = now();
+        Object.keys(h.state).forEach(k => h.remove(k))
+        console.log('remove avg:', getDuration(time, 3000));
+    }, 15000);
+
+    test('clear', () => {
+        const even = data;
+        const odd = data2;
+        const {child} = change({child: {}});
+        const time = now();
+        for (let i = 0; i < 3000; i++) {
+            if (i % 2 === 0) {
+                child.clear(even);
+            } else {
+                child.clear(odd);
+            }
+        }
+        console.log('clear avg:', getDuration(time, 3000));
+    });
+
+    test('assign', () => {
+        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
+        const h = subject.a.b.c.d.e.f.g.h;
+        const data = {};
+        for (let i = 0; i < 1000; i++) {
+            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
+        }
+        const time = now();
+        h.assign(data);
+        console.log('assign avg:', getDuration(time, 1000));
+    }, 15000);
+
+    test('re-assign', () => {
+        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
+        const h = subject.a.b.c.d.e.f.g.h;
+        let data = {};
+        for (let i = 0; i < 1000; i++) {
+            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
+        }
+        h.assign(data);
+        data = {};
+        for (let i = 0; i < 1000; i++) {
+            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
+        }
+        const time = now();
+        h.assign(data);
+        console.log('re-assign avg:', getDuration(time, 1000));
+    }, 15000);
+
+    test('remove and read', () => {
+        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
+        const h = subject.a.b.c.d.e.f.g.h;
+        const data = {};
+        for (let i = 0; i < 3000; i++) {
+            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
+        }
+        h.assign(data);
+        const time = now();
+        Object.entries(h.state)
+        // eslint-disable-next-line no-unused-vars
+            .filter(([k, {state}]) => true)
+            .map((k) => h.remove(k));
+        console.log('read + remove avg:', getDuration(time, 3000));
+    }, 15000);
+
+    test('assign 50000 children', () => {
+        const {child} = change({child: {}});
+        const data = {};
+        for (let i = 0; i < 50000; i++) {
+            data[i] = {a: 1, b: {}, c: 3, d: {e: {}}};
+        }
+        const time = now();
+        child.assign(data);
+        console.log('assign * 50000 at ones:', getDuration(time, 1));
+    }, 15000);
 
     test('mixed', () => {
         const even = data.companies;
@@ -33,7 +119,7 @@ describe('performance', () => {
         const firstChildOdd = keys(odd)[0];
         const {child} = change({child: {}});
         child.assign(even);
-        const time = new Date();
+        const time = now();
         for (let i = 0; i < 3000; i++) {
             if (i % 7 === 0) {
                 child.clear({});
@@ -48,137 +134,32 @@ describe('performance', () => {
                 child.remove([firstChildOdd]);
             }
         }
-        results.addAndRemove[name] = (new Date() - time) / 3000;
-        console.log('~ 3000 nodes merges, 3000 resets, 3000 removes Took total of: ', new Date() - time, 'ms');
+        console.log('9429 mixed clear, assign and read operations total:', getDuration(time, 1));
     }, 15000);
 
-    test('clear', () => {
-        const even = data;
-        const odd = data2;
-        const {child} = change({child: {}});
-        const time = Date.now();
-        for (let i = 0; i < 3000; i++) {
-            if (i % 2 === 0) {
-                child.clear(even);
-            } else {
-                child.clear(odd);
-            }
-        }
-        results.clear[name] = (new Date() - time) / 300;
-    });
-
-    test('mixed + init children', () => {
+    test('mixed 2', () => {
         const even = data;
         const odd = data2;
         const firstCompany = keys(even.companies)[0];
         const firstChildOdd = keys(odd)[0];
         const {child} = change({child: {}});
         child.assign(even);
-        const time = new Date();
+        const time = now();
         for (let i = 0; i < 1500; i++) {
             if (i % 7 === 0) {
                 child.clear({});
             }
             if (i % 2 === 0) {
-                Object.keys(child.clear(even).state).map(k => child[k]);
+                Object.keys(child.clear(even).state).forEach(k => child[k]);
                 Object.keys(child.companies[firstCompany].assign(odd[firstChildOdd]).state).map(k => child[k]);
                 child.companies.remove([firstCompany]);
             } else {
-                Object.keys(child.clear(odd).state).map(k => child[k]);
-                Object.keys(child[firstChildOdd].assign(even.companies[firstCompany]).state).map(k => child[k]);
+                Object.keys(child.clear(odd).state).forEach(k => child[k]);
+                Object.keys(child[firstChildOdd].assign(even.companies[firstCompany]).state).forEach(k => child[k]);
                 child.remove(firstChildOdd);
             }
         }
-        results.addRemoveAndInit[name] = (new Date() - time) / 1500;
-        console.log('~ 1500 nodes merges, 1500 resets, 1500 removes, init of 8250x3 lazy children. Took total of: ', new Date() - time, 'ms');
-    }, 15000);
-
-    test('access', () => {
-        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
-        const h = subject.a.b.c.d.e.f.g.h;
-        const data = {};
-        for (let i = 0; i < 3000; i++) {
-            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
-        }
-        h.assign(data);
-        const time = Date.now();
-        for (let i = 0; i < 3000; i++) {
-            // eslint-disable-next-line no-unused-expressions
-            const accessed = h[i];
-        }
-        results.access[name] = (Date.now() - time);
-    }, 15000);
-    test('assign better', () => {
-        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
-        const h = subject.a.b.c.d.e.f.g.h;
-        const data = {};
-        for (let i = 0; i < 1000; i++) {
-            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
-        }
-        const time = now();
-        h.assign(data);
-        results.assign[name] = (now() - time) + ' ns';
-    }, 15000);
-
-    test('assign better bad case', () => {
-        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
-        const h = subject.a.b.c.d.e.f.g.h;
-        let data = {};
-        for (let i = 0; i < 1000; i++) {
-            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
-        }
-
-        h.assign(data);
-
-        data = {};
-        for (let i = 0; i < 1000; i++) {
-            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
-        }
-        const time = now();
-        h.assign(data);
-        results.assignBetterBadCase[name] = (now() - time) + ' ns';
-    }, 15000);
-
-    test('remove worst', () => {
-        const subject = change({a: {b: {c: {d: {e: {f: {g: {h: {}}}}}}}}});
-        const h = subject.a.b.c.d.e.f.g.h;
-        const data = {};
-        for (let i = 0; i < 3000; i++) {
-            data[i] = {a: {}, b: {}, c: {}, d: {a: {}, b: {}, c: {}, d: {}, e: {}}};
-        }
-        h.assign(data);
-
-        const time = new Date();
-        Object.entries(h.state)
-            // eslint-disable-next-line no-unused-vars
-            .filter(([k, {state}]) => true)
-            .map((k) => h.remove(k));
-        results.removeWorst[name] = (new Date() - time);
-        console.log('~ Remove 20000 children semi performance. Took total of: ', new Date() - time, 'ms');
-    }, 15000);
-
-    test('create 50000 children', () => {
-        const {child} = change({child: {}});
-        const data = {};
-        for (let i = 0; i < 50000; i++) {
-            data[i] = {a: 1, b: {}, c: 3, d: {e: {}}};
-        }
-        const time = new Date();
-        child.assign(data);
-        results.create[name] = (new Date() - time);
-        console.log(' create 50000 lazy children. Took total of: ', new Date() - time, 'ms');
-    }, 15000);
-
-    test('create 50000 leaf children', () => {
-        const {child} = change({child: {}});
-        const data = {};
-        for (let i = 0; i < 50000; i++) {
-            data[i] = i;
-        }
-        const time = new Date();
-        child.assign(data);
-        results.createLeafs[name] = (new Date() - time);
-        console.log('~ create 50000 leaf children. Took total of: ', new Date() - time, 'ms');
+        console.log('60965 mixed read, removes and assign total:', getDuration(time, 1));
     }, 15000);
 });
 
