@@ -1,6 +1,6 @@
 import change from '../src';
 
-describe('Create subject', () => {
+describe('Create immutable', () => {
     test('should be able to reference children', () => {
         const subject = change({b: {c: 2, d: 3, e: {f: 4}}});
         const {state} = subject.b.e;
