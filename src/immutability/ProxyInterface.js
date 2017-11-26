@@ -26,33 +26,33 @@ export default class ProxyInterface {
     };
 
     static onSet(target, property, value) {
-        const identifier = target[identity][resolve]();
-        if (!identifier) {
+        const location = target[identity][resolve]();
+        if (!location) {
             throw new Error('Cannot cannot set value for removed Branch');
         }
         ProxyInterface.messenger({
             type: REPLACE,
-            path: identifier,
+            location,
             param: {[property]: value},
         });
         return true;
     }
 
-    static onGet(target, k, receiver) {
+    static onGet(target, k) {
         if (k === identity) {
             return target[k];
         } else if (instanceMethods[k]) {
-            return Reflect.get(target, k, receiver);
+            return Reflect.get(target, k);
         }
         if (typeof k === 'symbol') {
             return k;
         }
-        const resolved = target[identity][resolve]();
-        if (resolved) {
-            const state = ProxyInterface.messenger({type: GET_STATE, path: resolved});
+        const location = target[identity][resolve]();
+        if (location) {
+            const state = ProxyInterface.messenger({type: GET_STATE, location});
             k += ''; // find single child
             if (state && state instanceof Object && k in state) {
-                const createChildProxy = Reflect.get(target, '_createChildProxy', receiver);
+                const createChildProxy = Reflect.get(target, '_createChildProxy');
                 return Reflect.apply(createChildProxy, target, [target[identity][k] || target[identity][push](k)]);
             }
         } else {

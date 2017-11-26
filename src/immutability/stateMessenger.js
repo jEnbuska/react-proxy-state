@@ -18,18 +18,18 @@ const {entries} = Object;
 
 export default function createStateMessenger(root, onChange = function () {}) {
     // eslint-disable-next-line consistent-return
-    return function stateManager(action) {
-        const {type, path} = action;
-        let {param} = action;
+    return function stateManager(event) {
+        const {type, location} = event;
+        let {param} = event;
         if (type === GET_STATE) {
-            return findChild(root[accessState], path);
+            return findChild(root[accessState], location);
         }
-        const trace = createTraceablePath(root, path);
+        const trace = createTraceablePath(root, location);
         const target = trace[trace.length - 1];
         switch (type) {
             case REPLACE:
             case ASSIGN: {
-                onProxySetState(target.identifier, param, target.state);
+                onSetState(target.identifier, param, target.state);
                 target.state = {...target.state, ...param};
                 break;
             }
@@ -37,35 +37,34 @@ export default function createStateMessenger(root, onChange = function () {}) {
                 param = !target.state;
                 // eslint-disable-next-line no-fallthrough
             case CLEAR: {
-                onProxyClearState(target.identifier, param, target.state);
+                onClearState(target.identifier, param, target.state);
                 target.state = param;
                 break;
             }
             case REMOVE: {
                 if (target.state instanceof Array) {
-                    target.state = onProxyArrayRemove(target.identifier, param, target.state);
+                    target.state = onRemoveFromArray(target.identifier, param, target.state);
                 } else {
-                    onProxyObjectRemove(target.identifier, param);
+                    onRemoveFromObject(target.identifier, param);
                     const rReducer = removeReducer.bind(poorSet(param));
                     target.state = entries(target.state).reduce(rReducer, {});
                 }
                 break;
             }
             default:
-                throw new Error('Action ' + type + ' not implemented');
-
+                throw new Error('Event-type' + type + ' not implemented');
         }
         root[accessState] = createNextState(trace);
         onChange(root[accessState]);
     };
 }
 
-function createTraceablePath(root, path) {
+function createTraceablePath(root, location) {
     let state = root[accessState];
     let identifier = root[identity];
     const list = [{state, identifier}];
-    for (let i = path.length - 1; i >= 0; i--) {
-        const key = path[i];
+    for (let i = location.length - 1; i >= 0; i--) {
+        const key = location[i];
         identifier = identifier[key];
         state = state[key];
         list.push({key, identifier, state});
@@ -73,12 +72,12 @@ function createTraceablePath(root, path) {
     return list;
 }
 
-function onProxySetState(identity, newState, prevState) {
+function onSetState(identity, newState, prevState) {
     for (let k in newState) {
         k += '';
         if (identity[k] && newState[k] !== prevState[k]) {
             if (k in newState) {
-                onProxyClearState(identity[k], newState[k], prevState[k]);
+                onClearState(identity[k], newState[k], prevState[k]);
             } else {
                 identity[removeChild](k);
             }
@@ -86,11 +85,11 @@ function onProxySetState(identity, newState, prevState) {
     }
 }
 
-function onProxyClearState(identity, newState = {}, prevState = {}) {
+function onClearState(identity, newState = {}, prevState = {}) {
     for (const k in identity) {
         if (newState[k] !== prevState[k]) {
             if (k in newState) {
-                onProxyClearState(identity[k], newState[k], prevState[k]);
+                onClearState(identity[k], newState[k], prevState[k]);
             } else {
                 identity[removeChild](k);
             }
@@ -114,7 +113,7 @@ function createNextState(childList) {
     return childList[0].state;
 }
 
-function onProxyObjectRemove(target, keys) {
+function onRemoveFromObject(target, keys) {
     for (let k in keys) {
         k = keys[k] + '';
         if (target[k]) {
@@ -123,7 +122,7 @@ function onProxyObjectRemove(target, keys) {
     }
 }
 
-function onProxyArrayRemove(target, indexes, state) {
+function onRemoveFromArray(target, indexes, state) {
     const toBeRemoved = poorSet(indexes);
     const nextState = [];
     const stateLength = state.length;

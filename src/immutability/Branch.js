@@ -30,64 +30,64 @@ export default class Branch {
     }
 
     get state() {
-        const resolved = this[identity][resolve]();
-        if (resolved) {
-            return ProxyInterface.messenger({type: GET_STATE, path: resolved});
+        const location = this[identity][resolve]();
+        if (location) {
+            return ProxyInterface.messenger({type: GET_STATE, location});
         }
         return onAccessingRemovedBranch(this[identity].getId(), 'state');
     }
 
-    assign(value) {
-        const identifier = this[identity][resolve]();
-        if (!identifier) {
-            throw new Error('Cannot call assign to removed Node. Got:', `${value}. Id: "${this[identity].getId()}"`);
-        } else if (!valueIsAssignable(value)) {
-            throw new Error('Branch does not take leafs as assign parameters. Got:', `${value}. Identity: "${this[identity][resolve]().join(', ')}"`);
-        } else if (value instanceof Array) {
-            throw new Error(`Target: "${identifier.join(', ')}"\nAssign does not take Arrays as parameters`);
+    assign(param) {
+        const location = this[identity][resolve]();
+        if (!location) {
+            throw new Error('Cannot call assign to removed Node. Got:', `${param}. Id: "${this[identity].getId()}"`);
+        } else if (!valueIsAssignable(param)) {
+            throw new Error('Branch does not take leafs as assign parameters. Got:', `${param}. Identity: "${this[identity][resolve]().join(', ')}"`);
+        } else if (param instanceof Array) {
+            throw new Error(`Target: "${location.join(', ')}"\nAssign does not take Arrays as parameters`);
         }
         ProxyInterface.messenger({
             type: ASSIGN,
-            path: identifier,
-            param: value,
+            location,
+            param,
         });
         return this;
     }
 
-    clear(value) {
-        const identifier = this[identity][resolve]();
-        if (!identifier) {
-            throw new Error('Cannot call clear to removed Node. Got:', `${value}. Id: "${this[identity].getId()}"`);
+    clear(param) {
+        const location = this[identity][resolve]();
+        if (!location) {
+            throw new Error('Cannot call clear to removed Node. Got:', `${param}. Id: "${this[identity].getId()}"`);
         }
         ProxyInterface.messenger({
             type: CLEAR,
-            path: identifier,
-            param: value,
+            location,
+            param,
         });
         return this;
     }
 
-    remove(...keys) {
-        const identifier = this[identity][resolve]();
-        if (!identifier) {
-            throw new Error('Cannot call remove on removed Node. Got:', `${keys}. Id: "${this[identity].getId()}"`);
+    remove(...param) {
+        const location = this[identity][resolve]();
+        if (!location) {
+            throw new Error('Cannot call remove on removed Node. Got:', `${param}. Id: "${this[identity].getId()}"`);
         }
         ProxyInterface.messenger({
             type: REMOVE,
-            path: identifier,
-            param: keys,
+            location,
+            param,
         });
         return this;
     }
 
     toggle() {
-        const identifier = this[identity][resolve]();
-        if (!identifier) {
+        const location = this[identity][resolve]();
+        if (!location) {
             throw new Error(`Cannot toggle removed Node. Id: "${this[identity].getId()}`);
         }
         ProxyInterface.messenger({
             type: TOGGLE,
-            path: identifier,
+            location,
         });
     }
 

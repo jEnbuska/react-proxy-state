@@ -35,9 +35,9 @@ export function stringify(obj) {
     }
 }
 
-export function findChild(value, path) {
-    for (let i = path.length - 1; i >= 0; --i) {
-        const key = path[i];
+export function findChild(value, location) {
+    for (let i = location.length - 1; i >= 0; --i) {
+        const key = location[i];
         value = value[key];
     }
     return value;

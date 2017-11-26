@@ -1,9 +1,9 @@
 import React from 'react';
-import {CreateProvider} from '../../../../src';
+import {createProvider} from '../../../../src';
 import * as todosDomain from './todos';
 
-const {initialState: todos, ...todoActions} = todosDomain;
+const {initialState: todos, ...todoResponders} = todosDomain;
 
-const actions = {...todoActions};
+const responders = {...todoResponders};
 export const initialState = {todos};
-export default CreateProvider(initialState, actions);
+export default createProvider(initialState, responders);

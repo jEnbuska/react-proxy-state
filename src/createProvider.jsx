@@ -6,12 +6,12 @@ const {assign, keys} = Object;
 
 let subscriptionsCount = 0;
 let lastUpdate = 0;
-export default function (initialState, actionCreators = {}) {
-    const actionTypes = keys(actionCreators).reduce((types, name) => assign(types, {[name]: func}), {});
+export default function (initialState, responders = {}) {
+    const responderTypes = keys(responders).reduce((types, name) => assign(types, {[name]: func}), {});
     return class Provider extends React.Component {
 
         static childContextTypes = {
-            ...actionTypes,
+            ...responderTypes,
             getVersion: func,
             subscribe: func,
             getState: func,
@@ -20,7 +20,7 @@ export default function (initialState, actionCreators = {}) {
         getChildContext() {
             const {subscribe, getState, getVersion} = this;
             return {
-                ...this.actions,
+                ...this.eventResponders,
                 subscribe,
                 getState,
                 getVersion,
@@ -38,10 +38,10 @@ export default function (initialState, actionCreators = {}) {
         componentWillMount() {
             this.lastState = initialState;
             this.proxy = immutable(initialState, this.onChange);
-            this.actions = Object.entries(actionCreators)
-                .reduce((actions, [name, action]) =>
-                        assign(actions, {
-                            [name]: params => action(params)(this.proxy),
+            this.eventResponders = Object.entries(responders)
+                .reduce((eventResponders, [name, responder]) =>
+                        assign(eventResponders, {
+                            [name]: params => responder(params)(this.proxy),
                         }),
                     {});
         }
