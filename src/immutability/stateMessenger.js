@@ -14,8 +14,7 @@ const {GET_STATE, ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
 const {entries} = Object;
 
-export default function createStateMessenger(root, onChange = function () {
-}) {
+export default function createStateMessenger(root, onChange) {
     // eslint-disable-next-line consistent-return
     return function stateManager(event) {
         const {type, location} = event;
@@ -140,11 +139,4 @@ function onRemoveFromArray(target, indexes, state) {
         }
     }
     return nextState;
-}
-
-function removeReducer(acc, e) {
-    if (!this[e[0]]) {
-        acc[e[0]] = e[1];
-    }
-    return acc;
 }

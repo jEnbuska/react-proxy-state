@@ -79,18 +79,20 @@ export function excludeFromEntries(params) {
     };
 }
 
+export function onAccessingRemovedBranch(property) {
+    // eslint-disable-next-line no-console
+    console.error('Accessing ' + property + ' of removed Branch');
+}
+
 export function entriesToObject(acc, [k, v]) {
     acc[k] = v;
     return acc;
+}
+
+export function emptyFunction() {
 }
 
 function poorSetReducer(acc, k) {
     acc[k + ''] = true;
     return acc;
 }
-
-export function onAccessingRemovedBranch(property) {
-    // eslint-disable-next-line no-console
-    console.error('Accessing ' + property + ' of removed Branch');
-}
-

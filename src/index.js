@@ -1,4 +1,4 @@
-import {branchPrivates} from './common';
+import {branchPrivates, emptyFunction} from './common';
 import Branch from './immutability/Branch';
 import Identity from './immutability/Identity';
 import createStateMessenger from './immutability/stateMessenger';
@@ -8,7 +8,7 @@ const {STATE, IDENTITY} = branchPrivates;
 
 export default function immutable(state, onChange) {
     const root = new Branch();
-    ProxyInterface.messenger = createStateMessenger(root, onChange);
+    ProxyInterface.messenger = createStateMessenger(root, onChange || emptyFunction);
     root[STATE] = state;
     root[IDENTITY] = new Identity();
     return new Proxy(root, ProxyInterface.proxyTemplate);
