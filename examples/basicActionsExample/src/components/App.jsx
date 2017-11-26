@@ -28,7 +28,7 @@ class App extends React.Component {
                 <input value={input} onChange={e => this.setState({input: e.target.value})}/>
                 <button onClick={() => addTodo(input)}>Submit</button>
             </div>
-        )
+        );
     }
 }
 
