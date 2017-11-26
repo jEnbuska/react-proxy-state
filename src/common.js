@@ -35,6 +35,7 @@ export const invalidAssignableTypes = {
 };
 
 const {getPrototypeOf} = Object;
+
 export function valueIsAssignable(value) {
     return value && value instanceof Object && !invalidAssignableTypes[getPrototypeOf(value).constructor.name];
 }
@@ -69,6 +70,18 @@ export const invalidReferenceHandler = {
 
 export function poorSet(arr) {
     return arr.reduce(poorSetReducer, {});
+}
+
+export function excludeFromEntries(params) {
+    const exluded = poorSet(params);
+    return function excluder(e) {
+        return !exluded[e[0]];
+    };
+}
+
+export function entriesToObject(acc, [k, v]) {
+    acc[k] = v;
+    return acc;
 }
 
 function poorSetReducer(acc, k) {

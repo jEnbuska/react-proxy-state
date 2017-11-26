@@ -4,15 +4,18 @@ import {
     eventTypes,
     findChild,
     poorSet,
+    excludeFromEntries,
+    entriesToObject,
 } from '../common';
 
 const {IDENTITY, STATE} = branchPrivates;
-const {REMOVE_CHILD, RENAME_SELF, CREATE_PROXY} = identityPrivates;
+const {REMOVE_CHILD, RENAME_SELF} = identityPrivates;
 const {GET_STATE, ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
 const {entries} = Object;
 
-export default function createStateMessenger(root, onChange = function () {}) {
+export default function createStateMessenger(root, onChange = function () {
+}) {
     // eslint-disable-next-line consistent-return
     return function stateManager(event) {
         const {type, location} = event;
@@ -30,7 +33,7 @@ export default function createStateMessenger(root, onChange = function () {}) {
             }
             case TOGGLE:
                 param = !target.state;
-                // eslint-disable-next-line no-fallthrough
+            // eslint-disable-next-line no-fallthrough
             case CLEAR: {
                 onClearState(target.identifier, param, target.state);
                 target.state = param;
@@ -41,8 +44,9 @@ export default function createStateMessenger(root, onChange = function () {}) {
                     target.state = onRemoveFromArray(target.identifier, param, target.state);
                 } else {
                     onRemoveFromObject(target.identifier, param);
-                    const rReducer = removeReducer.bind(poorSet(param));
-                    target.state = entries(target.state).reduce(rReducer, {});
+                    target.state = entries(target.state)
+                        .filter(excludeFromEntries(param /* param is list of keys */))
+                        .reduce(entriesToObject, {});
                 }
                 break;
             }
