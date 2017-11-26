@@ -1,6 +1,6 @@
 import React from 'react';
 import {func} from 'prop-types';
-import {mapContextToProps} from '../../../../src';
+import {mapContextToProps} from 'react-proxy-state';
 
 class Inner extends React.Component {
 
@@ -12,5 +12,5 @@ class Inner extends React.Component {
     }
 }
 
-export default mapContextToProps(({todos})=>({todos}))(Inner)
+export default mapContextToProps(({todos}) => ({todos}))(Inner)
 

@@ -1,4 +1,4 @@
-import {createProvider} from '../../../../src';
+import {createProvider} from 'react-proxy-state';
 import * as todosDomain from './todos';
 
 const {initialState: todos, addTodo, removeTodo, toggleTodo} = todosDomain;

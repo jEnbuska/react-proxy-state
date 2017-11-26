@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "cross-env NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib",
-    "build-dev": "webpack",
+    "build-in-docker": "yarn install && cross-env NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib",
     "test": "jest",
     "test:watch": "npm run test -- --watch"
   },

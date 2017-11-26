@@ -1,7 +1,7 @@
 import React from 'react';
 import {func} from 'prop-types';
 import Inner from './Inner'
-import {mapContextToProps} from '../../../../src';
+import {mapContextToProps} from 'react-proxy-state';
 
 class App extends React.Component {
 
