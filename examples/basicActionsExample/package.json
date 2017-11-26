@@ -1,14 +1,8 @@
 {
-  "name": "nonedux_thunk",
+  "name": "react-proxy-state_example",
   "version": "0.0.1",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jEnbuska/none-dux"
-  },
   "scripts": {
     "build": "webpack --config webpack.config.production.js",
-    "test": "mocha --compilers js:babel-core/register tests/**/*.test.js",
-    "test:watch": "npm run test -- --watch",
     "start": "webpack-dev-server --config webpack.config.development.js --colors --progress --inline"
   },
   "author": "Joona Enbuska",
