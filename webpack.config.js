@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const libPath = path.join(__dirname, 'lib');
 const context = path.join(__dirname, 'src');
@@ -32,18 +31,7 @@ module.exports = {
         ],
     },
     plugins: [
-        new webpack.NamedModulesPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ['index'],
-        }),
         new CleanWebpackPlugin([libPath]),
         new webpack.EnvironmentPlugin({NODE_ENV: 'production'}),
-        new UglifyJSPlugin({
-            mangle: false,
-            beautify: true,
-            comments: false,
-            sourceMap: true,
-        }),
-        new webpack.LoaderOptionsPlugin({minimize: true, debug: false}),
     ],
 };

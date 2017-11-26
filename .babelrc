@@ -2,11 +2,11 @@
   "presets": [
     ["env", {
       "targets": {
-        "browsers": ["chrome >= 52"]
+        "browsers": ["chrome >= 49"]
       },
       "modules": "commonjs",
       "useBuiltIns": true,
       "debug": true
     }
-    ], "react", "stage-0"]
+    ], "react", "stage-0", "minify"]
 }
