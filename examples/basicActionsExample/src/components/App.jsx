@@ -8,24 +8,25 @@ class App extends React.Component {
     static contextTypes = {
         addTodo: func,
         toggleTodo: func,
+        removeTodo: func,
     };
 
     state = {input: ''};
 
     render() {
-        const {state, props: {todos}, context: {addTodo, toggleTodo}} = this;
+        const {state: {input}, props: {todos}, context: {addTodo, toggleTodo, removeTodo}} = this;
         return (
             <div>
-                TODOS
                 {Object.values(todos).map(todo => (
-                    <div key={todo.ID}>
+                    <div key={todo.id}>
                         <p>{todo.description}</p>
-                        <p onClick={() => toggleTodo(todo.ID)}>{'done: ' + todo.done}</p>
+                        <button onClick={() => toggleTodo(todo.id)}>{'Toggle: ' + todo.done}</button>
+                        <button onClick={() => removeTodo(todo.id)}>{'Remove'}</button>
                     </div>
                 ))}
                 <Inner/>
-                <input value={state.input} onChange={e => this.setState({input: e.target.value})}/>
-                <button onClick={() => addTodo(state.input)}>Submit</button>
+                <input value={input} onChange={e => this.setState({input: e.target.value})}/>
+                <button onClick={() => addTodo(input)}>Submit</button>
             </div>
         )
     }

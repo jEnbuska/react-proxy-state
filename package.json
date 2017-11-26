@@ -39,11 +39,13 @@
     "jest": "^20.0.4",
     "jest-cli": "^20.0.4",
     "nano-time": "^1.0.0",
-    "react": "^15.6.1",
+    "react": "^16.1.1",
     "rollup": "^0.43.0",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^2.6.1"
   },
   "false": {},
-  "dependencies": {}
+  "dependencies": {
+    "prop-types": "^15.6.0"
+  }
 }

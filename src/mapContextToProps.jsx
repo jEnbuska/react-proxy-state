@@ -3,7 +3,7 @@ import {func} from 'prop-types';
 
 const {keys} = Object;
 
-const mapContextToProps = (Component, statePicker = store => store.state) => {
+const mapContextToProps = (Component, selectState = store => store.state) => {
     const connectClass = class Connect extends React.Component {
 
         static contextTypes = {
@@ -20,7 +20,7 @@ const mapContextToProps = (Component, statePicker = store => store.state) => {
             this.subscription = subscribe((contextState, version) => {
                 if (version !== this.version) {
                     this.version = version;
-                    const nextState = statePicker(contextState, this.props);
+                    const nextState = selectState(contextState, this.props);
                     const {state} = this;
                     if (state !== nextState && keys({...state, ...nextState}).some(k => state[k] !== nextState[k])) {
                         this.setState(nextState);
@@ -38,7 +38,7 @@ const mapContextToProps = (Component, statePicker = store => store.state) => {
 
         componentWillReceiveProps(nextProps, nextContext) {
             if (nextContext.getVersion() !== this.version) {
-                const nextState = statePicker(nextContext.getState(), nextProps);
+                const nextState = selectState(nextContext.getState(), nextProps);
                 const {state} = this;
                 if (state !== nextState && keys({...state, ...nextState}).some(k => state[k] !== nextState[k])) {
                     this.setState(nextState);

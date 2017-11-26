@@ -18,10 +18,10 @@ const getPostCssPlugins = () => [
 ];
 
 const base = (env) => ({
-    RESOLVE: {
+    resolve: {
         extensions: ['.js', '.jsx'],
         modules: [
-            path.RESOLVE(__dirname, 'node_modules'),
+            path.resolve(__dirname, 'node_modules'),
             context,
         ],
     },

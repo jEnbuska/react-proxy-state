@@ -6,11 +6,8 @@ class Inner extends React.Component {
 
     render() {
         const {props: {todos}} = this;
-        console.log('render Inner')
         return (
-            <div>
-                TODOS
-            </div>
+            <div/>
         )
     }
 }
