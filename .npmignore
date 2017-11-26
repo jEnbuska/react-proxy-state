@@ -11,3 +11,5 @@ webpack.config.js
 .gitignore
 yarn.lock
 .yarnclean
+docker-compose.yml
+Dockerfile
