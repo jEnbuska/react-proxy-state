@@ -34,10 +34,9 @@ export default class ProxyInterface {
     static getProperty(target, property) {
         if (property === IDENTITY) {
             return target[property];
-        } else if (target[property]) {
+        } else if (property in target) {
             return Reflect.get(target, property);
         }
-
         const location = target[IDENTITY][RESOLVE]();
         if (location) {
             const state = ProxyInterface.messenger({type: GET_STATE, location});
