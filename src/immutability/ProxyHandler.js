@@ -1,13 +1,12 @@
 import {
     branchPrivates,
     identityPrivates,
-    onAccessingRemovedBranch,
     valueIsAssignable,
     eventTypes,
 } from '../common';
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
-const {PUSH, RESOLVE, ID} = identityPrivates;
+const {PUSH, RESOLVE} = identityPrivates;
 const {GET_STATE, ASSIGN} = eventTypes;
 
 export default class ProxyHandler {

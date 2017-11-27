@@ -8,7 +8,7 @@ import ProxyHandler from './ProxyHandler';
 import util from 'util';
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
-const {RESOLVE, ID} = identityPrivates;
+const {RESOLVE} = identityPrivates;
 const {ASSIGN, CLEAR, REMOVE, GET_STATE, TOGGLE} = eventTypes;
 
 export default class Branch {
@@ -18,11 +18,6 @@ export default class Branch {
         branch[IDENTITY] = identity;
         return new Proxy(branch, ProxyHandler);
     }
-
-    /*
-    * [KEYS]() {
-        return Object.keys(this.state);
-    }*/
 
     get state() {
         const location = this[IDENTITY][RESOLVE]();

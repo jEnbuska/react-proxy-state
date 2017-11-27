@@ -72,21 +72,9 @@ export function poorSet(arr) {
     return arr.reduce(poorSetReducer, {});
 }
 
-export function excludeFromEntries(params) {
-    const exluded = poorSet(params);
-    return function excluder(e) {
-        return !exluded[e[0]];
-    };
-}
-
 export function onAccessingRemovedBranch() {
     // eslint-disable-next-line no-console
     console.error('Accessing of removed Branch');
-}
-
-export function entriesToObject(acc, [k, v]) {
-    acc[k] = v;
-    return acc;
 }
 
 export function emptyFunction() {
