@@ -2,6 +2,7 @@ export const branchPrivates = {
     IDENTITY: Symbol('IDENTITY'),
     STATE: Symbol('ACCESS_STATE'),
     PROXY_CONSTRUCTOR: Symbol('PROXY_CONSTRUCTOR'),
+    KEYS: Symbol('KEYS'),
 };
 
 export const identityPrivates = {
@@ -24,7 +25,6 @@ export const eventTypes = {
 };
 
 export const invalidAssignableTypes = {
-    Branch: true,
     Number: true,
     String: true,
     RegExp: true,
@@ -79,9 +79,9 @@ export function excludeFromEntries(params) {
     };
 }
 
-export function onAccessingRemovedBranch(property) {
+export function onAccessingRemovedBranch() {
     // eslint-disable-next-line no-console
-    console.error('Accessing ' + property + ' of removed Branch');
+    console.error('Accessing of removed Branch');
 }
 
 export function entriesToObject(acc, [k, v]) {

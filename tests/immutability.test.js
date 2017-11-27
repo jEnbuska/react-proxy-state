@@ -38,10 +38,10 @@ describe('immutability', () => {
             const eOrg = subject.b.e.state;
             const hOrg = subject.b.e.h.state;
             subject.assign({b: {c: 3, d: {}, e: {f: 4, g: 7, h: {i: 101, x: {t: -1}, j: {z: -0}}}}});
-            expect(subject.b.state !== bOrg, 'b').toBeTruthy();
-            expect(subject.b.d.state !== dOrg, 'd').toBeTruthy();
-            expect(subject.b.e.state !== eOrg, 'e').toBeTruthy();
-            expect(subject.b.e.h.state !== hOrg, 'h').toBeTruthy();
+            expect(subject.b.state !== bOrg).toBeTruthy();
+            expect(subject.b.d.state !== dOrg).toBeTruthy();
+            expect(subject.b.e.state !== eOrg).toBeTruthy();
+            expect(subject.b.e.h.state !== hOrg).toBeTruthy();
         });
 
     test('changing deep state by children', () => {
@@ -55,10 +55,10 @@ describe('immutability', () => {
         b.assign({c: 3});
         b.e.h.assign({i: 101});
 
-        expect(subject.b.state !== bOrg, 'b').toBeTruthy();
-        expect(subject.b.d.state === dOrg, 'd').toBeTruthy();
-        expect(subject.b.e.state !== eOrg, 'e').toBeTruthy();
-        expect(subject.b.e.h.state !== hOrg, 'h').toBeTruthy();
+        expect(subject.b.state !== bOrg).toBeTruthy();
+        expect(subject.b.d.state === dOrg).toBeTruthy();
+        expect(subject.b.e.state !== eOrg).toBeTruthy();
+        expect(subject.b.e.h.state !== hOrg).toBeTruthy();
     });
 
     test('parameters passed to subject should never mutate any values', () => {

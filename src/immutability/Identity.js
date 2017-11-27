@@ -23,7 +23,6 @@ export default class Identity {
 
     [REMOVE_CHILD](key) {
         this[key][REMOVED] = true;
-        delete this[key][PARENT];
         delete this[key];
     }
 

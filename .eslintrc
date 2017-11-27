@@ -27,6 +27,7 @@
     "react/prefer-stateless-function": "off",
     "react/prop-types": "off",
     "max-len": [0, {"code": 200}], /*airbnb default maxlength causes problems with my ide*/
+    "no-else-return": "off",
     "no-underscore-dangle": 0,
     "react/jsx-space-before-closing" : "off",
     "import/no-extraneous-dependencies": "off",
@@ -55,7 +56,7 @@
     "react/sort-comp": 0,
     "no-empty" : ["warn"],
     "react/no-find-dom-node": ["warn"],
-    "spaced-comment": ["warn"],
+    "spaced-comment": "off",
     "arrow-parens": [0],
     "no-use-before-define": ["error", { "functions": false, "classes": false }],
     "react/jsx-closing-bracket-location": ["off", "after-props"],

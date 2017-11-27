@@ -3,9 +3,9 @@ import {
     identityPrivates,
     eventTypes,
     valueIsAssignable,
-    onAccessingRemovedBranch,
 } from '../common';
-import ProxyInterface from './ProxyInterface';
+import ProxyHandler from './ProxyHandler';
+import util from 'util';
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
 const {RESOLVE, ID} = identityPrivates;
@@ -16,28 +16,28 @@ export default class Branch {
     static [PROXY_CONSTRUCTOR](identity) {
         const branch = new Branch();
         branch[IDENTITY] = identity;
-        return new Proxy(branch, ProxyInterface.proxyTemplate);
+        return new Proxy(branch, ProxyHandler);
     }
+
+    /*
+    * [KEYS]() {
+        return Object.keys(this.state);
+    }*/
 
     get state() {
         const location = this[IDENTITY][RESOLVE]();
-        if (location) {
-            return ProxyInterface.messenger({type: GET_STATE, location});
-        }
-        return onAccessingRemovedBranch(this[IDENTITY][ID], 'state');
+        return ProxyHandler.messenger({request: GET_STATE, location});
     }
 
     assign(param) {
         const location = this[IDENTITY][RESOLVE]();
-        if (!location) {
-            throw new Error('Cannot call assign to removed Node. Got:', `${param}. Id: "${this[IDENTITY][ID]}"`);
-        } else if (!valueIsAssignable(param)) {
+        if (!valueIsAssignable(param)) {
             throw new Error('Branch does not take leafs as assign parameters. Got:', `${param}. Identity: "${this[IDENTITY][RESOLVE]().join(', ')}"`);
         } else if (param instanceof Array) {
             throw new Error(`Target: "${location.join(', ')}"\nAssign does not take Arrays as parameters`);
         }
-        ProxyInterface.messenger({
-            type: ASSIGN,
+        ProxyHandler.messenger({
+            request: ASSIGN,
             location,
             param,
         });
@@ -46,11 +46,9 @@ export default class Branch {
 
     clear(param) {
         const location = this[IDENTITY][RESOLVE]();
-        if (!location) {
-            throw new Error('Cannot call clear to removed Node. Got:', `${param}. Id: "${this[IDENTITY][ID]}"`);
-        }
-        ProxyInterface.messenger({
-            type: CLEAR,
+
+        ProxyHandler.messenger({
+            request: CLEAR,
             location,
             param,
         });
@@ -59,11 +57,8 @@ export default class Branch {
 
     remove(...param) {
         const location = this[IDENTITY][RESOLVE]();
-        if (!location) {
-            throw new Error('Cannot call remove on removed Node. Got:', `${param}. Id: "${this[IDENTITY][ID]}"`);
-        }
-        ProxyInterface.messenger({
-            type: REMOVE,
+        ProxyHandler.messenger({
+            request: REMOVE,
             location,
             param,
         });
@@ -72,12 +67,43 @@ export default class Branch {
 
     toggle() {
         const location = this[IDENTITY][RESOLVE]();
-        if (!location) {
-            throw new Error(`Cannot toggle removed Node. Id: "${this[IDENTITY][ID]}`);
-        }
-        ProxyInterface.messenger({
-            type: TOGGLE,
+        ProxyHandler.messenger({
+            request: TOGGLE,
             location,
         });
+    }
+
+    [Symbol.iterator]() {
+        const values = Object.values(this);
+        let index = 0;
+        return {
+            next() {
+                return {value: values[index], done: index++ === values.length}
+            },
+        };
+    }
+
+    [util.inspect.custom]() {
+        return '[object Branch]';
+    }
+
+    toString() {
+        return '[object Branch]';
+    }
+
+    toJSON() {
+        return this.state;
+    }
+
+    [Symbol.toPrimitive]() {
+        const {state} = this;
+        if (valueIsAssignable(state)) {
+            try {
+                return JSON.stringify(state, null, 2);
+            } catch (e) {
+                return state + '';
+            }
+        }
+        return state;
     }
 }

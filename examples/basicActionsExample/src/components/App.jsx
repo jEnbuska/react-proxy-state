@@ -1,8 +1,9 @@
 import React from 'react';
 import {func} from 'prop-types';
-import Inner from './Inner'
 import {mapContextToProps} from 'react-proxy-state';
+import Inner from './Inner';
 
+const {values} = Object;
 class App extends React.Component {
 
     static contextTypes = {
@@ -17,7 +18,7 @@ class App extends React.Component {
         const {state: {input}, props: {todos}, context: {addTodo, toggleTodo, removeTodo}} = this;
         return (
             <div>
-                {Object.values(todos).map(todo => (
+                {values(todos).map(todo => (
                     <div key={todo.id}>
                         <p>{todo.description}</p>
                         <button onClick={() => toggleTodo(todo.id)}>{'Toggle: ' + todo.done}</button>

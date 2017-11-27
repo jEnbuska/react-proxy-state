@@ -16,8 +16,8 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib",
     "build-in-docker": "yarn install && cross-env NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib",
-    "test": "jest",
-    "test:watch": "npm run test -- --watch"
+    "test": "jest --silent",
+    "test:watch": "npm run test -- --watch --silent"
   },
   "dependencies": {
     "prop-types": "^15.6.0",
@@ -27,7 +27,6 @@
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.1",
-    "babel-jest": "^20.0.3",
     "babel-loader": "^6.2.10",
     "babel-minify": "^0.2.0",
     "babel-preset-env": "^1.5.2",
@@ -41,8 +40,7 @@
     "eslint-plugin-jest": "^20.0.3",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
-    "jest": "^20.0.4",
-    "jest-cli": "^20.0.4",
+    "jest": "^21.2.1",
     "nano-time": "^1.0.0",
     "node-gyp": "^3.6.2",
     "rollup": "^0.43.0",

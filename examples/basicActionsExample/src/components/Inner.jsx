@@ -8,7 +8,7 @@ class Inner extends React.Component {
         const {props: {todos}} = this;
         return (
             <div/>
-        )
+        );
     }
 }
 

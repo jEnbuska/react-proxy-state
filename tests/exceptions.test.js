@@ -62,6 +62,10 @@ describe('exception', () => {
     test('invalid assign param', () => {
         const {child} = change({child: {a: {b: 1}, b: {val: 2}, c: {d: {val: 3}}}});
         expect(() => child.assign(1)).toThrow();
-        expect(() => child.assign(child.a)).toThrow();
+        expect(() => child.assign(new Date())).toThrow();
+        expect(() => child.assign(new Error())).toThrow();
+        expect(() => child.assign('')).toThrow();
+        expect(() => child.assign(/./)).toThrow();
+        expect(() => child.assign(() => {})).toThrow();
     });
 });

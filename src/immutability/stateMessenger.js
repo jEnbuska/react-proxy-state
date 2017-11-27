@@ -4,57 +4,60 @@ import {
     eventTypes,
     findChild,
     poorSet,
-    excludeFromEntries,
-    entriesToObject,
+    onAccessingRemovedBranch,
 } from '../common';
 
 const {IDENTITY, STATE} = branchPrivates;
 const {REMOVE_CHILD, RENAME_SELF} = identityPrivates;
 const {GET_STATE, ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
-const {entries} = Object;
-
 export default function createStateMessenger(root, onChange) {
     // eslint-disable-next-line consistent-return
     return function stateManager(event) {
-        const {type, location} = event;
+        const {request, location} = event;
+
         let {param} = event;
-        if (type === GET_STATE) {
-            return findChild(root[STATE], location);
+        if (request === GET_STATE) {
+            if (location) {
+                return findChild(root[STATE], location);
+            } else {
+                return onAccessingRemovedBranch();
+            }
         }
-        const trace = createTraceablePath(root, location);
-        const target = trace[trace.length - 1];
-        switch (type) {
-            case ASSIGN: {
-                onSetState(target.identifier, param, target.state);
-                target.state = {...target.state, ...param};
-                break;
-            }
-            case TOGGLE:
-                param = !target.state;
-            // eslint-disable-next-line no-fallthrough
-            case CLEAR: {
-                onClearState(target.identifier, param, target.state);
-                target.state = param;
-                break;
-            }
-            case REMOVE: {
-                if (target.state instanceof Array) {
-                    target.state = onRemoveFromArray(target.identifier, param, target.state);
-                } else {
-                    onRemoveFromObject(target.identifier, param);
-                    target.state = entries(target.state)
-                        .filter(excludeFromEntries(param /* param is list of keys */))
-                        .reduce(entriesToObject, {});
+        if (location) {
+            const trace = createTraceablePath(root, location);
+            const target = trace[trace.length - 1];
+            switch (request) {
+                case ASSIGN: {
+                    onSetState(target.identifier, param, target.state);
+                    target.state = {...target.state, ...param};
+                    break;
                 }
-                break;
+                case TOGGLE:
+                    param = !target.state;
+                // eslint-disable-next-line no-fallthrough
+                case CLEAR: {
+                    onClearState(target.identifier, param, target.state);
+                    target.state = param;
+                    break;
+                }
+                case REMOVE: {
+                    if (target.state instanceof Array) {
+                        target.state = onRemoveFromArray(target.identifier, param, target.state);
+                    } else {
+                        target.state = onRemoveFromObject(target, param);
+                    }
+                    break;
+                }
+                default:
+                    throw new Error('Request-type: ' + request + ' not implemented');
             }
-            default:
-                throw new Error('Event-type' + type + ' not implemented');
+            root[STATE] = createNextState(trace);
+            onChange(root[STATE]);
+        } else {
+            throw new Error('Cannot change state for removed Branch');
         }
-        root[STATE] = createNextState(trace);
-        onChange(root[STATE]);
-    };
+    }
 }
 
 function createTraceablePath(root, location) {
@@ -111,13 +114,20 @@ function createNextState(childList) {
     return childList[0].state;
 }
 
-function onRemoveFromObject(target, keys) {
-    for (let k in keys) {
-        k = keys[k] + '';
-        if (target[k]) {
-            target[REMOVE_CHILD](k);
+function onRemoveFromObject(target, param) {
+    const toBeRemoved = poorSet(param);
+    const {identifier, state} = target;
+    const nextState = {};
+    for (const k in state) {
+        if (toBeRemoved[k]) {
+            if (identifier[k]) {
+                identifier[REMOVE_CHILD](k);
+            }
+        } else {
+            nextState[k] = target.state[k];
         }
     }
+    return nextState;
 }
 
 function onRemoveFromArray(target, indexes, state) {
