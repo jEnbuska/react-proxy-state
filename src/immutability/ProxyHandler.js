@@ -24,7 +24,7 @@ export default class ProxyHandler {
         if (location) {
             const state = ProxyHandler.messenger({request: GET_STATE, location});
             property += '';
-            if (state && property in state) {
+            if (state && property in state && state[property]!==undefined) {
                 const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
                 return Reflect.apply(func, target, [target[IDENTITY][property] || target[IDENTITY][PUSH](property)]);
             }
@@ -58,7 +58,7 @@ export default class ProxyHandler {
         const location = target[IDENTITY][RESOLVE]();
         const state = ProxyHandler.messenger({request: GET_STATE, location});
         if (valueIsAssignable(state)) {
-            return Object.keys(state);
+            return Object.keys(state).filter(it => it !==undefined);
         }
     }
 }
