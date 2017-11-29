@@ -49,7 +49,7 @@ export default class ProxyHandler {
     static has(target, prop) {
         const location = target[IDENTITY][RESOLVE]();
         const state = ProxyHandler.messenger({request: GET_STATE, location});
-        return !!(valueIsAssignable(state) && prop in state);
+        return !!(state && state[prop] !== undefined);
     }
 
     static ownKeys(target) {
