@@ -79,7 +79,7 @@ function onClearState(identity, newState = {}, prevState = {}) {
         // eslint-disable-next-line curly
         if (newState[k] === prevState[k])
             continue;
-        if (k in newState) {
+        if (newState[k] !== undefined) {
             onClearState(identity[k], newState[k], prevState[k]);
         } else {
             identity[REMOVE_CHILD](k);
