@@ -23,7 +23,6 @@ export default class ProxyHandler {
         const location = target[IDENTITY][RESOLVE]();
         if (location) {
             const state = ProxyHandler.messenger({request: GET_STATE, location});
-            property += '';
             if (state && state instanceof Object && property in state) {
                 const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
                 return Reflect.apply(func, target, [target[IDENTITY][property] || target[IDENTITY][PUSH](property)]);

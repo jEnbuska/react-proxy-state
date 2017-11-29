@@ -1,6 +1,6 @@
 import React from 'react';
 import {func} from 'prop-types';
-import immutable from './index';
+import createStateProxy from './index';
 
 const {assign, keys} = Object;
 
@@ -31,7 +31,7 @@ export default function (initialState, eventHandlerCreators = {}) {
 
         componentWillMount() {
             this.lastState = initialState;
-            this.proxy = immutable(initialState, this.onChange);
+            this.proxy = createStateProxy(initialState, this.onChange);
             this.eventHandlers = Object.entries(eventHandlerCreators)
                 .reduce((eventResponders, [name, responder]) =>
                         assign(eventResponders, {
