@@ -11,7 +11,7 @@ const {IDENTITY, STATE} = branchPrivates;
 const {REMOVE_CHILD, RENAME_SELF} = identityPrivates;
 const {GET_STATE, ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
-export default function createStateRequestResponder(root, onChange) {
+export default function createStateStore(root, onChange) {
     // eslint-disable-next-line consistent-return
     return function stateManager(event) {
         const {request, location} = event;

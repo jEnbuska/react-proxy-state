@@ -11,7 +11,7 @@ const {GET_STATE, ASSIGN} = eventTypes;
 
 export default class ProxyHandler {
 
-    static messenger;
+    static sendRequest;
     static _descriptor = {configurable: true, enumerable: true};
 
     static get(target, property) {
@@ -22,8 +22,7 @@ export default class ProxyHandler {
         }
         const location = target[IDENTITY][RESOLVE]();
         if (location) {
-            const state = ProxyHandler.messenger({request: GET_STATE, location});
-            property += '';
+            const state = ProxyHandler.sendRequest({request: GET_STATE, location});
             if (state && property in state && state[property]!==undefined) {
                 const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
                 return Reflect.apply(func, target, [target[IDENTITY][property] || target[IDENTITY][PUSH](property)]);
@@ -34,7 +33,7 @@ export default class ProxyHandler {
 
     static set(target, property, value) {
         const location = target[IDENTITY][RESOLVE]();
-        ProxyHandler.messenger({
+        ProxyHandler.sendRequest({
             request: ASSIGN,
             location,
             param: {[property]: value && value.state ? value.state : value},
@@ -48,7 +47,7 @@ export default class ProxyHandler {
 
     static has(target, prop) {
         const location = target[IDENTITY][RESOLVE]();
-        const state = ProxyHandler.messenger({request: GET_STATE, location});
+        const state = ProxyHandler.sendRequest({request: GET_STATE, location});
         return !!(state && state[prop] !== undefined);
     }
 
@@ -56,7 +55,7 @@ export default class ProxyHandler {
         //const func = Reflect.get(target, KEYS);
         //return Reflect.apply(func, target, []);
         const location = target[IDENTITY][RESOLVE]();
-        const state = ProxyHandler.messenger({request: GET_STATE, location});
+        const state = ProxyHandler.sendRequest({request: GET_STATE, location});
         if (valueIsAssignable(state)) {
             return Object.keys(state).filter(it => it !==undefined);
         }

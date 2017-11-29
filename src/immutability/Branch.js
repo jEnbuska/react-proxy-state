@@ -21,12 +21,12 @@ export default class Branch {
 
     get state() {
         const location = this[IDENTITY][RESOLVE]();
-        return ProxyHandler.messenger({request: GET_STATE, location});
+        return ProxyHandler.sendRequest({request: GET_STATE, location});
     }
 
     assign(...params) {
         const location = this[IDENTITY][RESOLVE]();
-        ProxyHandler.messenger({
+        ProxyHandler.sendRequest({
             request: ASSIGN,
             location,
             param: Object.assign({}, ...params),
@@ -36,7 +36,7 @@ export default class Branch {
 
     clear(param) {
         const location = this[IDENTITY][RESOLVE]();
-        ProxyHandler.messenger({
+        ProxyHandler.sendRequest({
             request: CLEAR,
             location,
             param,
@@ -46,7 +46,7 @@ export default class Branch {
 
     remove(...param) {
         const location = this[IDENTITY][RESOLVE]();
-        ProxyHandler.messenger({
+        ProxyHandler.sendRequest({
             request: REMOVE,
             location,
             param,
@@ -56,7 +56,7 @@ export default class Branch {
 
     toggle() {
         const location = this[IDENTITY][RESOLVE]();
-        ProxyHandler.messenger({
+        ProxyHandler.sendRequest({
             request: TOGGLE,
             location,
         });
