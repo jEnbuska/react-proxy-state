@@ -60,6 +60,7 @@ export default class Branch {
             request: TOGGLE,
             location,
         });
+        return this;
     }
 
     [Symbol.iterator]() {

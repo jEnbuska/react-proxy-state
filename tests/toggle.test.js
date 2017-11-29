@@ -34,4 +34,10 @@ describe('toggle', () => {
         expect(subject.state).toEqual({a: false, b: 2});
         expect(subject.a.state).toEqual(false);
     });
+
+    test('toggle and get state', () => {
+        const subject = change({a: {}});
+        expect(subject.a.toggle().state).toBe(false);
+
+    });
 });
