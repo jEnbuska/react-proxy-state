@@ -1,48 +1,44 @@
-/* eslint-disable no-return-assign */
 import change from '../src';
 
 describe('immutability', () => {
-    test('previous states should not be changed',
-        () => {
-            const subject = change({
-                a: 1,
-                b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
-            });
-            const {state: initialState} = subject;
-            const {state: bInitialState} = subject.b;
-            subject.assign({a: 2});
-            expect(initialState).not.toEqual(subject.state);
-            expect(bInitialState).toEqual(subject.b.state);
+    test('previous states should not be changed', () => {
+        const subject = change({
+            a: 1,
+            b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
         });
+        const {state: initialState} = subject;
+        const {state: bInitialState} = subject.b;
+        subject.assign({a: 2});
+        expect(initialState).not.toEqual(subject.state);
+        expect(bInitialState).toEqual(subject.b.state);
+    });
 
-    test('subjects other children should remain unchanged',
-        () => {
-            const subject = change({
-                a: 1,
-                b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
-            });
-            const {state: bInitialState} = subject.b;
-            subject.assign({a: 2});
-            expect(bInitialState).toEqual(subject.b.state);
-            expect(bInitialState === subject.state.b);
+    test('subjects other children should remain unchanged', () => {
+        const subject = change({
+            a: 1,
+            b: {c: 2, d: 3, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
         });
+        const {state: bInitialState} = subject.b;
+        subject.assign({a: 2});
+        expect(bInitialState).toEqual(subject.b.state);
+        expect(bInitialState === subject.state.b);
+    });
 
-    test('changing deep state',
-        () => {
-            const subject = change({
-                a: 1,
-                b: {c: 2, d: {}, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
-            });
-            const bOrg = subject.b.state;
-            const dOrg = subject.b.d.state;
-            const eOrg = subject.b.e.state;
-            const hOrg = subject.b.e.h.state;
-            subject.assign({b: {c: 3, d: {}, e: {f: 4, g: 7, h: {i: 101, x: {t: -1}, j: {z: -0}}}}});
-            expect(subject.b.state !== bOrg).toBeTruthy();
-            expect(subject.b.d.state !== dOrg).toBeTruthy();
-            expect(subject.b.e.state !== eOrg).toBeTruthy();
-            expect(subject.b.e.h.state !== hOrg).toBeTruthy();
+    test('changing deep state', () => {
+        const subject = change({
+            a: 1,
+            b: {c: 2, d: {}, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}},
         });
+        const bOrg = subject.b.state;
+        const dOrg = subject.b.d.state;
+        const eOrg = subject.b.e.state;
+        const hOrg = subject.b.e.h.state;
+        subject.assign({b: {c: 3, d: {}, e: {f: 4, g: 7, h: {i: 101, x: {t: -1}, j: {z: -0}}}}});
+        expect(subject.b.state !== bOrg).toBeTruthy();
+        expect(subject.b.d.state !== dOrg).toBeTruthy();
+        expect(subject.b.e.state !== eOrg).toBeTruthy();
+        expect(subject.b.e.h.state !== hOrg).toBeTruthy();
+    });
 
     test('changing deep state by children', () => {
         const subject = change({a: 1, b: {c: 2, d: {}, e: {f: 4, g: 7, h: {i: 100, x: {t: -1}, j: {z: -0}}}}});

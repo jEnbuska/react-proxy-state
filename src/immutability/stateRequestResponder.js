@@ -11,11 +11,10 @@ const {IDENTITY, STATE} = branchPrivates;
 const {REMOVE_CHILD, RENAME_SELF} = identityPrivates;
 const {GET_STATE, ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
-export default function createStateMessenger(root, onChange) {
+export default function createStateRequestResponder(root, onChange) {
     // eslint-disable-next-line consistent-return
     return function stateManager(event) {
         const {request, location} = event;
-
         let {param} = event;
         if (request === GET_STATE) {
             if (location) {
@@ -28,27 +27,21 @@ export default function createStateMessenger(root, onChange) {
             const trace = createTraceablePath(root, location);
             const target = trace[trace.length - 1];
             switch (request) {
-                case ASSIGN: {
-                    onSetState(target.identifier, param, target.state);
-                    target.state = {...target.state, ...param};
-                    break;
-                }
                 case TOGGLE:
                     param = !target.state;
                 // eslint-disable-next-line no-fallthrough
-                case CLEAR: {
+                case CLEAR:
                     onClearState(target.identifier, param, target.state);
                     target.state = param;
                     break;
-                }
-                case REMOVE: {
-                    if (target.state instanceof Array) {
-                        target.state = onRemoveFromArray(target.identifier, param, target.state);
-                    } else {
-                        target.state = onRemoveFromObject(target, param);
-                    }
+                case ASSIGN:
+                    onAssign(target.identifier, param, target.state);
+                    target.state = {...target.state, ...param};
                     break;
-                }
+                case REMOVE:
+                    if (target.state instanceof Array) target.state = onRemoveFromArray(target.identifier, param, target.state);
+                    else target.state = onRemoveFromObject(target, param);
+                    break;
                 default:
                     throw new Error('Request-type: ' + request + ' not implemented');
             }
@@ -57,7 +50,7 @@ export default function createStateMessenger(root, onChange) {
         } else {
             throw new Error('Cannot change state for removed Branch');
         }
-    }
+    };
 }
 
 function createTraceablePath(root, location) {
@@ -73,27 +66,23 @@ function createTraceablePath(root, location) {
     return list;
 }
 
-function onSetState(identity, newState, prevState) {
-    for (let k in newState) {
-        k += '';
-        if (identity[k] && newState[k] !== prevState[k]) {
-            if (k in newState) {
-                onClearState(identity[k], newState[k], prevState[k]);
-            } else {
-                identity[REMOVE_CHILD](k);
-            }
+function onAssign(identity, parameter, prevState) {
+    for (const k in parameter) {
+        if (identity[k] && parameter[k] !== prevState[k]) {
+            onClearState(identity[k], parameter[k], prevState[k]);
         }
     }
 }
 
 function onClearState(identity, newState = {}, prevState = {}) {
     for (const k in identity) {
-        if (newState[k] !== prevState[k]) {
-            if (k in newState) {
-                onClearState(identity[k], newState[k], prevState[k]);
-            } else {
-                identity[REMOVE_CHILD](k);
-            }
+        // eslint-disable-next-line curly
+        if (newState[k] === prevState[k])
+            continue;
+        if (k in newState) {
+            onClearState(identity[k], newState[k], prevState[k]);
+        } else {
+            identity[REMOVE_CHILD](k);
         }
     }
 }
@@ -135,14 +124,13 @@ function onRemoveFromArray(target, indexes, state) {
     const nextState = [];
     const stateLength = state.length;
     for (let i = 0; i < stateLength; i++) {
-        i += '';
         const {length} = nextState;
         if (toBeRemoved[i]) {
-            if (target[i]) {
+            if (i in target) {
                 target[REMOVE_CHILD](i);
             }
         } else {
-            if (target[i] && i !== length) {
+            if (i in target && i !== length) {
                 target[i][RENAME_SELF](length + '');
             }
             nextState.push(state[i]);

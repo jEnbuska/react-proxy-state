@@ -63,11 +63,6 @@ describe('assign', () => {
         });
     });
 
-    test('assign with a  primitive should throw error', () => {
-        const subject = change({a: 1, b: {c: undefined, d: 3, e: {f: 4}}});
-        expect(() => subject.b.assign(2)).toThrow(Error);
-    });
-
     test('immidiate string to empty object', () => {
         const subject = change({child: {a: 'hello', b: {c: undefined, d: 3, e: {f: 4}}}});
         subject.child.assign({a: {}});

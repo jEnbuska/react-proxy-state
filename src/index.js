@@ -1,7 +1,7 @@
 import {branchPrivates, emptyFunction} from './common';
 import Branch from './immutability/Branch';
 import Identity from './immutability/Identity';
-import createStateMessenger from './immutability/stateMessenger';
+import createStateMessenger from './immutability/stateRequestResponder';
 import ProxyHandler from './immutability/ProxyHandler';
 
 const {STATE, IDENTITY} = branchPrivates;
@@ -15,4 +15,3 @@ export default function immutable(state, onChange) {
 }
 export {default as createProvider} from './CreateProvider';
 export {default as mapContextToProps} from './mapContextToProps';
-

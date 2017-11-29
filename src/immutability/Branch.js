@@ -24,24 +24,18 @@ export default class Branch {
         return ProxyHandler.messenger({request: GET_STATE, location});
     }
 
-    assign(param) {
+    assign(...params) {
         const location = this[IDENTITY][RESOLVE]();
-        if (!valueIsAssignable(param)) {
-            throw new Error('Branch does not take leafs as assign parameters. Got:', `${param}. Identity: "${this[IDENTITY][RESOLVE]().join(', ')}"`);
-        } else if (param instanceof Array) {
-            throw new Error(`Target: "${location.join(', ')}"\nAssign does not take Arrays as parameters`);
-        }
         ProxyHandler.messenger({
             request: ASSIGN,
             location,
-            param,
+            param: Object.assign({}, ...params),
         });
         return this;
     }
 
     clear(param) {
         const location = this[IDENTITY][RESOLVE]();
-
         ProxyHandler.messenger({
             request: CLEAR,
             location,
@@ -93,11 +87,7 @@ export default class Branch {
     [Symbol.toPrimitive]() {
         const {state} = this;
         if (valueIsAssignable(state)) {
-            try {
-                return JSON.stringify(state, null, 2);
-            } catch (e) {
-                return state + '';
-            }
+            return '[object Branch]';
         }
         return state;
     }

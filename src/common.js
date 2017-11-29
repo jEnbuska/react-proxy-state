@@ -6,7 +6,7 @@ export const branchPrivates = {
 };
 
 export const identityPrivates = {
-    ID: Symbol('id'),
+    ID: Symbol('ID'),
     REMOVED: Symbol('REMOVED'),
     PARENT: Symbol('PARENT'),
     RESOLVE: Symbol('RESOLVE'),
@@ -81,6 +81,6 @@ export function emptyFunction() {
 }
 
 function poorSetReducer(acc, k) {
-    acc[k + ''] = true;
+    acc[k] = true;
     return acc;
 }
