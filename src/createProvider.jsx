@@ -35,7 +35,7 @@ export default function (initialState, eventHandlerCreators = {}) {
             this.eventHandlers = Object.entries(eventHandlerCreators)
                 .reduce((eventResponders, [name, responder]) =>
                         assign(eventResponders, {
-                            [name]: params => responder(params)(this.proxy),
+                            [name]: (...params) => responder(...params)(this.proxy),
                         }),
                     {});
             const {eventHandlers, subscribe, getState, getVersion} = this;
