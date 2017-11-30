@@ -35,6 +35,7 @@
     "indent": ["warn",4, {"SwitchCase": 1}],
     "camelcase": ["warn", {"properties": "always"}],
     "comma-spacing": ["warn", {"after": true}],
+    "comma-dangle":"off",
     "array-bracket-spacing":["off", "always"],
     "no-param-reassign": [0],
     "key-spacing": ["warn", { "afterColon": true, "beforeColon": false}],
