@@ -8,9 +8,10 @@ const {STATE, IDENTITY} = branchPrivates;
 
 export default function createStateProxy(state, onChange) {
     const root = new Branch();
-    ProxyHandler.sendRequest = createStateStore(root, onChange || emptyFunction);
+    const identity = new Identity(undefined, undefined, state);
+    ProxyHandler.sendRequest = createStateStore(root, onChange || emptyFunction, identity);
     root[STATE] = state;
-    root[IDENTITY] = new Identity();
+    root[IDENTITY] = identity;
     return new Proxy(root, ProxyHandler);
 }
 

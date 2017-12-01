@@ -7,19 +7,20 @@ export const branchPrivates = {
 
 export const identityPrivates = {
     ID: Symbol('ID'),
+    CACHED_STATE: Symbol('CACHED_STATE'),
     REMOVED: Symbol('REMOVED'),
     PARENT: Symbol('PARENT'),
     RESOLVE: Symbol('RESOLVE'),
     PUSH: Symbol('PUSH'),
     RENAME_SELF: Symbol('RENAME_CHILD'),
     REMOVE_CHILD: Symbol('REMOVE_CHILD'),
+    RESOLVE_STATE: Symbol('RESOLVE_STATE')
 };
 
 export const eventTypes = {
     ASSIGN: Symbol('ASSIGN'),
     CLEAR: Symbol('CLEAR'),
     REMOVE: Symbol('REMOVE'),
-    GET_STATE: Symbol('GET_STATE'),
     REPLACE: Symbol('REPLACE'),
     TOGGLE: Symbol('TOGGLE'),
 };

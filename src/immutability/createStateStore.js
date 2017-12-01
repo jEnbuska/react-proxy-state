@@ -2,27 +2,18 @@ import {
     branchPrivates,
     identityPrivates,
     eventTypes,
-    findChild,
     poorSet,
-    onAccessingRemovedBranch,
 } from '../common';
 
 const {IDENTITY, STATE} = branchPrivates;
-const {REMOVE_CHILD, RENAME_SELF} = identityPrivates;
-const {GET_STATE, ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
+const {REMOVE_CHILD, RENAME_SELF, CACHED_STATE, RESOLVE_STATE} = identityPrivates;
+const {ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
-export default function createStateStore(root, onChange) {
+export default function createStateStore(root, onChange, identity) {
     // eslint-disable-next-line consistent-return
     return function stateManager(event) {
         const {request, location} = event;
         let {param} = event;
-        if (request === GET_STATE) {
-            if (location) {
-                return findChild(root[STATE], location);
-            } else {
-                return onAccessingRemovedBranch();
-            }
-        }
         if (location) {
             const trace = createTraceablePath(root, location);
             const target = trace[trace.length - 1];
@@ -46,6 +37,9 @@ export default function createStateStore(root, onChange) {
                     throw new Error('Request-type: ' + request + ' not implemented');
             }
             root[STATE] = createNextState(trace);
+
+            identity[CACHED_STATE] = root[STATE];
+            console.log({ROOT: identity[RESOLVE_STATE](), CACHED: identity[CACHED_STATE], identity})
             onChange(root[STATE]);
         } else {
             throw new Error('Cannot change state for removed Branch');
@@ -56,10 +50,12 @@ export default function createStateStore(root, onChange) {
 function createTraceablePath(root, location) {
     let state = root[STATE];
     let identifier = root[IDENTITY];
+    delete identifier[CACHED_STATE];
     const list = [{state, identifier}];
     for (let i = location.length - 1; i >= 0; i--) {
         const key = location[i];
         identifier = identifier[key];
+        delete identifier[CACHED_STATE];
         state = state[key];
         list.push({key, identifier, state});
     }
@@ -69,17 +65,24 @@ function createTraceablePath(root, location) {
 function onAssign(identity, parameter, prevState) {
     for (const k in parameter) {
         if (identity[k] && parameter[k] !== prevState[k]) {
+            delete identity[k][CACHED_STATE];
             onClearState(identity[k], parameter[k], prevState[k]);
         }
     }
 }
 
 function onClearState(identity, newState = {}, prevState = {}) {
+    console.log({identity, newState, prevState})
     for (const k in identity) {
+        console.log({k})
         // eslint-disable-next-line curly
-        if (newState[k] === prevState[k])
+        if (newState[k] === prevState[k]){
+            console.log('continue')
             continue;
+        }
         if (newState[k] !== undefined) {
+            console.log('remove ' + k)
+            delete identity[k][CACHED_STATE];
             onClearState(identity[k], newState[k], prevState[k]);
         } else {
             identity[REMOVE_CHILD](k);
@@ -113,6 +116,9 @@ function onRemoveFromObject(target, param) {
                 identifier[REMOVE_CHILD](k);
             }
         } else {
+            if (identifier[k]) {
+                delete identifier[k][CACHED_STATE]
+            }
             nextState[k] = target.state[k];
         }
     }

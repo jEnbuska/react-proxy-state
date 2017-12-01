@@ -8,8 +8,8 @@ import ProxyHandler from './ProxyHandler';
 import util from 'util';
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
-const {RESOLVE} = identityPrivates;
-const {ASSIGN, CLEAR, REMOVE, GET_STATE, TOGGLE} = eventTypes;
+const {RESOLVE, CACHED_STATE, RESOLVE_STATE} = identityPrivates;
+const {ASSIGN, CLEAR, REMOVE, TOGGLE} = eventTypes;
 
 export default class Branch {
 
@@ -20,8 +20,7 @@ export default class Branch {
     }
 
     get state() {
-        const location = this[IDENTITY][RESOLVE]();
-        return ProxyHandler.sendRequest({request: GET_STATE, location});
+        return this[IDENTITY][RESOLVE_STATE]();
     }
 
     assign(...params) {
@@ -55,11 +54,13 @@ export default class Branch {
     }
 
     toggle() {
+        console.log({TOGGLE_STATE: this[IDENTITY][RESOLVE_STATE]()})
         const location = this[IDENTITY][RESOLVE]();
         ProxyHandler.sendRequest({
             request: TOGGLE,
             location,
         });
+        console.log({AFTER: this[IDENTITY][RESOLVE_STATE]()})
         return this;
     }
 

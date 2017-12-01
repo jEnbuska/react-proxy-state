@@ -6,7 +6,7 @@ import {
 } from '../common';
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
-const {PUSH, RESOLVE} = identityPrivates;
+const {PUSH, RESOLVE, RESOLVE_STATE} = identityPrivates;
 const {GET_STATE, ASSIGN} = eventTypes;
 
 export default class ProxyHandler {
@@ -20,23 +20,25 @@ export default class ProxyHandler {
         } else if (property === IDENTITY) {
             return target[IDENTITY];
         }
-        const location = target[IDENTITY][RESOLVE]();
-        if (location) {
-            const state = ProxyHandler.sendRequest({request: GET_STATE, location});
-            if (state && property in state && state[property]!==undefined) {
-                const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
-                return Reflect.apply(func, target, [target[IDENTITY][property] || target[IDENTITY][PUSH](property)]);
-            }
+        const identity = target[IDENTITY];
+        const state = identity[RESOLVE_STATE]();
+        console.log({state, property})
+        if (state && state[property] !== undefined) {
+            const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
+            const childIdentity = identity[PUSH](property, state[property]);
+            return Reflect.apply(func, target, [childIdentity]);
         }
         return undefined;
     }
 
     static set(target, property, value) {
-        const location = target[IDENTITY][RESOLVE]();
+        const identity = target[IDENTITY];
+        const location = identity[RESOLVE]();
+        const param = {[property]: value && value.state ? value.state : value};
         ProxyHandler.sendRequest({
             request: ASSIGN,
             location,
-            param: {[property]: value && value.state ? value.state : value},
+            param
         });
         return true;
     }
@@ -46,8 +48,7 @@ export default class ProxyHandler {
     }
 
     static has(target, prop) {
-        const location = target[IDENTITY][RESOLVE]();
-        const state = ProxyHandler.sendRequest({request: GET_STATE, location});
+        const state = target[IDENTITY][RESOLVE_STATE]();
         return !!(state && state[prop] !== undefined);
     }
 
@@ -57,7 +58,7 @@ export default class ProxyHandler {
         const location = target[IDENTITY][RESOLVE]();
         const state = ProxyHandler.sendRequest({request: GET_STATE, location});
         if (valueIsAssignable(state)) {
-            return Object.keys(state).filter(it => it !==undefined);
+            return Object.keys(state).filter(it => it !== undefined);
         }
     }
 }
