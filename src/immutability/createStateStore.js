@@ -1,15 +1,12 @@
 import {
-    branchPrivates,
     identityPrivates,
     eventTypes,
-    poorSet,
 } from '../common';
 
-const {IDENTITY, STATE} = branchPrivates;
-const {REMOVE_CHILD, RENAME_SELF, CACHED_STATE, RESOLVE_STATE} = identityPrivates;
+const {REMOVE_CHILD, RENAME_SELF, CACHED_STATE} = identityPrivates;
 const {ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
-export default function createStateStore(root, onChange, identity) {
+export default function createStateStore(root, onChange) {
     // eslint-disable-next-line consistent-return
     return function stateManager(event) {
         const {request, location} = event;
@@ -22,34 +19,31 @@ export default function createStateStore(root, onChange, identity) {
                     param = !target.state;
                 // eslint-disable-next-line no-fallthrough
                 case CLEAR:
-                    onClearState(target.identifier, param, target.state);
+                    onClear(target.identifier, target.state, param);
                     target.state = param;
                     break;
                 case ASSIGN:
-                    onAssign(target.identifier, param, target.state);
+                    onAssign(target, param);
                     target.state = {...target.state, ...param};
                     break;
                 case REMOVE:
-                    if (target.state instanceof Array) target.state = onRemoveFromArray(target.identifier, param, target.state);
+                    if (target.state instanceof Array) target.state = onRemoveFromArray(target, param);
                     else target.state = onRemoveFromObject(target, param);
                     break;
                 default:
                     throw new Error('Request-type: ' + request + ' not implemented');
             }
-            root[STATE] = createNextState(trace);
-
-            identity[CACHED_STATE] = root[STATE];
-            console.log({ROOT: identity[RESOLVE_STATE](), CACHED: identity[CACHED_STATE], identity})
-            onChange(root[STATE]);
+            root[CACHED_STATE] = createNextState(trace);
+            onChange(root[CACHED_STATE]);
         } else {
-            throw new Error('Cannot change state for removed Branch');
+            throw new Error('Cannot change state for non existing Branch');
         }
     };
 }
 
 function createTraceablePath(root, location) {
-    let state = root[STATE];
-    let identifier = root[IDENTITY];
+    let identifier = root;
+    let state = identifier[CACHED_STATE];
     delete identifier[CACHED_STATE];
     const list = [{state, identifier}];
     for (let i = location.length - 1; i >= 0; i--) {
@@ -62,30 +56,26 @@ function createTraceablePath(root, location) {
     return list;
 }
 
-function onAssign(identity, parameter, prevState) {
+function onAssign(target, parameter) {
+    const {state, identifier} = target;
     for (const k in parameter) {
-        if (identity[k] && parameter[k] !== prevState[k]) {
-            delete identity[k][CACHED_STATE];
-            onClearState(identity[k], parameter[k], prevState[k]);
+        if (identifier[k] && parameter[k] !== state[k]) {
+            delete identifier[k][CACHED_STATE];
+            onClear(identifier[k],state[k], parameter[k]);
         }
     }
 }
 
-function onClearState(identity, newState = {}, prevState = {}) {
-    console.log({identity, newState, prevState})
-    for (const k in identity) {
-        console.log({k})
-        // eslint-disable-next-line curly
-        if (newState[k] === prevState[k]){
-            console.log('continue')
-            continue;
-        }
-        if (newState[k] !== undefined) {
-            console.log('remove ' + k)
-            delete identity[k][CACHED_STATE];
-            onClearState(identity[k], newState[k], prevState[k]);
-        } else {
-            identity[REMOVE_CHILD](k);
+function onClear(identifier, state = {}, param = {}) {
+    for (const k in identifier) {
+        const value = param[k];
+        if (value !== state[k]) {
+            if (value !== undefined) {
+                delete identifier[k][CACHED_STATE];
+                onClear(identifier[k], state[k], value);
+            } else {
+                identifier[REMOVE_CHILD](k);
+            }
         }
     }
 }
@@ -107,37 +97,35 @@ function createNextState(childList) {
 }
 
 function onRemoveFromObject(target, param) {
-    const toBeRemoved = poorSet(param);
     const {identifier, state} = target;
+    const toBeRemoved = new Set(param);
     const nextState = {};
     for (const k in state) {
-        if (toBeRemoved[k]) {
+        if (toBeRemoved.has(k)) {
             if (identifier[k]) {
                 identifier[REMOVE_CHILD](k);
             }
         } else {
-            if (identifier[k]) {
-                delete identifier[k][CACHED_STATE]
-            }
             nextState[k] = target.state[k];
         }
     }
     return nextState;
 }
 
-function onRemoveFromArray(target, indexes, state) {
-    const toBeRemoved = poorSet(indexes);
+function onRemoveFromArray(target, indexes) {
+    const {identifier, state} = target;
+    const toBeRemoved = new Set(indexes);
     const nextState = [];
     const stateLength = state.length;
     for (let i = 0; i < stateLength; i++) {
         const {length} = nextState;
-        if (toBeRemoved[i]) {
-            if (i in target) {
-                target[REMOVE_CHILD](i);
+        if (toBeRemoved.has(i)) {
+            if (i in identifier) {
+                identifier[REMOVE_CHILD](i);
             }
         } else {
-            if (i in target && i !== length) {
-                target[i][RENAME_SELF](length + '');
+            if (i in identifier && i !== length) {
+                identifier[i][RENAME_SELF](length + '');
             }
             nextState.push(state[i]);
         }

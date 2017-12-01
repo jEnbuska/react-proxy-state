@@ -79,6 +79,7 @@
     "object-property-newline": "off",
     "prefer-arrow-callback": "off",
     "no-restricted-syntax": "off",
+    "no-return-assign": "off",
     "no-prototype-builtins": "off",
     "guard-for-in": "off",
     "valid-typeof": "off",

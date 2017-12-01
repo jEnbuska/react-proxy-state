@@ -1,21 +1,19 @@
 import {identityPrivates} from '../common';
 
-const {PUSH, REMOVE_CHILD, RENAME_SELF, RESOLVE, ID, REMOVED, PARENT, CACHED_STATE, RESOLVE_STATE} = identityPrivates;
-const COUNT = Symbol('COUNT')
+const {ADD, REMOVE_CHILD, RENAME_SELF, RESOLVE_LOCATION, ID, REMOVED, PARENT, CACHED_STATE, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;
 export default class Identity {
 
     [CACHED_STATE];
     [REMOVED];
-    static count = 0;
+    [BRANCH_PROXY];
 
     constructor(key, prev, state) {
-        this[COUNT] = Identity.count++;
         this[ID] = key;
         this[PARENT] = prev;
         this[CACHED_STATE] = state;
     }
 
-    [PUSH](key, state) {
+    [ADD](key, state) {
         return (this[key] = new Identity(key, this, state));
     }
 
@@ -24,39 +22,36 @@ export default class Identity {
             delete this[PARENT][this[ID]];
             this[PARENT][key] = this;
         }
-        delete this[CACHED_STATE];
         this[ID] = key;
     }
 
     [REMOVE_CHILD](key) {
         this[key][REMOVED] = true;
-        delete this[key][CACHED_STATE];
         delete this[key];
     }
 
     // eslint-disable-next-line consistent-return
     [RESOLVE_STATE]() {
-
-        console.log({identity: this, RES_STATE: this[ID], COUNT: this[COUNT], CACHED: this[CACHED_STATE]})
-        if (this[CACHED_STATE] !== undefined) {
-            console.log('return cached state')
-            return this[CACHED_STATE];
-        }
-        if (!this[REMOVED] && this[CACHED_STATE] === undefined) {
-            // eslint-disable-next-line no-return-assign
-            return this[CACHED_STATE] = (this[PARENT][RESOLVE_STATE]() || {})[this[ID]];
-        }else{
-            console.log('no end result')
+        if (!this[REMOVED]) {
+            if (this[CACHED_STATE] !== undefined) {
+                return this[CACHED_STATE];
+            }
+            if (this[CACHED_STATE] === undefined) {
+                const parentState = this[PARENT][RESOLVE_STATE]();
+                if (parentState) {
+                    return this[CACHED_STATE] = parentState[this[ID]];
+                }
+            }
         }
     }
 
-    [RESOLVE](acc = []) {
+    [RESOLVE_LOCATION](acc = []) {
         if (this[REMOVED]) {
-            return false;
+            return undefined;
         }
         if (this[ID]) {
             acc.push(this[ID]);
-            return this[PARENT][RESOLVE](acc);
+            return this[PARENT][RESOLVE_LOCATION](acc);
         }
         return acc;
     }

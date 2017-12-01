@@ -2,15 +2,14 @@ import {branchPrivates, emptyFunction} from './common';
 import Branch from './immutability/Branch';
 import Identity from './immutability/Identity';
 import createStateStore from './immutability/createStateStore';
-import ProxyHandler from './immutability/ProxyHandler';
+import ProxyHandler, {map} from './immutability/ProxyHandler';
 
-const {STATE, IDENTITY} = branchPrivates;
+const {IDENTITY} = branchPrivates;
 
 export default function createStateProxy(state, onChange) {
     const root = new Branch();
     const identity = new Identity(undefined, undefined, state);
-    ProxyHandler.sendRequest = createStateStore(root, onChange || emptyFunction, identity);
-    root[STATE] = state;
+    ProxyHandler.sendRequest = createStateStore(identity, onChange || emptyFunction, identity);
     root[IDENTITY] = identity;
     return new Proxy(root, ProxyHandler);
 }

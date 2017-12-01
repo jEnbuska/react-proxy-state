@@ -1,5 +1,4 @@
 import change from '../src';
-import {invalidReferenceHandler, ASSIGN, REMOVE, GET_STATE, CLEAR} from '../src/common';
 
 function verifyErrorOnChange(...params) {
     params.forEach(next => {
@@ -12,32 +11,13 @@ function verifyErrorOnChange(...params) {
 }
 
 describe('exception', () => {
-    beforeAll(() => {
-        Object.assign(invalidReferenceHandler,
-            {
-                [ASSIGN]: () => {
-                    throw new Error();
-                },
-                [CLEAR]: () => {
-                    throw new Error();
-                },
-                [REMOVE]: () => {
-                    throw new Error();
-                },
-                [GET_STATE]: () => {
-                    throw new Error();
-                },
-            },
-        );
-    });
-
     test('changing removed child subject should throw an exception',
         () => {
             const {child} = change({child: {a: {val: 1}, b: 2, c: {d: {e: 3}}}});
             const {a, c} = child;
             const {d} = c;
             child.remove('a');
-            child.remove(['c']);
+            child.remove('c');
             verifyErrorOnChange(a, c, d);
         });
 

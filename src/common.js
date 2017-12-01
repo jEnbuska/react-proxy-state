@@ -1,28 +1,31 @@
 export const branchPrivates = {
-    IDENTITY: Symbol('IDENTITY'),
-    STATE: Symbol('ACCESS_STATE'),
-    PROXY_CONSTRUCTOR: Symbol('PROXY_CONSTRUCTOR'),
-    KEYS: Symbol('KEYS'),
+    IDENTITY: Symbol('BRANCH::IDENTITY'),
+    STATE: Symbol('BRANCH::ACCESS_STATE'),
+    PROXY_CONSTRUCTOR: Symbol('BRANCH::PROXY_CONSTRUCTOR'),
+    KEYS: Symbol('BRANCH::KEYS'),
+    PROXY: Symbol('BRANCH::PROXY'),
 };
 
 export const identityPrivates = {
-    ID: Symbol('ID'),
-    CACHED_STATE: Symbol('CACHED_STATE'),
-    REMOVED: Symbol('REMOVED'),
-    PARENT: Symbol('PARENT'),
-    RESOLVE: Symbol('RESOLVE'),
-    PUSH: Symbol('PUSH'),
-    RENAME_SELF: Symbol('RENAME_CHILD'),
-    REMOVE_CHILD: Symbol('REMOVE_CHILD'),
-    RESOLVE_STATE: Symbol('RESOLVE_STATE')
+    ID: Symbol('IDENTITY::ID'),
+    CACHED_LOCATION: Symbol('IDENTITY::CACHED_LOCATION'),
+    BRANCH_PROXY: Symbol('IDENTITY::BRANCH_PROXY'),
+    CACHED_STATE: Symbol('IDENTITY::CACHED_STATE'),
+    REMOVED: Symbol('IDENTITY::REMOVED'),
+    PARENT: Symbol('IDENTITY::PARENT'),
+    RESOLVE_LOCATION: Symbol('IDENTITY::RESOLVE_LOCATION'),
+    ADD: Symbol('IDENTITY::ADD'),
+    RENAME_SELF: Symbol('IDENTITY::RENAME_CHILD'),
+    REMOVE_CHILD: Symbol('IDENTITY::REMOVE_CHILD'),
+    RESOLVE_STATE: Symbol('IDENTITY::RESOLVE_STATE')
 };
 
 export const eventTypes = {
-    ASSIGN: Symbol('ASSIGN'),
-    CLEAR: Symbol('CLEAR'),
-    REMOVE: Symbol('REMOVE'),
-    REPLACE: Symbol('REPLACE'),
-    TOGGLE: Symbol('TOGGLE'),
+    ASSIGN: Symbol('EVENT::ASSIGN'),
+    CLEAR: Symbol('EVENT::CLEAR'),
+    REMOVE: Symbol('EVENT::REMOVE'),
+    REPLACE: Symbol('EVENT::REPLACE'),
+    TOGGLE: Symbol('EVENT::TOGGLE'),
 };
 
 export const invalidAssignableTypes = {
@@ -41,47 +44,4 @@ export function valueIsAssignable(value) {
     return value && value instanceof Object && !invalidAssignableTypes[getPrototypeOf(value).constructor.name];
 }
 
-export function stringify(obj) {
-    try {
-        return JSON.stringify(obj, null, 2);
-    } catch (Exception) {
-        return obj;
-    }
-}
-
-export function findChild(value, location) {
-    for (let i = location.length - 1; i >= 0; --i) {
-        const key = location[i];
-        value = value[key];
-    }
-    return value;
-}
-
-export const invalidReferenceHandler = {
-    [eventTypes.ASSIGN](target, param) {
-        throw new Error('Cannot apply assign to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
-    },
-    [eventTypes.CLEAR](target, param) {
-        throw new Error('Cannot apply clear to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
-    },
-    [eventTypes.REMOVE](target, param) {
-        throw new Error('Cannot apply remove to detached child ' + target.join(', ') + '\nParam: ' + stringify(param));
-    },
-};
-
-export function poorSet(arr) {
-    return arr.reduce(poorSetReducer, {});
-}
-
-export function onAccessingRemovedBranch() {
-    // eslint-disable-next-line no-console
-    console.error('Accessing of removed Branch');
-}
-
-export function emptyFunction() {
-}
-
-function poorSetReducer(acc, k) {
-    acc[k] = true;
-    return acc;
-}
+export function emptyFunction() {}

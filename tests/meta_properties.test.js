@@ -60,9 +60,9 @@ describe('meta properties', () => {
         expect(subject.a.state).toEqual(0);
     });
 
-    test('comparison should fail', () => {
+    test('comparison of proxys representing same instance should not fail', () => {
         const subject = change({a: {}});
-        expect(subject.a === subject.a).toBeFalsy();
+        expect(subject.a === subject.a).toBeTruthy();
     });
 
     test('addition using proxies', () => {

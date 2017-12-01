@@ -4,36 +4,34 @@ import {
     valueIsAssignable,
     eventTypes,
 } from '../common';
+import Identity from './Identity'
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
-const {PUSH, RESOLVE, RESOLVE_STATE} = identityPrivates;
-const {GET_STATE, ASSIGN} = eventTypes;
+const {ADD, RESOLVE_LOCATION, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;
+const {ASSIGN} = eventTypes;
 
 export default class ProxyHandler {
 
     static sendRequest;
     static _descriptor = {configurable: true, enumerable: true};
 
-    static get(target, property) {
+    static get(target, property, proxy) {
         if (property in target) {
-            return Reflect.get(target, property);
-        } else if (property === IDENTITY) {
-            return target[IDENTITY];
+            return Reflect.get(target, property, proxy);
         }
         const identity = target[IDENTITY];
+        if (identity[property]) return identity[property][BRANCH_PROXY];
         const state = identity[RESOLVE_STATE]();
-        console.log({state, property})
         if (state && state[property] !== undefined) {
             const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
-            const childIdentity = identity[PUSH](property, state[property]);
-            return Reflect.apply(func, target, [childIdentity]);
+            const childIdentity = identity[ADD](property, state[property]);
+            return childIdentity[BRANCH_PROXY] = Reflect.apply(func, target, [childIdentity]);
         }
         return undefined;
     }
 
     static set(target, property, value) {
-        const identity = target[IDENTITY];
-        const location = identity[RESOLVE]();
+        const location = target[IDENTITY][RESOLVE_LOCATION]();
         const param = {[property]: value && value.state ? value.state : value};
         ProxyHandler.sendRequest({
             request: ASSIGN,
@@ -55,8 +53,7 @@ export default class ProxyHandler {
     static ownKeys(target) {
         //const func = Reflect.get(target, KEYS);
         //return Reflect.apply(func, target, []);
-        const location = target[IDENTITY][RESOLVE]();
-        const state = ProxyHandler.sendRequest({request: GET_STATE, location});
+        const state = target[IDENTITY][RESOLVE_STATE]();
         if (valueIsAssignable(state)) {
             return Object.keys(state).filter(it => it !== undefined);
         }

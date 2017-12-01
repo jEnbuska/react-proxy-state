@@ -7,16 +7,18 @@ import {
 import ProxyHandler from './ProxyHandler';
 import util from 'util';
 
-const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
-const {RESOLVE, CACHED_STATE, RESOLVE_STATE} = identityPrivates;
+const {IDENTITY, PROXY_CONSTRUCTOR, PROXY} = branchPrivates;
+const {RESOLVE_LOCATION, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;
 const {ASSIGN, CLEAR, REMOVE, TOGGLE} = eventTypes;
 
 export default class Branch {
 
+    [IDENTITY];
+
     static [PROXY_CONSTRUCTOR](identity) {
         const branch = new Branch();
         branch[IDENTITY] = identity;
-        return new Proxy(branch, ProxyHandler);
+        return branch[PROXY] = identity[BRANCH_PROXY] = new Proxy(branch, ProxyHandler);
     }
 
     get state() {
@@ -24,27 +26,27 @@ export default class Branch {
     }
 
     assign(...params) {
-        const location = this[IDENTITY][RESOLVE]();
+        const location = this[IDENTITY][RESOLVE_LOCATION]();
         ProxyHandler.sendRequest({
             request: ASSIGN,
             location,
             param: Object.assign({}, ...params),
         });
-        return this;
+        return this[PROXY];
     }
 
     clear(param) {
-        const location = this[IDENTITY][RESOLVE]();
+        const location = this[IDENTITY][RESOLVE_LOCATION]();
         ProxyHandler.sendRequest({
             request: CLEAR,
             location,
             param,
         });
-        return this;
+        return this[PROXY];
     }
 
     remove(...param) {
-        const location = this[IDENTITY][RESOLVE]();
+        const location = this[IDENTITY][RESOLVE_LOCATION]();
         ProxyHandler.sendRequest({
             request: REMOVE,
             location,
@@ -54,13 +56,11 @@ export default class Branch {
     }
 
     toggle() {
-        console.log({TOGGLE_STATE: this[IDENTITY][RESOLVE_STATE]()})
-        const location = this[IDENTITY][RESOLVE]();
+        const location = this[IDENTITY][RESOLVE_LOCATION]();
         ProxyHandler.sendRequest({
             request: TOGGLE,
             location,
         });
-        console.log({AFTER: this[IDENTITY][RESOLVE_STATE]()})
         return this;
     }
 
