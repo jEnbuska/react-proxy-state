@@ -7,9 +7,8 @@ export const branchPrivates = {
 
 export const identityPrivates = {
     ID: Symbol('IDENTITY::ID'),
-    CACHED_LOCATION: Symbol('IDENTITY::CACHED_LOCATION'),
     BRANCH_PROXY: Symbol('IDENTITY::BRANCH_PROXY'),
-    CACHED_STATE: Symbol('IDENTITY::CACHED_STATE'),
+    STATE: Symbol('IDENTITY::CACHED_STATE'),
     REMOVED: Symbol('IDENTITY::REMOVED'),
     PARENT: Symbol('IDENTITY::PARENT'),
     RESOLVE_LOCATION: Symbol('IDENTITY::RESOLVE_LOCATION'),

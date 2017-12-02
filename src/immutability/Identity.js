@@ -1,16 +1,14 @@
 import {identityPrivates} from '../common';
 
-const {ADD, REMOVE_CHILD, RENAME_SELF, RESOLVE_LOCATION, ID, REMOVED, PARENT, CACHED_STATE, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;
+const {ADD, REMOVE_CHILD, RENAME_SELF, RESOLVE_LOCATION, ID, REMOVED, PARENT, STATE, RESOLVE_STATE} = identityPrivates;
 export default class Identity {
 
-    [CACHED_STATE];
+    [STATE];
     [REMOVED];
-    [BRANCH_PROXY];
 
-    constructor(key, prev, state) {
+    constructor(key, prev) {
         this[ID] = key;
         this[PARENT] = prev;
-        this[CACHED_STATE] = state;
     }
 
     [ADD](key, state) {
@@ -32,16 +30,15 @@ export default class Identity {
 
     // eslint-disable-next-line consistent-return
     [RESOLVE_STATE]() {
-        if (!this[REMOVED]) {
-            if (this[CACHED_STATE] !== undefined) {
-                return this[CACHED_STATE];
+        if (this[REMOVED]) {
+            return undefined;
+        } else if (this[PARENT]) {
+            const parentState = this[PARENT][RESOLVE_STATE]();
+            if (parentState) {
+                return parentState[this[ID]];
             }
-            if (this[CACHED_STATE] === undefined) {
-                const parentState = this[PARENT][RESOLVE_STATE]();
-                if (parentState) {
-                    return this[CACHED_STATE] = parentState[this[ID]];
-                }
-            }
+        } else {
+            return this[STATE];
         }
     }
 

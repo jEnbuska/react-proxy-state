@@ -1,11 +1,13 @@
+import util from 'util';
 import {
     branchPrivates,
     identityPrivates,
     eventTypes,
-    valueIsAssignable,
+    valueIsAssignable
 } from '../common';
-import ProxyHandler from './ProxyHandler';
-import util from 'util';
+
+import handler from './proxyHandler';
+import {sendRequest} from './createStateStore';
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
 const {RESOLVE_LOCATION, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;
@@ -18,7 +20,7 @@ export default class Branch {
     static [PROXY_CONSTRUCTOR](identity) {
         const branch = new Branch();
         branch[IDENTITY] = identity;
-        return identity[BRANCH_PROXY] = new Proxy(branch, ProxyHandler);
+        return identity[BRANCH_PROXY] = new Proxy(branch, handler);
     }
 
     get state() {
@@ -26,41 +28,22 @@ export default class Branch {
     }
 
     assign(...params) {
-        const location = this[IDENTITY][RESOLVE_LOCATION]();
-        ProxyHandler.sendRequest({
-            request: ASSIGN,
-            location,
-            param: Object.assign({}, ...params),
-        });
+        sendRequest(ASSIGN, this[IDENTITY][RESOLVE_LOCATION](), Object.assign({}, ...params));
         return this;
     }
 
     clear(param) {
-        const location = this[IDENTITY][RESOLVE_LOCATION]();
-        ProxyHandler.sendRequest({
-            request: CLEAR,
-            location,
-            param,
-        });
+        sendRequest(CLEAR, this[IDENTITY][RESOLVE_LOCATION](), param);
         return this;
     }
 
     remove(...param) {
-        const location = this[IDENTITY][RESOLVE_LOCATION]();
-        ProxyHandler.sendRequest({
-            request: REMOVE,
-            location,
-            param,
-        });
+        sendRequest(REMOVE, this[IDENTITY][RESOLVE_LOCATION](), param);
         return this;
     }
 
     toggle() {
-        const location = this[IDENTITY][RESOLVE_LOCATION]();
-        ProxyHandler.sendRequest({
-            request: TOGGLE,
-            location,
-        });
+        sendRequest(TOGGLE, this[IDENTITY][RESOLVE_LOCATION]());
         return this;
     }
 

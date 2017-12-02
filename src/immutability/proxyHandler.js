@@ -4,17 +4,17 @@ import {
     valueIsAssignable,
     eventTypes,
 } from '../common';
+import {sendRequest} from './createStateStore';
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
 const {ADD, RESOLVE_LOCATION, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;
 const {ASSIGN} = eventTypes;
 
-export default class ProxyHandler {
+const descriptor = {configurable: true, enumerable: true};
+export default {
+    sendRequest: undefined,
 
-    static sendRequest;
-    static _descriptor = {configurable: true, enumerable: true};
-
-    static get(target, property, proxy) {
+    get(target, property, proxy) {
         if (property in target) {
             return Reflect.get(target, property, proxy);
         }
@@ -27,29 +27,23 @@ export default class ProxyHandler {
             return childIdentity[BRANCH_PROXY] = Reflect.apply(func, target, [childIdentity]);
         }
         return undefined;
-    }
+    },
 
-    static set(target, property, value) {
-        const location = target[IDENTITY][RESOLVE_LOCATION]();
-        const param = {[property]: value && value.state ? value.state : value};
-        ProxyHandler.sendRequest({
-            request: ASSIGN,
-            location,
-            param
-        });
+    set(target, property, value) {
+        sendRequest(ASSIGN, target[IDENTITY][RESOLVE_LOCATION](), {[property]: value && value.state ? value.state : value});
         return true;
-    }
+    },
 
-    static getOwnPropertyDescriptor() {
-        return ProxyHandler._descriptor;
-    }
+    getOwnPropertyDescriptor() {
+        return descriptor;
+    },
 
-    static has(target, prop) {
+    has(target, prop) {
         const state = target[IDENTITY][RESOLVE_STATE]();
         return !!(state && state[prop] !== undefined);
-    }
+    },
 
-    static ownKeys(target) {
+    ownKeys(target) {
         //const func = Reflect.get(target, KEYS);
         //return Reflect.apply(func, target, []);
         const state = target[IDENTITY][RESOLVE_STATE]();
@@ -57,4 +51,4 @@ export default class ProxyHandler {
             return Object.keys(state).filter(it => it !== undefined);
         }
     }
-}
+};

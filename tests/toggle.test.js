@@ -38,6 +38,5 @@ describe('toggle', () => {
     test('toggle and get state', () => {
         const subject = change({a: {}});
         expect(subject.a.toggle().state).toBe(false);
-
     });
 });

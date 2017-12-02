@@ -3,14 +3,17 @@ import {
     eventTypes,
 } from '../common';
 
-const {REMOVE_CHILD, RENAME_SELF, CACHED_STATE} = identityPrivates;
+const {REMOVE_CHILD, RENAME_SELF, STATE} = identityPrivates;
 const {ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
+let stateManager;
+
+export function sendRequest(request, location, param) {
+    stateManager(request, location, param);
+}
+
 export default function createStateStore(root, onChange) {
-    // eslint-disable-next-line consistent-return
-    return function stateManager(event) {
-        const {request, location} = event;
-        let {param} = event;
+    return stateManager = function stateManager(request, location, param) {
         if (location) {
             const trace = createTraceablePath(root, location);
             const target = trace[trace.length - 1];
@@ -33,8 +36,8 @@ export default function createStateStore(root, onChange) {
                 default:
                     throw new Error('Request-type: ' + request + ' not implemented');
             }
-            root[CACHED_STATE] = createNextState(trace);
-            onChange(root[CACHED_STATE]);
+            root[STATE] = createNextState(trace);
+            onChange(root[STATE]);
         } else {
             throw new Error('Cannot change state for non existing Branch');
         }
@@ -43,13 +46,11 @@ export default function createStateStore(root, onChange) {
 
 function createTraceablePath(root, location) {
     let identifier = root;
-    let state = identifier[CACHED_STATE];
-    delete identifier[CACHED_STATE];
+    let state = identifier[STATE];
     const list = [{state, identifier}];
     for (let i = location.length - 1; i >= 0; i--) {
         const key = location[i];
         identifier = identifier[key];
-        delete identifier[CACHED_STATE];
         state = state[key];
         list.push({key, identifier, state});
     }
@@ -60,8 +61,7 @@ function onAssign(target, parameter) {
     const {state, identifier} = target;
     for (const k in parameter) {
         if (identifier[k] && parameter[k] !== state[k]) {
-            delete identifier[k][CACHED_STATE];
-            onClear(identifier[k],state[k], parameter[k]);
+            onClear(identifier[k], state[k], parameter[k]);
         }
     }
 }
@@ -71,7 +71,6 @@ function onClear(identifier, state = {}, param = {}) {
         const value = param[k];
         if (value !== state[k]) {
             if (value !== undefined) {
-                delete identifier[k][CACHED_STATE];
                 onClear(identifier[k], state[k], value);
             } else {
                 identifier[REMOVE_CHILD](k);

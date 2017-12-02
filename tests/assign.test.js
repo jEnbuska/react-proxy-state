@@ -8,6 +8,23 @@ describe('assign', () => {
         expect(subject.state).toEqual({a: 2});
     });
 
+    test('override deep value', () => {
+        const {child} = change({child: {a: 1, b: {c: 2, d: 3, e: {f: 4}}}});
+        const {f} = child.b.e;
+        expect(f.state).toBe(4);
+        child.assign({b: 0});
+        expect(child.state).toEqual({a: 1, b: 0});
+        expect(f.state).toBeUndefined();
+        expect(() => f.assign(1)).toThrow();
+    });
+
+    test('change deep state and get state', () => {
+        const {child} = change({child: {a: 1, b: {c: 2, d: 3, e: {f: 4}}}});
+        const {f} = child.b.e;
+        child.b.assign({d: 2, e: {f: 2}});
+        expect(f.state).toBe(2);
+    });
+
     test('add a new values', () => {
         const {child} = change({child: {a: 1, b: {c: 2, d: 3, e: {f: 4}}}});
         child.assign({x: 1});
