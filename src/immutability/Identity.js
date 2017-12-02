@@ -45,14 +45,14 @@ export default class Identity {
         }
     }
 
+    // eslint-disable-next-line consistent-return
     [RESOLVE_LOCATION](acc = []) {
-        if (this[REMOVED]) {
-            return undefined;
+        if (!this[REMOVED]) {
+            if (this[PARENT]) {
+                acc.push(this[ID]);
+                return this[PARENT][RESOLVE_LOCATION](acc);
+            }
+            return acc;
         }
-        if (this[ID]) {
-            acc.push(this[ID]);
-            return this[PARENT][RESOLVE_LOCATION](acc);
-        }
-        return acc;
     }
 }

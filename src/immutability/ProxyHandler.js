@@ -4,7 +4,6 @@ import {
     valueIsAssignable,
     eventTypes,
 } from '../common';
-import Identity from './Identity'
 
 const {IDENTITY, PROXY_CONSTRUCTOR} = branchPrivates;
 const {ADD, RESOLVE_LOCATION, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;

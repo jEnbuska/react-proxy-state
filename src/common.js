@@ -3,7 +3,6 @@ export const branchPrivates = {
     STATE: Symbol('BRANCH::ACCESS_STATE'),
     PROXY_CONSTRUCTOR: Symbol('BRANCH::PROXY_CONSTRUCTOR'),
     KEYS: Symbol('BRANCH::KEYS'),
-    PROXY: Symbol('BRANCH::PROXY'),
 };
 
 export const identityPrivates = {
