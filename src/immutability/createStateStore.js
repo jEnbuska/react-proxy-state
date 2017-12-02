@@ -23,11 +23,13 @@ export default function createStateStore(root, onChange) {
                 // eslint-disable-next-line no-fallthrough
                 case CLEAR:
                     onClear(target.identifier, target.state, param);
+
                     target.state = param;
                     break;
                 case ASSIGN:
                     onAssign(target, param);
                     target.state = {...target.state, ...param};
+
                     break;
                 case REMOVE:
                     if (target.state instanceof Array) target.state = onRemoveFromArray(target, param);
@@ -47,12 +49,13 @@ export default function createStateStore(root, onChange) {
 function createTraceablePath(root, location) {
     let identifier = root;
     let state = identifier[STATE];
-    const list = [{state, identifier}];
-    for (let i = location.length - 1; i >= 0; i--) {
-        const key = location[i];
+    const list = new Array(location.length+1);
+    list[0] = {identifier, state};
+    for (let i = 1; i < list.length; ++i) {
+        const key = location[i-1];
         identifier = identifier[key];
         state = state[key];
-        list.push({key, identifier, state});
+        list[i] = ({key, identifier, state});
     }
     return list;
 }
@@ -80,7 +83,7 @@ function onClear(identifier, state = {}, param = {}) {
 }
 
 function createNextState(childList) {
-    for (let i = childList.length - 1; i > 0; --i) {
+    for (let i = childList.length-1; i > 0; --i) {
         const {key, state: childState} = childList[i];
         const {state: parentState} = childList[i - 1];
         if (parentState instanceof Array) {

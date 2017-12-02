@@ -23,14 +23,15 @@ export default {
         const state = identity[RESOLVE_STATE]();
         if (state && state[property] !== undefined) {
             const func = Reflect.get(target.constructor, PROXY_CONSTRUCTOR);
-            const childIdentity = identity[ADD](property, state[property]);
+            const childIdentity = identity[ADD](property);
             return childIdentity[BRANCH_PROXY] = Reflect.apply(func, target, [childIdentity]);
         }
         return undefined;
     },
 
     set(target, property, value) {
-        sendRequest(ASSIGN, target[IDENTITY][RESOLVE_LOCATION](), {[property]: value && value.state ? value.state : value});
+        const location = target[IDENTITY][RESOLVE_LOCATION]();
+        sendRequest(ASSIGN, location, {[property]: value && value.state ? value.state : value});
         return true;
     },
 

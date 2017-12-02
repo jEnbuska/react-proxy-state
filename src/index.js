@@ -9,7 +9,7 @@ const {IDENTITY} = branchPrivates;
 
 export default function createStateProxy(state, onChange) {
     const root = new Branch();
-    const identity = new Identity();
+    const identity = new Identity(undefined, undefined, 0);
     identity[STATE] = state;
     createStateStore(identity, onChange || emptyFunction, identity);
     root[IDENTITY] = identity;

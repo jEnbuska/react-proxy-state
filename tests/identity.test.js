@@ -5,30 +5,30 @@ const {RESOLVE_LOCATION, ADD, REMOVE_CHILD} = identityPrivates;
 
 describe('Identity', () => {
     test('Ensure identity integrity', () => {
-        const tree = new Identity();
+        const tree = new Identity(undefined, undefined, 0);
         expect(tree[RESOLVE_LOCATION]()).toEqual([]);
         const a = tree[ADD]('a');
         expect(a[RESOLVE_LOCATION]()).toEqual(['a']);
         const b = a[ADD]('b');
-        expect(b[RESOLVE_LOCATION]()).toEqual(['b', 'a']);
+        expect(b[RESOLVE_LOCATION]()).toEqual(['a', 'b']);
         const c = b[ADD]('c');
-        expect(c[RESOLVE_LOCATION]()).toEqual(['c', 'b', 'a']);
+        expect(c[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'c']);
 
         const x = b[ADD]('x');
-        expect(x[RESOLVE_LOCATION]()).toEqual(['x', 'b', 'a']);
-        expect(c[RESOLVE_LOCATION]()).toEqual(['c', 'b', 'a']);
-        expect(b[RESOLVE_LOCATION]()).toEqual(['b', 'a']);
+        expect(x[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'x',]);
+        expect(c[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'c',]);
+        expect(b[RESOLVE_LOCATION]()).toEqual(['a', 'b']);
         expect(a[RESOLVE_LOCATION]()).toEqual(['a']);
         const y = x[ADD]('y');
         const z = x[ADD]('z');
-        expect(y[RESOLVE_LOCATION]()).toEqual(['y', 'x', 'b', 'a']);
-        expect(z[RESOLVE_LOCATION]()).toEqual(['z', 'x', 'b', 'a']);
+        expect(y[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'x', 'y']);
+        expect(z[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'x', 'z']);
         const i = z[ADD]('i');
         const j = z[ADD]('j');
         const k = j[ADD]('k');
-        expect(i[RESOLVE_LOCATION]()).toEqual(['i', 'z', 'x', 'b', 'a']);
-        expect(j[RESOLVE_LOCATION]()).toEqual(['j', 'z', 'x', 'b', 'a']);
-        expect(k[RESOLVE_LOCATION]()).toEqual(['k', 'j', 'z', 'x', 'b', 'a']);
+        expect(i[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'x', 'z', 'i']);
+        expect(j[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'x', 'z', 'j']);
+        expect(k[RESOLVE_LOCATION]()).toEqual(['a', 'b', 'x', 'z', 'j', 'k']);
 
         b[REMOVE_CHILD]('x');
 

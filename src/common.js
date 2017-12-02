@@ -7,6 +7,8 @@ export const branchPrivates = {
 
 export const identityPrivates = {
     ID: Symbol('IDENTITY::ID'),
+    DEPTH: Symbol('IDENTITY::DEPTH'),
+    INDEX: Symbol('IDENTITY::INDEX'),
     BRANCH_PROXY: Symbol('IDENTITY::BRANCH_PROXY'),
     STATE: Symbol('IDENTITY::CACHED_STATE'),
     REMOVED: Symbol('IDENTITY::REMOVED'),
