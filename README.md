@@ -109,7 +109,7 @@ TodoItem.contextTypes = {
 export default TodoItem;
 ```
 
-![react-proxy-state_flow](https://user-images.githubusercontent.com/11061511/33479885-7b7a56fc-d697-11e7-89d8-e3c5f3a79256.png)
+![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
   
 ### Caveats examples
 ```
