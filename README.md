@@ -16,6 +16,7 @@ Context state should be an object, and it should be kept normalized.
 
 ### 2. Map context state to props
 Though context state can be manually be subscribed from context, Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
+
 The actual Component will get the context state as properties.
 ```
 import {mapContextToProps} from 'react-proxy-state';
@@ -35,7 +36,9 @@ const selector = (contextState, ownProps) => {
 export default mapContextToProps(selector)(Todos);
 ```
 Function 'mapContextToProps' takes a state **selector** as parameter. The state selector is a function that takes contexts state and component own properties as parameter.
+
 This function return a function that that accepts the actual component as parameter.
+
 Every time Components properties or context state is changed, selector functions is re-run, and what ever it returns it is passed as property to the actual component ******(if the output changes compared to the previous output)******. 
 
 
