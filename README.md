@@ -2,7 +2,7 @@ Experimental library for managing React app state using Proxys
 
 Works only on browsers that support Javascript Proxys
 
-### 1. ContextProvider state
+### 1. Context state Provider
 Context state is owned and served by ContextProvider Component, that lives in the component hierarchy root.
 ContextProvider Component is created by `createProvider`function, that takes initial application state as 1st parameter.
 ```
@@ -35,7 +35,9 @@ const selector = (contextState, ownProps) => {
 export default mapContextToProps(selector)(Todos);
 ```
 Function 'mapContextToProps' takes a state **selector** as parameter. The state selector is a function that takes contexts state and component own properties as parameter.
-Every time Components properties or context state is changed, this functions is re-run, and what ever it returns it is passed as property to the actual component ******(if the output has changed)******. 
+This function return a function that that accepts the actual component as parameter.
+Every time Components properties or context state is changed, selector functions is re-run, and what ever it returns it is passed as property to the actual component ******(if the output changes compared to the previous output)******. 
+
 
 This higher order component passes the context state 
 
