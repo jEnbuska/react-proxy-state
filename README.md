@@ -8,6 +8,12 @@ ContextProvider Component is created by `createProvider`function, that takes ini
 ```
 import {createProvider} from 'react-proxy-state'
 const ContextProvider = createProvider(initialState);
+
+const Root = () => (
+    <ContextProvider>
+        <App/>
+    </ContextProvider>
+);
 ```
 All direct and and recursive children of ContextProvider can subscribe to state changes from ContextProvider throught components context variable function `subscribe`. 
 Context state can read by using components context variable function `getState`.
@@ -17,7 +23,8 @@ Context state should be an object, and it should be kept normalized.
 ### 2. Map context state to props
 Though context state can be manually be subscribed from context, Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
 
-The actual Component will get the context state as properties.
+The higher-order component is called *Connector*
+The actual Component will get the context state as properties from the Connector component.
 ```
 import {mapContextToProps} from 'react-proxy-state';
 
@@ -39,18 +46,49 @@ Function 'mapContextToProps' takes a state **selector** as parameter. The state 
 
 This function return a function that that accepts the actual component as parameter.
 
-Every time Components properties or context state is changed, selector functions is re-run, and what ever it returns it is passed as property to the actual component ******(if the output changes compared to the previous output)******. 
+Every time Components properties or context state is changed, selector functions is re-run, and what ever it returns it is passed as property by Connector to the actual component *(if the output changes compared to the previous output)*. 
+
+### 3. Contexts eventHandler Provider
+Event handlers are functions that are responsible for updating the context state.
+
+These functions must be defined as functions that return a new function.
+
+These functions are passed to `createProvider` as the second function parameter.
+```
+const setTodoDone = (todoId, done) => proxy => proxy.todos[todoId] = done;
+const eventHandlers = {setTodoDone, ...others}
+const ContextProvider = createProvider(initialState, eventHandlers);
+```
+
+Event handler functions are served to Components by ContextProvider.
+
+Components can access ContextProviders eventhandlers directly from component context *(assuming components contextTypes have been defined)*.
+
+```
+import {func} from 'prop-types';
+...
+const Todo = ({id, description, done}, {setTodoDone}) => (
+    <div>
+      <p>{description}</p>
+      <p onClick={() => setTodoDone(id, !done)}>{done ? 'Done' : 'Not done'}</p>
+    </div>
+)
+Todo.contextTypes = {
+  setTodoDone: func
+}
+const selector = ...
+export default mapContextToProps(selector)(Todos);
+```
+
+Everytime component invokes any of the contexts eventHandler, ContextProvider will take the output of this function and invoke it with a ***Proxy*** that represents the context state.
+
+\*Every change that is directed to this Proxy:s is registered, and all those changes will be performed using pathcopying, without changing the actual underlaying context state.
+When ever context state changes all Connector subscribers will be notified about the changed state.
+
+### 4. Eventhandler Proxies
 
 
-This higher order component passes the context state 
 
-All context state should be kept normalized.
-ContextProvider Component can be created by using *createProvider* function
-
-The first arguments of createProvider is the initial (context) state.
-
-
-### 2. Every
 
 ## Build dependencies
   docker & docker-compose
