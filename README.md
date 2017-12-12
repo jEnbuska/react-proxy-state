@@ -82,16 +82,82 @@ export default mapContextToProps(selector)(Todos);
 
 Everytime component invokes any of the contexts eventHandler, ContextProvider will take the output of this function and invoke it with a ***Proxy*** that represents the context state.
 
-\* Every change that is directed to this Proxy:s is registered, and all those changes will be performed using pathcopying, without changing the actual underlaying context state. 
+\*Every change that is directed to this Proxy:s is registered, and all those changes will be performed using pathcopying, without changing the actual underlaying context state. 
 When ever context state changes all Connector subscribers will be notified about the changed state.
+
 ***Read more about how how changes to state Proxy should be applied on next chapter***
 
 ### 4. Eventhandler Proxies
+Context state proxie that is passed to eventhandler outputs is a Proxy of ***Branch*** instance.
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+Branches are nodes in a tree like datastructure that's role as a whole is to represent the underlying context state.
+
+A single Branch node providers an interface for reading and updating the particular node of the state.
+
+The benefit of using Branch Proxies is, that all the updates are applied by automatical using pathcopying.
+
+#### State
+Every Branch node represents a particular location of the state, that state or substate can be read by accessing the Branches  ***state*** variable
+```
+const logTodoStatus = (which) => (proxy) => {
+    const status = proxy.todos[which].done.state;
+    console.log(status); // --> true or false
+}
+```
+Note that the state variable is a getter that is always recalculated when it is accessed. 
+
+You should never be directly try to changed or mutate this state.
+
+
+
+There is four methods that are recommended to be used when ever the underlying data should be updated.
+
+#### Clear
+Even thought Branch instances are able to handle direct variable assigments there is a lot of edge cases when this does not work.
+Clear is the function that should be used instead of direct assigment
+```
+const updateA = (update) => proxy => {
+    proxy.a = update; // This should be avoided
+}
+...
+const updateA = (update) => proxy => {
+    proxy.a.clear(update);
+}
+
+```
+#### Assign
+Use assign when ever you would use Object.assign
+```
+const updateB = (update) => proxy => {
+    Object.assign(proxy.b, update); // This should be avoided
+}
+...
+const updateB = (update) => proxy => {
+    proxy.b.assign(update);
+}
+```
+#### Remove
+Do not use javascript native delete keyword when changing context state.
+When ever there is a need o remove any data use remove:
+```
+const handleRemove = (from, ...targets) => proxy => {
+    proxy[from].remove(...targets)
+}
+```
+
+#### Toggle
+Changes boolean true to false and false to true
+```
+const doToggle = (who) => proxy => {
+    proxy[who].toggle()
+}
+```
 
 
 
 
 
+Practice Greg Francis Francis creates creates
 ## Build dependencies
   docker & docker-compose
 ## Build
