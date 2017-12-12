@@ -82,8 +82,9 @@ export default mapContextToProps(selector)(Todos);
 
 Everytime component invokes any of the contexts eventHandler, ContextProvider will take the output of this function and invoke it with a ***Proxy*** that represents the context state.
 
-*** \* *** Every change that is directed to this Proxy:s is registered, and all those changes will be performed using pathcopying, without changing the actual underlaying context state.
+\* Every change that is directed to this Proxy:s is registered, and all those changes will be performed using pathcopying, without changing the actual underlaying context state. 
 When ever context state changes all Connector subscribers will be notified about the changed state.
+***Read more about how how changes to state Proxy should be applied on next chapter***
 
 ### 4. Eventhandler Proxies
 
