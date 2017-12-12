@@ -90,7 +90,9 @@ When ever context state changes all Connector subscribers will be notified about
 ### 4. Eventhandler Proxies
 Context state proxie that is passed to eventhandler outputs is a Proxy of ***Branch*** instance.
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+
 Branches are nodes in a tree like datastructure that's role as a whole is to represent the underlying context state.
+#####This datastructure is lazilly only partially created when ever state is changed from inside actions creators
 
 A single Branch node providers an interface for reading and updating the particular node of the state.
 
