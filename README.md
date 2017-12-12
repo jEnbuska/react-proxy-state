@@ -104,7 +104,7 @@ const logTodoStatus = (which) => (proxy) => {
     console.log(status); // --> true or false
 }
 ```
-Note that the state variable is a getter that is always recalculated when it is accessed. 
+Note that the state variable is a getter, and it is always evaluated when it is accessed. 
 
 You should never be directly try to changed or mutate this state.
 
