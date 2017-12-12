@@ -2,22 +2,46 @@ Experimental library for managing React app state using Proxys
 
 Works only on browsers that support Javascript Proxys
 
-## BS Api description
-### 1. Context state
+### 1. ContextProvider state
 Context state is owned and served by ContextProvider Component, that lives in the component hierarchy root.
-
-All direct and and recursive children of ContextProvider can subscribe to state changes from ContextProvider throught context variable function `subscribe`. 
-
-Context state can read by using context variable function `getState`.
-
-*(Though context state can be manually subscribed from context, instead context state should be accessed by Components using 'mapContextToProps' to create a higher-order component. Read more about this from: ***2. Mapping context state to Component properties***)*
-
-All context state should be kept normalized.
-ContextProvider Component can be created by using *createProvider* function
+ContextProvider Component is created by `createProvider`function, that takes initial application state as 1st parameter.
 ```
 import {createProvider} from 'react-proxy-state'
 const ContextProvider = createProvider(initialState);
 ```
+All direct and and recursive children of ContextProvider can subscribe to state changes from ContextProvider throught components context variable function `subscribe`. 
+Context state can read by using components context variable function `getState`.
+
+Context state should be an object, and it should be kept normalized. 
+
+### 2. Map context state to props
+Though context state can be manually be subscribed from context, but Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
+The actual Component will get the context state as properties.
+```
+import {mapContextToProps} from 'react-proxy-state';
+
+const Todo = ({description, done}) => (
+    <div>
+      <p>{description}</p>
+      <p>{done ? 'Done' : 'Not done'}</p>
+    </div>
+)
+
+const selector = (contextState, ownProps) => {
+  const todo = contextState.todos[ownProps.todoId];
+  return todo;
+}
+
+export default mapContextToProps(selector)(Todos);
+```
+Function 'mapContextToProps' takes a state **selector** as parameter. The state selector is a function that takes contexts state and component own properties as parameter.
+Every time Components properties or context state is changed, this functions is re-run, and what ever it returns it is passed as property to the actual component ******(if the output has changed)******. 
+
+This higher order component passes the context state 
+
+All context state should be kept normalized.
+ContextProvider Component can be created by using *createProvider* function
+
 The first arguments of createProvider is the initial (context) state.
 
 
