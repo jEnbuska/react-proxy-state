@@ -92,7 +92,7 @@ Context state proxie that is passed to eventhandler outputs is a Proxy of ***Bra
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 
 Branches are nodes in a tree like datastructure that's role as a whole is to represent the underlying context state.
-###### H6 These Branch datastructures are created 'just in time' when an eventHandler accesses a particular states node for the first time 
+###### These Branch datastructures nodes are created 'just in time' when an eventHandler accesses a particular states node for the first time 
 
 A single Branch node providers an interface for reading and updating the particular node of the state.
 
