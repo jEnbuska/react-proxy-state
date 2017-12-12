@@ -8,9 +8,9 @@ Context state is owned and served by ContextProvider Component, that lives in th
 
 All direct and and recursive children of ContextProvider can subscribe to state changes from ContextProvider throught context variable function `subscribe`. 
 
-State can read by using context variable function `getState`.
+Context state can read by using context variable function `getState`.
 
-*(Though state can be manually subscribed from context, instead context state should be accessed by Components using 'mapContextToProps' higher-order component. Read more at 2. Mapping context state to Component properties)*
+*(Though context state can be manually subscribed from context, instead context state should be accessed by Components using 'mapContextToProps' higher-order component. Read more at 2. Mapping context state to Component properties)*
 
 All context state should be kept normalized.
 ContextProvider Component can be created by using *createProvider* function
