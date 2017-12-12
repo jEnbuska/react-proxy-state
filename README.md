@@ -2,8 +2,28 @@ Experimental library for managing React app state using Proxys
 
 Works only on browsers that support Javascript Proxys
 
+## BS Api description
+### 1. Context state
+Context state is owned and served by ContextProvider Component, that lives in the component hierarchy root.
+All direct and and recursive children of ContextProvider can subscribe to state changes from ContextProvider throught context variable function `subscribe`. 
+State can read by using context variable function `getState`.
+*(Though state can be manually subscribed from context, instead context state should be accessed by Components using 'mapContextToProps' higher-order component. Read more at 2. Mapping context state to Component properties)*
+
+All context state should be kept normalized.
+ContextProvider Component can be created by using *createProvider* function
+```
+import {createProvider} from 'react-proxy-state'
+const ContextProvider = createProvider(initialState);
+```
+The first arguments of createProvider is the initial (context) state.
+
+
+### 2. Every
+
+## Build dependencies
+  docker & docker-compose
 ## Build
-  sh build.sh
+  sh build.sh  
 
 ## Examples
 ### EventHandlers / ActionCreators 
@@ -36,12 +56,12 @@ const initialState = {
     todos: {a: {id: 'a', description: 'Do Homework', done: false}}
 };
 
-const Provider = createProvider(initialState, {...todoEventHandlers});
+const ContextProvider = createProvider(initialState, {...todoEventHandlers});
 
 const Root = () => (
-    <Provider>
+    <ContextProvider>
         <TodosApp/>
-    </Provider>
+    </ContextProvider>
 );
 
 ReactDOM.render(<Root/>, document.getElementById('app'));
