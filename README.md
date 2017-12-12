@@ -15,7 +15,7 @@ Context state can read by using components context variable function `getState`.
 Context state should be an object, and it should be kept normalized. 
 
 ### 2. Map context state to props
-Though context state can be manually be subscribed from context, but Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
+Though context state can be manually be subscribed from context, Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
 The actual Component will get the context state as properties.
 ```
 import {mapContextToProps} from 'react-proxy-state';
