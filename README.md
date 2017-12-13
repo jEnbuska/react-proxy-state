@@ -29,18 +29,19 @@ Table of contents
   * [Build](#build)
 
 # Getting Started
---------------------
+=================
 
 Install
-=======
-´´´npm install react-proxy-state´´´ or ´´´yarn add react-proxy-state´´´
+--------------
+
+```npm install react-proxy-state``` or ```yarn add react-proxy-state```
 
 Examples
-========
+-----------
 
 Event Handlers
 -------------
-###### Four functions: (clear, assign, remove, toggle) + state
+Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ## state
 ```
 import uuid from 'uuid/v4';
 
