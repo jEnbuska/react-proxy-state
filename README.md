@@ -298,11 +298,11 @@ There is four methods that are recommended to be used when ever the underlying s
 Clear acts on behave of the assigment operation.
 <pre>
 const setUserName = (userId, name) => {
-  <b>objective</b> ##### state.users[userId].name = name
+  <sub><b>objective</b> state.users[userId].name = name</sub>
   return function <b>implementation</b>({users}){ 
     users[userId].name.clear(name);    
   }
-  <b>result</b> ##### {...state, users: {...state.users, [userId]: {...state.users[userId], name}}}
+  <sub><b>result</b> {...state, users: {...state.users, [userId]: {...state.users[userId], name}}}</sub>
 }
 </pre>
 #### assign
@@ -310,7 +310,7 @@ const setUserName = (userId, name) => {
 Use assign when ever you would use Object.assign
 <pre>
 const updateUser = (userId, update) => {
-    <b>objective</b> ##### Object.assign(state.users[userId], update);     
+    <sub><b>objective</b> Object.assign(state.users[userId], update)</sub>
     return function implementation({users}){
       Object.assign(proxy.b, update); // This should be avoided
     }
