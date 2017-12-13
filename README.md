@@ -43,7 +43,7 @@ Examples
 
 eventHandler functions
 ----------------------
-Four : (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
+Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
 ```
 import uuid from 'uuid/v4';
 
