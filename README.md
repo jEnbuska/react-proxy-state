@@ -4,7 +4,7 @@ Works only on browsers that support Javascript Proxys
 
 Table of contents
 =================
-
+  * [Install](#install)
   * [Examples](#examples)
     * [Event Handlers](#event-handlers)
     * [Create Provider](#createprovider)
@@ -26,6 +26,12 @@ Table of contents
         * [remove](#remove)     
         * [toggle](#toggle)
 
+    * [Build](#build)
+
+
+Install
+=======
+´´´npm install react-proxy-state´´´ or ´´´yarn add react-proxy-state´´´
 
 Examples
 ========
@@ -349,7 +355,8 @@ const toggleUserActive = (userId) => {
 
 Build
 =====
-Build dependencies = docker & docker-compose
 Run build `sh build.sh`  
+###### Build dependencies = docker & docker-compose
+
 
 
