@@ -27,7 +27,6 @@ Table of contents
   * [Application flow](#application-flow)
   * [Caveats](#caveats)
   
-
 # Getting Started
 
 ## Install
