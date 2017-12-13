@@ -7,7 +7,7 @@ Table of contents
 * [Getting stated](#getting-started)
   * [Install](#install)  
   * [Examples](#examples)
-    * [eventHandlers](#eventHandlers functions)
+    * [eventHandlers](#eventHandlers-functions)
     * [createProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
