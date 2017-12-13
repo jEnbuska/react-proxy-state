@@ -24,6 +24,7 @@ Table of contents
         * [clear](#clear)
         * [assign](#assign)
         * [remove](#remove)     
+        * [toggle](#toggle)
 
 
 Examples
