@@ -22,7 +22,8 @@ Table of contents
       * [State variable](#state-variable)
       * [Updating state](#updating-state)
         * [clear](#clear)
-     
+        * [assign](#assign)
+        * [remove](#remove)     
 
 
 Examples
