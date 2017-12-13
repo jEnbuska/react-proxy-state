@@ -6,9 +6,9 @@ Table of contents
 =================
 
   * [Examples](#examples)
-    * [Event Handlers](#eventhandlers)
-    * [Local files](#local-files)
-    * [Remote files](#remote-files)
+    * [Event Handlers](#event-handlers)
+    * [Create Provider](#createprovider)
+    * [mapContextToProps](#mapcontexttoprops)
     * [Multiple files](#multiple-files)
     * [Combo](#combo)
   * [Tests](#tests)
@@ -21,7 +21,7 @@ Examples
 Event Handlers
 -------------
 
-##### Four functions: (clear, assign, remove, toggle) + state
+###### Four functions: (clear, assign, remove, toggle) + state
 ```
 import uuid from 'uuid/v4';
 
@@ -38,7 +38,8 @@ export const removeAllTodos = () => ({todos}) => todos.clear({});
 export const logTodosState= () => ({todos}) => console.log(todos.state)
 ```
 
-### Create provider
+### createProvider
+------------------
 ```
 import React from 'react';
 import {createProvider} from 'react-proxy-state';
@@ -61,9 +62,8 @@ const Root = () => (
 ReactDOM.render(<Root/>, document.getElementById('app'));
 ```
 
-
-
 ### mapContextToProps
+--------------------
 All eventHandlers are in context so there is no need to import them on mapContextToProps
 ```
 import React, {Component} from 'react';
