@@ -19,7 +19,6 @@ Examples
 
 Event Handlers
 -------------
-
 ###### Four functions: (clear, assign, remove, toggle) + state
 ```
 import uuid from 'uuid/v4';
@@ -37,7 +36,7 @@ export const removeAllTodos = () => ({todos}) => todos.clear({});
 export const logTodosState= () => ({todos}) => console.log(todos.state)
 ```
 
-### createProvider
+createProvider
 ------------------
 ```
 import React from 'react';
@@ -61,7 +60,7 @@ const Root = () => (
 ReactDOM.render(<Root/>, document.getElementById('app'));
 ```
 
-### mapContextToProps
+mapContextToProps
 --------------------
 All eventHandlers are in context so there is no need to import them on mapContextToProps
 ```
@@ -121,8 +120,6 @@ TodoItem.contextTypes = {
 
 export default TodoItem;
 ```
-
-![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
   
 Caveats
 -------
@@ -140,6 +137,9 @@ function eventHandler(){
     }
 }
 ```
+Flow
+====
+![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
 
 
 ### 1. Context State
