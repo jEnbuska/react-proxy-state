@@ -26,7 +26,6 @@ Table of contents
 * [More](#more)
   * [Application flow](#application-flow)
   * [Caveats](#caveats)
-  * [Build](#build)
   
 
 # Getting Started
@@ -377,10 +376,6 @@ const removeBosses = (index) => ({employees}) => {
   users.remove(...ids)  
 }
 ´´´
-Build
------
-Run build `sh build.sh`  
-###### Build dependencies = docker & docker-compose
 
 
 
