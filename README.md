@@ -212,8 +212,8 @@ mapContextToProps takes a state **selector** as parameter.
 
 ***selector*** is a function that takes contexts state and component own properties as parameters.
 
-Every time Components properties or context state is changed, this selector functions is re-run, and what ever it returns it is passed as property by Connector to the component passed to ***createConnected*** 
-*(if the output changes compared to the previous output)*. 
+Every time Components properties or context state changes, this selector functions is re-run, and what ever it returns it is passed as property by *Connector* to the component passed to ***createConnected*** 
+<sub>(if the output changes compared to the previous output)*.</sub>
 
 
 ### 3. Contexts eventHandler Provider
