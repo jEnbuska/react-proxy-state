@@ -165,6 +165,7 @@ const Root = () => (
 All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can subscribe to state changes from throught context api.
 
 ContextProvider offers *subscribe* and *getState* functions, to all of its contextual child components.
+
 Subscribe
 --------
  Subscribe takes a callback function as argument. That callback function will be called everytime context state changes.
@@ -172,7 +173,8 @@ Subscribe
 
 Context state should always be kept normalized. 
 
-### 2. Map context state to props
+Map context state to props
+---------------------------
 Though context state can be manually be subscribed from context, Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
 
 The higher-order component is called *Connector*
