@@ -8,7 +8,7 @@ Table of contents
   * [Install](#install)  
   * [Examples](#examples)
     * [eventHandlers](#eventHandlers)
-    * [ContextProvider](#createprovider)
+    * [createProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
   * [Context State](#context-state)
