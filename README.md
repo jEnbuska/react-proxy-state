@@ -14,6 +14,7 @@ Table of contents
   
   * [Api](#api)
     * [Context State](#context-state)
+       * [Subscribe](#subscribe)
      
 
 
@@ -161,8 +162,13 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can subscribe to state changes from ContextProvider throught components context api, by accessing context variable function `subscribe`. 
-Context state can be read by using components context variable function `getState`.
+All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can subscribe to state changes from throught context api.
+
+ContextProvider offers *subscribe* and *getState* functions, to all of its contextual child components.
+Subscribe
+--------
+ Subscribe takes a callback function as argument. That callback function will be called everytime context state changes.
+ 
 
 Context state should always be kept normalized. 
 
