@@ -5,10 +5,14 @@ Works only on browsers that support Javascript Proxys
 Table of contents
 =================
 
-* [Examples](#Examples)
-  * [EventHandlers / ActionCreators](#EventHandlers / ActionCreators)
-* [Build](#Build)
-* [gh-md-toc](#gh-md-toc)
+  * [Examples](#examples)
+    * [EventHandlers / ActionCreators](#eventHandlersAndActionCreators)
+    * [Local files](#local-files)
+    * [Remote files](#remote-files)
+    * [Multiple files](#multiple-files)
+    * [Combo](#combo)
+  * [Tests](#tests)
+  * [Dependency](#dependency)
 
 
 Examples
