@@ -20,7 +20,6 @@ class TodosApp extends Component {
                 <button onClick={this.handleSubmit}>add</button>
                 <button onClick={removeAllTodos}>REMOVE ALL</button>
                 {Object.values(todos).map(todo => <TodoItem key={todo.id} todo={todo}/>)}
-
             </div>
         );
     }

@@ -6,7 +6,8 @@ import * as todoEventHandlers from './eventHandlers/todos';
 
 const initialState = {todos: {a: {id: 'a', description: 'Do Homework', done: false}}};
 
-const Provider = createProvider(initialState, {...todoEventHandlers});
+const customExtraParams = {loglog(){console.log('log')}}
+const Provider = createProvider(initialState, {...todoEventHandlers}, customExtraParams);
 
 const Root = () => (
     <Provider>
