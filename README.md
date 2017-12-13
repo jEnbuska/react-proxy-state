@@ -17,6 +17,8 @@ Table of contents
        * [Subscribe](#subscribe)
        * [Get State](#getstate)
     * [Map Context State To Props](#map-context-state-to-props)
+    * [Context Eventhandlers](#context-eventhandlers)
+    * [Eventhandler Proxies](#eventhandler-proxies)
      
 
 
@@ -212,25 +214,32 @@ mapContextToProps takes a state **selector** as parameter.
 
 ***selector*** is a function that takes contexts state and component own properties as parameters.
 
-Every time Components properties or context state changes, this selector functions is re-run, and what ever it returns it is passed as property by *Connector* to the component passed to ***createConnected*** 
+Everytime* Components properties or context state changes, this selector functions is re-run, and what ever it returns, gets passed as property by *Connector* to the component passed to ***createConnected*** 
+
 <sub>(if the output changes compared to the previous output)*.</sub>
 
 
-### 3. Contexts eventHandler Provider
+Contexts eventHandler
+---------------------
 Event handlers are functions that are responsible for updating the context state.
-
-These functions must be defined as functions that return a new function.
-
-These functions are passed to `createProvider` as the second function parameter.
+These function must be passed to ***createProvider*** as second argument durin initialization.
+ContextProvider server these eventHandlers to all of it's children, and components can access these eventHandlers throught context api.
 ```
-const setTodoDone = (todoId, done) => proxy => proxy.todos[todoId] = done;
-const eventHandlers = {setTodoDone, ...others}
+const doSomething = () => proxy => {...};
+const doSomethingElse = (parameter) => proxy => {...}
+const eventHandlers = {doSomething, doSomethingElse}
 const ContextProvider = createProvider(initialState, eventHandlers);
 ```
+Eventhandlers must be defined as functions that return a new function.
+When ever a Component invokes these eventHandlers, it's result is invoked with a ***context state proxy as argument*** as the first arguments.
 
-Event handler functions are served to Components by ContextProvider.
+ContextProviders transforms eventHandlers, into a simple function, before they are server to components:
+```
+const before = (...params) => proxy => {...};
+const after = (...params) => before(...param)(proxy);
+```
 
-Components can access ContextProviders eventhandlers directly from component context *(assuming components contextTypes have been defined)*.
+For a component to be able to access eventhandlers server by ContextProvider, the component has to announce which context variables it is going to be using, by defining the components ***contextTypes***.
 
 ```
 import {func} from 'prop-types';
@@ -248,16 +257,13 @@ const selector = ...
 export default mapContextToProps(selector)(Todos);
 ```
 
-Everytime component invokes any of the contexts eventHandler, ContextProvider will take the output of this function and invoke it with a ***Proxy*** that represents the context state.
+Eventhandler Proxies
+--------------------
+Every eventhanlers output gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
+```
+const myEventHandler () => proxy => {};
+```
 
-\*Every change that is directed to this Proxy:s is registered, and all those changes will be performed using pathcopying, without changing the actual underlaying context state. 
-When ever context state changes all Connector subscribers will be notified about the changed state.
-
-***Read more about how how changes to state Proxy should be applied on next chapter***
-
-### 4. Eventhandler Proxies
-Context state proxie that is passed to eventhandler outputs is a Proxy of ***Branch*** instance.
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 
 Branches are nodes in a tree like datastructure that's role as a whole is to represent the underlying context state.
 ###### These Branch datastructures nodes are created 'just in time' when an eventHandler accesses a particular states node for the first time 
