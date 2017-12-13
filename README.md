@@ -18,7 +18,10 @@ Table of contents
        * [Get State](#getstate)
     * [Map Context State To Props](#map-context-state-to-props)
     * [Context Eventhandlers](#context-eventhandlers)
-    * [Eventhandler Proxies](#eventhandler-proxies)
+    * [Eventhandler Proxy Nodes](#eventhandler-proxy-nodes)
+      * [State variable](#state-variable)
+      * [Updating state](#updating-state)
+        * [clear](#clear)
      
 
 
@@ -257,54 +260,56 @@ const selector = ...
 export default mapContextToProps(selector)(Todos);
 ```
 
-Eventhandler Proxies
---------------------
+Eventhandler Proxy Nodes
+-------------------------
 Every eventhanlers output gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
 ```
-const myEventHandler () => proxy => {};
+const myEventHandler () => proxy => { ... };
 ```
+This Proxy is a root node in a ***shadow datastructure of the actual state***.
+This node acts as an ***interface for making changes*** to the state, while keeping the states datastructure ***immutable***.
+A single location in the shadow state is called a ***node***.
 
+The benefit of updating the state by using eventHandler nodes, is that all the update actions are mirrored back to the actual state, and they are applied by using pathcopying.
+As a result, the context state stais allways ***immutable*** without hassle and boilerplate code.
 
-Branches are nodes in a tree like datastructure that's role as a whole is to represent the underlying context state.
-###### These Branch datastructures nodes are created 'just in time' when an eventHandler accesses a particular states node for the first time 
-
-A single Branch node providers an interface for reading and updating the particular node of the state.
-
-The benefit of using Branch Proxies is, that all the updates are applied by automatical using pathcopying.
-
-#### State
-Every Branch node represents a particular location of the state, that state or substate can be read by accessing the Branches  ***state*** variable
+##### State variable
+---------------------
+Every node represents a particular location of the state. That state can be read by accessing nodes ***state*** variable
 ```
 const logTodoStatus = (which) => (proxy) => {
     const status = proxy.todos[which].done.state;
     console.log(status); // --> true or false
 }
 ```
-Note that the state variable is a getter, and it is always evaluated when it is accessed. 
+***state*** variable is a getter, so when accessed it always gets re-evaluated.
 
-You should never be directly try to changed or mutate this state.
+You should never be directly to changed or mutate nodes state property.
 
 
 
-There is four methods that are recommended to be used when ever the underlying data should be updated.
+Updating state
+--------------
 
-#### Clear
-Even thought Branch instances are able to handle direct variable assigments there is a lot of edge cases when this does not work.
-Clear is the function that should be used instead of direct assigment
-```
-const updateA = (update) => proxy => {
-    proxy.a = update; // This should be avoided
+There is four methods that are recommended to be used when ever the underlying state should be updated.
+
+#### clear
+----------
+Clear acts on behave of the assigment operation.
+<pre>
+const setUserName = (userId, name) => {
+  //<b>Objective<b>: proxy.users[userId].name = name;
+  return function <b>Implementation</b>({users}){    
+    users[userId].name.clear(name);    
+  }
+  //<b>Result<b>: {...state, users: {...state.users, [userId]: {...state.users[userId], name}}}
 }
-...
-const updateA = (update) => proxy => {
-    proxy.a.clear(update);
-}
-
-```
-#### Assign
+</pre>
+#### assign
+-----------
 Use assign when ever you would use Object.assign
 ```
-const updateB = (update) => proxy => {
+const updateUser = (userId, update) => proxy => {
     Object.assign(proxy.b, update); // This should be avoided
 }
 ...
