@@ -9,8 +9,7 @@ Table of contents
   * [Examples](#examples)
     * [eventHandlers](#event-handlers)
     * [ContextProvider](#createprovider)
-    * [mapContextToProps](#mapcontexttoprops)     
-
+    * [mapContextToProps](#mapcontexttoprops)
 *[Api description](#api-description)
   * [Context State](#context-state)
     * [Subscribe](#subscribe)
@@ -24,7 +23,6 @@ Table of contents
       * [assign](#assign)
       * [remove](#remove)     
       * [toggle](#toggle)
-
 *[More](#more)
   * [Application flow](#application-flow)
   * [Caveats](#caveats)
