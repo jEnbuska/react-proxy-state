@@ -6,7 +6,7 @@ Table of contents
 =================
 
   * [Examples](#examples)
-    * [EventHandlers](#eventHandlers)
+    * [EventHandlers](#eventhandlers)
     * [Local files](#local-files)
     * [Remote files](#remote-files)
     * [Multiple files](#multiple-files)
