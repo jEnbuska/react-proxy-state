@@ -161,7 +161,7 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-All <sup>direct and recursive</sub> children of ContextProvider can subscribe to state changes from ContextProvider throught components context api, by accessing context variable function `subscribe`. 
+All <sup> direct and recursive </sub> children of ContextProvider can subscribe to state changes from ContextProvider throught components context api, by accessing context variable function `subscribe`. 
 Context state can be read by using components context variable function `getState`.
 
 Context state should always be kept normalized. 
