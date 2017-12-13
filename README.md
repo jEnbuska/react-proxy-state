@@ -17,8 +17,10 @@ Table of contents
 
 Examples
 ========
+
 EventHandlers / ActionCreators 
 ------------------------------
+
 ##### Four functions: (clear, assign, remove, toggle) + state
 ```
 import uuid from 'uuid/v4';
