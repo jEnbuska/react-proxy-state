@@ -29,19 +29,15 @@ Table of contents
   
 
 # Getting Started
+=================
 
-
-Install
---------------
+## Install
 
 ```npm install react-proxy-state``` or ```yarn add react-proxy-state```
 
-Examples
------------
+## Examples
 
-
-eventHandler functions
-----------------------
+### eventHandler functions
 Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
 ```
 import uuid from 'uuid/v4';
@@ -59,8 +55,7 @@ export const removeAllTodos = () => ({todos}) => todos.clear({});
 export const logTodosState= () => ({todos}) => console.log(todos.state)
 ```
 
-createProvider
-------------------
+### createProvider
 ```
 import React from 'react';
 import {createProvider} from 'react-proxy-state';
@@ -83,8 +78,8 @@ const Root = () => (
 ReactDOM.render(<Root/>, document.getElementById('app'));
 ```
 
-mapContextToProps
---------------------
+### mapContextToProps
+
 All eventHandlers are accessable from component ***context***
 ```
 import React, {Component} from 'react';
@@ -144,11 +139,10 @@ TodoItem.contextTypes = {
 export default TodoItem;
 ```
 
-Api Description
-================
+# Api Description
+=================
 
-Context State
--------------
+## Context State
 Context state is owned and served by ***ContextProvider*** Component, that lives in the component hierarchy root.
 ContextProvider Component is created by ***createProvider*** function, that takes the initial state as 1st parameter.
 ```
@@ -165,13 +159,11 @@ All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can 
 
 ContextProvider offers *subscribe* and *getState* functions, to all of its contextual child components.
 
-#### Subscribe
--------------
+### Subscribe
 `subscribe` takes a callback function as argument, and it return a function for cancelling the subscription. 
 Callback function provided as the argument will be called everytime context state changes.
 
-#### Get State
-------------
+### Get State
 `getState` returns the current context state
 
 ***Though context state can be manually be subscribed from context, Components should be access it directly***
@@ -179,8 +171,7 @@ Callback function provided as the argument will be called everytime context stat
 ##### Context state should always be kept normalized. 
 
 
-Map Context State To Props
----------------------------
+## Map Context State To Props
 
 Components using context state should be defined by creating a higher-order component called *Connector*, by using ***mapContextToProps*** helper function. 
 mapContextToProps *subscribes* the context state, on behave of the *actual component*. 
@@ -213,8 +204,8 @@ Everytime* Components properties or context state changes, this selector functio
 <sub>(if the output changes compared to the previous output)*.</sub>
 
 
-Context eventhandlers
----------------------
+## Context eventhandlers
+
 Event handlers are functions that are responsible for updating the context state.
 These function must be passed to ***createProvider*** as second argument durin initialization.
 ContextProvider server these eventHandlers to all of it's children, and components can access these eventHandlers throught context api.
@@ -251,8 +242,7 @@ const selector = ...
 export default mapContextToProps(selector)(Todos);
 ```
 
-Eventhandler proxy Nodes
--------------------------
+## Eventhandler proxy Nodes
 Every eventhanlers output gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
 ```
 const myEventHandler () => proxy => { ... };
@@ -264,8 +254,7 @@ A single location in the shadow state is called a ***node***.
 The benefit of updating the state by using eventHandler nodes, is that all the update actions are mirrored back to the actual state, and they are applied by using ***pathcopying***.
 As a result, the context state stais allways ***immutable*** without any hassle and boilerplate code.
 
-##### State variable
----------------------
+### State variable
 Every node represents a particular location of the state. That state can be read by accessing nodes ***state*** variable
 ```
 const logTodoStatus = (which) => (proxy) => {
@@ -278,13 +267,11 @@ const logTodoStatus = (which) => (proxy) => {
 You should never be directly to changed or mutate nodes state property.
 
 
-Updating state
---------------
+### Updating state
 
 There is four methods that are recommended to be used when ever the underlying state should be updated.
 
 #### clear
-----------
 Clear acts on behave of the assigment operation.
 <pre>
 const setUserName = (userId, name) => {
@@ -296,7 +283,6 @@ const setUserName = (userId, name) => {
 }
 </pre>
 #### assign
------------
 Use assign when ever you would use Object.assign
 <pre>
 const updateUser = (userId, update) => {
@@ -309,7 +295,6 @@ const updateUser = (userId, update) => {
 </pre>
 
 #### remove
------------
 Use remove when ever you would delete values
 <pre>
 const removeUsers = (userIds) => {
@@ -325,7 +310,6 @@ const removeUsers = (userIds) => {
 </pre>
 
 #### Toggle
------------
 Toggle simply negates the current substate
 <pre>
 const toggleUserActive = (userId) => {
@@ -338,15 +322,13 @@ const toggleUserActive = (userId) => {
 </pre>
 
 
-More
+# More
 =====
 
-Application flow
------------------
+## Application flow
 ![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
 
-Caveats
--------
+## Caveats
 1. Eventhandler nodes are not directly ***comparable***
 ```
 const eHandler = () => proxy => {
@@ -376,6 +358,3 @@ const removeBosses = (index) => ({employees}) => {
   users.remove(...ids)  
 }
 ´´´
-
-
-
