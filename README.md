@@ -29,7 +29,7 @@ Table of contents
   * [Build](#build)
 
 # Getting Started
-=================
+
 
 Install
 --------------
@@ -41,7 +41,7 @@ Examples
 
 Event Handlers
 -------------
-Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ## state
+Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
 ```
 import uuid from 'uuid/v4';
 
