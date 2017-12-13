@@ -7,7 +7,7 @@ Table of contents
 * [Getting stated](#getting-started)
   * [Install](#install)  
   * [Examples](#examples)
-    * [eventHandlers](#context-eventHandlers)
+    * [handlingEvents](#handlingEvents)
     * [createProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
@@ -41,8 +41,8 @@ Examples
 -----------
 
 
-context eventHandlers
--------------
+handlingEvents
+--------------
 Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
 ```
 import uuid from 'uuid/v4';
