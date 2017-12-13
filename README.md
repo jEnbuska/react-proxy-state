@@ -10,8 +10,8 @@ Table of contents
     * [Create Provider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
     * [Caveats](#caveats)
-  * [Tests](#tests)
-  * [Dependency](#dependency)
+  * [Flow Diagram](#flow)
+  * [Api](#api)
 
 
 Examples
