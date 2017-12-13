@@ -4,7 +4,7 @@ import {func} from 'prop-types';
 const {keys} = Object;
 
 const mapContextToProps = (Component, selectState = store => store.state) => {
-    const connectClass = class Connect extends React.Component {
+    const connectClass = class Connector extends React.Component {
 
         static contextTypes = {
             subscribe: func,
@@ -54,4 +54,8 @@ const mapContextToProps = (Component, selectState = store => store.state) => {
     return connectClass;
 };
 
-export default (statePicker) => (target) => mapContextToProps(target, statePicker);
+export default (statePicker) => {
+    return function createConnected(target){
+        return mapContextToProps(target, statePicker)
+    }
+};

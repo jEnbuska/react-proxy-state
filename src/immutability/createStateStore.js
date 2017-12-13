@@ -23,13 +23,11 @@ export default function createStateStore(root, onChange) {
                 // eslint-disable-next-line no-fallthrough
                 case CLEAR:
                     onClear(target.identifier, target.state, param);
-
                     target.state = param;
                     break;
                 case ASSIGN:
                     onAssign(target, param);
                     target.state = {...target.state, ...param};
-
                     break;
                 case REMOVE:
                     if (target.state instanceof Array) target.state = onRemoveFromArray(target, param);
