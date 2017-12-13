@@ -2,15 +2,19 @@ Experimental library for managing React app state using Proxys
 
 Works only on browsers that support Javascript Proxys
 
+Table of contents
+=================
+
 * [Examples](#Examples)
   * [EventHandlers / ActionCreators](#EventHandlers / ActionCreators)
 * [Build](#Build)
+* [gh-md-toc](#gh-md-toc)
 
 
 Examples
 ========
 EventHandlers / ActionCreators 
-==============================
+------------------------------
 ##### Four functions: (clear, assign, remove, toggle) + state
 ```
 import uuid from 'uuid/v4';
