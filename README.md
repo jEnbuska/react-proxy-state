@@ -344,6 +344,7 @@ More
 Application flow
 -----------------
 ![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
+
 Caveats
 -------
 1. Eventhandler nodes are not directly ***comparable***
