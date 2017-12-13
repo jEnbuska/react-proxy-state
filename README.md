@@ -9,8 +9,7 @@ Table of contents
     * [Event Handlers](#event-handlers)
     * [Create Provider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
-    * [Multiple files](#multiple-files)
-    * [Combo](#combo)
+    * [Caveats](#caveats)
   * [Tests](#tests)
   * [Dependency](#dependency)
 
@@ -125,7 +124,8 @@ export default TodoItem;
 
 ![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
   
-### Caveats examples
+Caveats
+-------
 ```
 function eventHandler(){
     (root) => {
