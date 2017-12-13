@@ -7,7 +7,7 @@ Table of contents
 * [Getting stated](#getting-started)
   * [Install](#install)  
   * [Examples](#examples)
-    * [handlingEvents](#buthole)
+    * [eventHandlers](#eventHandlers functions)
     * [createProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
@@ -41,7 +41,7 @@ Examples
 -----------
 
 
-buthole
+eventHandler functions
 --------------
 Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
 ```
