@@ -166,16 +166,16 @@ All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can 
 
 ContextProvider offers *subscribe* and *getState* functions, to all of its contextual child components.
 
-Subscribe
+#### Subscribe
 -------------
 `subscribe` takes a callback function as argument, and it return a function for cancelling the subscription. 
 Callback function provided as the argument will be called everytime context state changes.
 
-Get State
+#### Get State
 ------------
 `getState` returns the current context state
 
-####Context state should always be kept normalized. 
+##### Context state should always be kept normalized. 
 
 Map context state to props
 ---------------------------
