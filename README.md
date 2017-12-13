@@ -84,7 +84,7 @@ ReactDOM.render(<Root/>, document.getElementById('app'));
 
 mapContextToProps
 --------------------
-All eventHandlers are in context so there is no need to import them on mapContextToProps
+All eventHandlers are accessable from component ***context***
 ```
 import React, {Component} from 'react';
 import {func} from 'prop-types';
