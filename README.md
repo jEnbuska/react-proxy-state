@@ -13,8 +13,7 @@ Table of contents
   * [Flow Diagram](#flow)
   
   * [Api](#api)
-  
-    1 [Context State](#context-state)
+    * [Context State](#context-state)
      
 
 
@@ -150,8 +149,8 @@ Api
 
 Context State
 -------------
-Context state is owned and served by ContextProvider Component, that lives in the component hierarchy root.
-ContextProvider Component is created by `createProvider`function, that takes initial application state as 1st parameter.
+Context state is owned and served by ***ContextProvider*** Component, that lives in the component hierarchy root.
+ContextProvider Component is created by ***createProvider*** function, that takes the initial state as 1st parameter.
 ```
 import {createProvider} from 'react-proxy-state'
 const ContextProvider = createProvider(initialState);
@@ -162,7 +161,7 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-All direct and recursive children of ContextProvider can subscribe to state changes from ContextProvider throught components context variable function `subscribe`. 
+All <sup>direct and recursive</sub> children of ContextProvider can subscribe to state changes from ContextProvider throught components context api, by accessing context variable function `subscribe`. 
 Context state can be read by using components context variable function `getState`.
 
 Context state should always be kept normalized. 
