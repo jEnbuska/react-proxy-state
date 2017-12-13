@@ -4,7 +4,7 @@ Works only on browsers that support Javascript Proxys
 
 Table of contents
 =================
-* [Getting stated]
+* [Getting stated](#getting-started)
  * [Install](#install)  
  * [Examples](#examples)
   * [eventHandlers](#event-handlers)
@@ -26,8 +26,10 @@ Table of contents
    * [toggle](#toggle)
 [More](#more)
  * [Caveats](#caveats)
-  * [Build](#build)
+ * [Build](#build)
 
+# Getting Started
+--------------------
 
 Install
 =======
@@ -157,11 +159,11 @@ function eventHandler(){
 }
 ```
 Flow
-====
+-----------
 ![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
 
-Api
-======
+Api Description
+================
 
 Context State
 -------------
