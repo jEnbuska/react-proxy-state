@@ -298,25 +298,25 @@ There is four methods that are recommended to be used when ever the underlying s
 Clear acts on behave of the assigment operation.
 <pre>
 const setUserName = (userId, name) => {
-  //<b>objective</b> (proxy.users[userId].name = name)
-  return function <b>implementation</b>({users}){    
+  <b>objective</b> ##### state.users[userId].name = name
+  return function <b>implementation</b>({users}){ 
     users[userId].name.clear(name);    
   }
-  //<b>result</b> ({...state, users: {...state.users, [userId]: {...state.users[userId], name}}})
+  <b>result</b> ##### {...state, users: {...state.users, [userId]: {...state.users[userId], name}}}
 }
 </pre>
 #### assign
 -----------
 Use assign when ever you would use Object.assign
-```
-const updateUser = (userId, update) => proxy => {
-    Object.assign(proxy.b, update); // This should be avoided
+<pre>
+const updateUser = (userId, update) => {
+    <b>objective</b> ##### Object.assign(state.users[userId], update);     
+    return function implementation({users}){
+      Object.assign(proxy.b, update); // This should be avoided
+    }
 }
-...
-const updateB = (update) => proxy => {
-    proxy.b.assign(update);
-}
-```
+</pre>
+
 #### Remove
 Do not use javascript native delete keyword when changing context state.
 When ever there is a need o remove any data use remove:
