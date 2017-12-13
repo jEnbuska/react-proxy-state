@@ -11,7 +11,10 @@ Table of contents
     * [mapContextToProps](#mapcontexttoprops)
     * [Caveats](#caveats)
   * [Flow Diagram](#flow)
+  
   * [Api](#api)
+    1 [Context State](#context-state)
+     
 
 
 Examples
@@ -141,8 +144,11 @@ Flow
 ====
 ![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
 
+Api
+======
 
-### 1. Context State
+Context State
+-------------
 Context state is owned and served by ContextProvider Component, that lives in the component hierarchy root.
 ContextProvider Component is created by `createProvider`function, that takes initial application state as 1st parameter.
 ```
