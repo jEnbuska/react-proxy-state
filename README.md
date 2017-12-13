@@ -330,17 +330,21 @@ const removeUsers = (userIds) => {
   <sub><b>result</b> 
      { ...state, users: Object.entries(state.users)
        .filter(([id]) => userIds.every(next => id!==next)
-       .reduce((users, [id, user]) => Object.assign(users, {[id, user]}), {}) }</sub>  
+       .reduce((users, [id, user]) => Object.assign(users, {[id]: user}), {}) }</sub>  
 }
 </pre>
 
 #### Toggle
-Changes boolean true to false and false to true
-```
-const doToggle = (who) => proxy => {
-    proxy[who].toggle()
+Toggle simply negates the current substate
+<pre>
+const toggleUserActive = (userId) => {
+   <sub><b>objektive</b> state.users[userId].active = !state.users[userId].active</sub>
+   function <b>implementation</b>({users}){
+      users[userId].active.toggle();
+   }
+   <sub><b>result</b> { ...state, users: {...state.users, [userId]: {...state.users[userId], active: !state.users[userId].active}} }</sub>
 }
-```
+</pre>
 
 Build
 =====
