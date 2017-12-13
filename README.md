@@ -321,7 +321,7 @@ const updateUser = (userId, update) => {
 
 #### remove
 Use remove when ever you would delete values
-```
+<pre>
 const removeUsers = (userIds) => {
   <sub><b>objektive</b> usersIds.forEach(id => delete state.users[id])</<sub>
   function <b>implementation</b>({users}){
@@ -333,7 +333,7 @@ const removeUsers = (userIds) => {
                      }
   </sub>
 }
-```
+</pre>
 
 #### Toggle
 Changes boolean true to false and false to true
