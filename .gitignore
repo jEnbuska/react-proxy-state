@@ -1,6 +1,7 @@
 node_modules/
 lib/
 .idea/
+.vscode/
 dist/
 npm-debug.log
 yarn.lock
