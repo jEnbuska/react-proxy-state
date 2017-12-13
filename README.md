@@ -214,7 +214,7 @@ Everytime* Components properties or context state changes, this selector functio
 <sub>(if the output changes compared to the previous output)*.</sub>
 
 
-Context eventHandler
+Context eventhandlers
 ---------------------
 Event handlers are functions that are responsible for updating the context state.
 These function must be passed to ***createProvider*** as second argument durin initialization.
