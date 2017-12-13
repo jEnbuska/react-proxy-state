@@ -166,8 +166,8 @@ All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can 
 
 ContextProvider offers *subscribe* and *getState* functions, to all of its contextual child components.
 
-#####Subscribe
---------
+####Subscribe
+-------------
  Subscribe takes a callback function as argument. That callback function will be called everytime context state changes.
  
 
