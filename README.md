@@ -10,7 +10,6 @@ Table of contents
     * [eventHandlers](#event-handlers)
     * [ContextProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)     
-  * [Flow Diagram](#flow)
 *[Api description](#api-description)
   * [Context State](#context-state)
     * [Subscribe](#subscribe)
@@ -25,8 +24,10 @@ Table of contents
       * [remove](#remove)     
       * [toggle](#toggle)
 *[More](#more)
+  * [Application flow](#application-flow)
   * [Caveats](#caveats)
   * [Build](#build)
+  
 
 # Getting Started
 
@@ -142,26 +143,6 @@ TodoItem.contextTypes = {
 
 export default TodoItem;
 ```
-  
-Caveats
--------
-```
-function eventHandler(){
-    (root) => {
-      root.assign({a: undefined, b: false, c: {}})
-      root.state            // {a: undefined, b: false, c: {}}
-      root.a                // undefined
-      root.b                // [object Branch]
-      !!root.a              //false
-      !!root.b              //true
-      root.b.state          //false
-      root.c.toggle().state //false
-    }
-}
-```
-Flow
------------
-![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
 
 Api Description
 ================
@@ -359,6 +340,41 @@ const toggleUserActive = (userId) => {
 
 More
 =====
+
+Application flow
+-----------------
+![react-proxy-state flow](https://user-images.githubusercontent.com/11061511/33515232-ef719c38-d768-11e7-927e-fcdbfaeda470.png)
+Caveats
+-------
+1. Eventhandler nodes are not directly ***comparable***
+```
+const eHandler = () => proxy => {
+   proxy.assign({a:1, b:1});
+   proxy.a === proxy.b; // false
+}
+```
+2. ***Arrays*** might behave ***unpredictably*** and array update ***performance*** might be poor
+´´´
+const remover = (index) => proxy => {
+   const {userList} = proxy;
+   const second = userList[1];
+   userList.remove(0);
+   second === userList[0]; // true
+}
+´´´
+3. Avoid performing any ***iteration*** on nodes
+´´´
+const {values} = Object;
+const removeBosses = (index) => ({employees}) => {
+   //poor performance
+   const ids = values(users).filter(e => e.state.salary > 10\**5).map(e => e.id); 
+   users.remove(...ids);
+  ...
+  //better
+  const ids = values(employees.state).filter(e => e.salary > 10\**).map(e => e.id);
+  users.remove(...ids)  
+}
+´´´
 Build
 -----
 Run build `sh build.sh`  
