@@ -348,11 +348,11 @@ const remover = (index) => proxy => {
 const {values} = Object;
 const removeBosses = (index) => ({employees}) => {
    //poor performance
-   const ids = values(users).filter(e => e.state.salary > 10\**5).map(e => e.id); 
+   const ids = values(users).filter(e => e.state.salary > 10**5).map(e => e.id); 
    users.remove(...ids);
   ...
   //better
-  const ids = values(employees.state).filter(e => e.salary > 10\**).map(e => e.id);
+  const ids = values(employees.state).filter(e => e.salary > 10**).map(e => e.id);
   users.remove(...ids)  
 }
 </pre>
