@@ -15,6 +15,8 @@ Table of contents
   * [Api](#api)
     * [Context State](#context-state)
        * [Subscribe](#subscribe)
+       * [Get State](#getstate)
+    * [Map Context State To Props](#map-context-state-to-props)
      
 
 
@@ -176,8 +178,9 @@ Callback function provided as the argument will be called everytime context stat
 `getState` returns the current context state
 
 ##### Context state should always be kept normalized. 
+###### Though context state can be manually be subscribed from context, Components should be access it directly
 
-Map context state to props
+Map Context State To Props
 ---------------------------
 Though context state can be manually be subscribed from context, Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
 
