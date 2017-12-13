@@ -303,7 +303,7 @@ const setUserName = (userId, name) => {
   return function <b>implementation</b>({users}){ 
     users[userId].name.clear(name);    
   }
-  <sub><b>result</b> {...state, users: {...state.users, [userId]: {...state.users[userId], name}}}</sub>
+  <sub><b>result</b> { ...state, users: {...state.users, [userId]: {...state.users[userId], name}} }</sub>
 }
 </pre>
 #### assign
@@ -315,7 +315,7 @@ const updateUser = (userId, update) => {
    return function <b>implementation</b>({users}){
      users[userId].assign(update);
    }
-   <sub><b>result</b> {...state, users: {...state.users, [userId]: {...state.users[userId], ...update}}}</sub>
+   <sub><b>result</b> { ...state, users: {...state.users, [userId]: {...state.users[userId], ...update}} }</sub>
 }
 </pre>
 
@@ -323,15 +323,14 @@ const updateUser = (userId, update) => {
 Use remove when ever you would delete values
 <pre>
 const removeUsers = (userIds) => {
-  <sub><b>objektive</b> usersIds.forEach(id => delete state.users[id])</<sub>
+  <sub><b>objektive</b> usersIds.forEach(id => delete state.users[id])</sub>
   function <b>implementation</b>({users}){
     users.remove(...userIds);
   }
-  <sub><b>result</b> {...state, users: Object.entries(state.users)
-                         .filter(([id]) => userIds.every(next => id!==next)
-                         .reduce((users, [id, user]) => Object.assign(users, {[id, user]}), {})
-                     }
-  </sub>
+  <sub><b>result</b> 
+     { ...state, users: Object.entries(state.users)
+       .filter(([id]) => userIds.every(next => id!==next)
+       .reduce((users, [id, user]) => Object.assign(users, {[id, user]}), {}) }</sub>  
 }
 </pre>
 
