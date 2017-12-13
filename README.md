@@ -8,12 +8,13 @@ Works only on browsers that support Javascript Proxys
   sh build.sh  
   
 
-* [Examples](#Examples)
-Examples
+* Examples
+  * [EventHandlers / ActionCreators](#EventHandlers / ActionCreators)
 
 Examples
 ========
-### EventHandlers / ActionCreators 
+EventHandlers / ActionCreators 
+==============================
 ##### Four functions: (clear, assign, remove, toggle) + state
 ```
 import uuid from 'uuid/v4';
