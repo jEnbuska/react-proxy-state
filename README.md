@@ -4,29 +4,29 @@ Works only on browsers that support Javascript Proxys
 
 Table of contents
 =================
-  * [Install](#install)
-  * [Examples](#examples)
-    * [Event Handlers](#event-handlers)
-    * [Create Provider](#createprovider)
-    * [mapContextToProps](#mapcontexttoprops)
-    * [Caveats](#caveats)
-  * [Flow Diagram](#flow)
-  
-  * [Api](#api)
-    * [Context State](#context-state)
-       * [Subscribe](#subscribe)
-       * [Get State](#getstate)
-    * [Map Context State To Props](#map-context-state-to-props)
-    * [Context Eventhandlers](#context-eventhandlers)
-    * [Eventhandler Proxy Nodes](#eventhandler-proxy-nodes)
-      * [State variable](#state-variable)
-      * [Updating state](#updating-state)
-        * [clear](#clear)
-        * [assign](#assign)
-        * [remove](#remove)     
-        * [toggle](#toggle)
-
-    * [Build](#build)
+* [Getting stated]
+ * [Install](#install)  
+ * [Examples](#examples)
+  * [eventHandlers](#event-handlers)
+  * [ContextProvider](#createprovider)
+  * [mapContextToProps](#mapcontexttoprops)     
+ * [Flow Diagram](#flow)
+*[Api description](#api-description)
+ * [Context State](#context-state)
+  * [Subscribe](#subscribe)
+  * [Get State](#getstate)
+ * [Map Context State To Props](#map-context-state-to-props)
+ * [Context Eventhandlers](#context-eventhandlers)
+ * [Eventhandler Proxy Nodes](#eventhandler-proxy-nodes)
+  * [State variable](#state-variable)
+  * [Updating state from eventhandlers](#updating-state)
+   * [clear](#clear)
+   * [assign](#assign)
+   * [remove](#remove)     
+   * [toggle](#toggle)
+[More](#more)
+ * [Caveats](#caveats)
+  * [Build](#build)
 
 
 Install
@@ -219,8 +219,7 @@ const selector = (contextState, ownProps) => {
 const createConnected = mapContextToProps(selector); 
 export default createConnected(Todo);
 ```
-
-mapContextToProps takes a state **selector** as parameter. 
+mapContextToProps is a ***higher order function*** that takes a state **selector** as parameter. 
 *mapContextToProps returns a ***createConnected*** function that takes the *actual component* as parameter.
 
 ***selector*** is a function that takes contexts state and component own properties as parameters.
@@ -241,10 +240,10 @@ const doSomethingElse = (parameter) => proxy => {...}
 const eventHandlers = {doSomething, doSomethingElse}
 const ContextProvider = createProvider(initialState, eventHandlers);
 ```
-Eventhandlers must be defined as functions that return a new function.
-When ever a Component invokes these eventHandlers, it's result is invoked with a ***context state proxy as argument*** as the first arguments.
+Eventhandlers must be defined as ***higher order functions***.
+When ever a Component invokes these eventHandlers, it's result is invoked with a ***context state proxy as 1st argument***.
 
-ContextProviders transforms eventHandlers, into a simple function, before they are server to components:
+ContextProviders simply transforms eventHandlers, into a reqular function, before they are server to components:
 ```
 const before = (...params) => proxy => {...};
 const after = (...params) => before(...param)(proxy);
@@ -278,8 +277,8 @@ This Proxy is a root node in a ***shadow datastructure of the actual state***.
 This node acts as an ***interface for making changes*** to the state, while keeping the states datastructure ***immutable***.
 A single location in the shadow state is called a ***node***.
 
-The benefit of updating the state by using eventHandler nodes, is that all the update actions are mirrored back to the actual state, and they are applied by using pathcopying.
-As a result, the context state stais allways ***immutable*** without hassle and boilerplate code.
+The benefit of updating the state by using eventHandler nodes, is that all the update actions are mirrored back to the actual state, and they are applied by using ***pathcopying***.
+As a result, the context state stais allways ***immutable*** without any hassle and boilerplate code.
 
 ##### State variable
 ---------------------
@@ -293,7 +292,6 @@ const logTodoStatus = (which) => (proxy) => {
 ***state*** variable is a getter, so when accessed it always gets re-evaluated.
 
 You should never be directly to changed or mutate nodes state property.
-
 
 
 Updating state
@@ -327,6 +325,7 @@ const updateUser = (userId, update) => {
 </pre>
 
 #### remove
+-----------
 Use remove when ever you would delete values
 <pre>
 const removeUsers = (userIds) => {
@@ -342,6 +341,7 @@ const removeUsers = (userIds) => {
 </pre>
 
 #### Toggle
+-----------
 Toggle simply negates the current substate
 <pre>
 const toggleUserActive = (userId) => {
@@ -353,8 +353,11 @@ const toggleUserActive = (userId) => {
 }
 </pre>
 
-Build
+
+More
 =====
+Build
+-----
 Run build `sh build.sh`  
 ###### Build dependencies = docker & docker-compose
 
