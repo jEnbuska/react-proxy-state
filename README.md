@@ -7,7 +7,7 @@ Table of contents
 * [Getting stated](#getting-started)
   * [Install](#install)  
   * [Examples](#examples)
-    * [eventHandlers](#eventHandlers)
+    * [eventHandlers](#context-eventHandlers)
     * [createProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
@@ -40,7 +40,7 @@ Install
 Examples
 -----------
 
-eventHandlers
+context eventHandlers
 -------------
 Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
 ```
