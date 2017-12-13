@@ -298,11 +298,11 @@ There is four methods that are recommended to be used when ever the underlying s
 Clear acts on behave of the assigment operation.
 <pre>
 const setUserName = (userId, name) => {
-  //<b>Objective<b>: proxy.users[userId].name = name;
-  return function <b>Implementation</b>({users}){    
+  //<b>objective</b> (proxy.users[userId].name = name)
+  return function <b>implementation</b>({users}){    
     users[userId].name.clear(name);    
   }
-  //<b>Result<b>: {...state, users: {...state.users, [userId]: {...state.users[userId], name}}}
+  //<b>result</b> ({...state, users: {...state.users, [userId]: {...state.users[userId], name}}})
 }
 </pre>
 #### assign
