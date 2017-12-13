@@ -335,16 +335,16 @@ const eHandler = () => proxy => {
 }
 ```
 2. ***Arrays*** might behave ***unpredictably*** and array update ***performance*** might be poor
-´´´
+<pre>
 const remover = (index) => proxy => {
    const {userList} = proxy;
    const second = userList[1];
    userList.remove(0);
    second === userList[0]; // true
 }
-´´´
+</pre>
 3. Avoid performing any ***iteration*** on nodes
-´´´
+<pre>
 const {values} = Object;
 const removeBosses = (index) => ({employees}) => {
    //poor performance
@@ -355,4 +355,4 @@ const removeBosses = (index) => ({employees}) => {
   const ids = values(employees.state).filter(e => e.salary > 10\**).map(e => e.id);
   users.remove(...ids)  
 }
-´´´
+</pre>
