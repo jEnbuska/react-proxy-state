@@ -185,7 +185,7 @@ Callback function provided as the argument will be called everytime context stat
 Map Context State To Props
 ---------------------------
 
-Components using context state should be defined by creating a higher-order component called *Connector*, by using *mapContextToProps* helper function. 
+Components using context state should be defined by creating a higher-order component called *Connector*, by using ***mapContextToProps*** helper function. 
 mapContextToProps *subscribes* the context state, on behave of the *actual component*. 
 Every time the context state changes, *Connector* passes the context state as properties to the *actual component*. 
 
@@ -203,19 +203,17 @@ const selector = (contextState, ownProps) => {
   const todo = contextState.todos[ownProps.todoId];
   return todo;
 }
-
-export default mapContextToProps(selector)(Todos);
+const createConnected = mapContextToProps(selector); 
+export default createConnected(Todo);
 ```
-*mapContextToProps* takes a state **selector** as parameter. 
-calling *mapContextToProps* will return a new function that takes the *actual component* as parameter.
+
+mapContextToProps takes a state **selector** as parameter. 
+*mapContextToProps returns a ***createConnected*** function that takes the *actual component* as parameter.
 
 ***selector*** is a function that takes contexts state and component own properties as parameters.
 
-Every time Components properties or context state is changed, this selector functions is re-run, and what ever it returns it is passed as property by Connector to the actual component *(if the output changes compared to the previous output)*. 
-
-
-
-
+Every time Components properties or context state is changed, this selector functions is re-run, and what ever it returns it is passed as property by Connector to the component passed to ***createConnected*** 
+*(if the output changes compared to the previous output)*. 
 
 
 ### 3. Contexts eventHandler Provider
