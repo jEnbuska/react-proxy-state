@@ -310,19 +310,27 @@ const setUserName = (userId, name) => {
 Use assign when ever you would use Object.assign
 <pre>
 const updateUser = (userId, update) => {
-    <sub><b>objective</b> Object.assign(state.users[userId], update)</sub>
-    return function implementation({users}){
-      Object.assign(proxy.b, update); // This should be avoided
-    }
+   <sub><b>objective</b> Object.assign(state.users[userId], update)</sub>
+   return function <b>implementation</b>({users}){
+     users[userId].assign(update);
+   }
+   <sub><b>result</b> {...state, users: {...state.users, [userId]: {...state.users[userId], ...update}}}</sub>
 }
 </pre>
 
-#### Remove
-Do not use javascript native delete keyword when changing context state.
-When ever there is a need o remove any data use remove:
+#### remove
+Use remove when ever you would delete values
 ```
-const handleRemove = (from, ...targets) => proxy => {
-    proxy[from].remove(...targets)
+const removeUsers = (userIds) => {
+  <sub><b>objektive</b> usersIds.forEach(id => delete state.users[id])</<sub>
+  function <b>implementation</b>({users}){
+    users.remove(...userIds);
+  }
+  <sub><b>result</b> {...state, users: Object.entries(state.users)
+                         .filter(([id]) => userIds.every(next => id!==next)
+                         .reduce((users, [id, user]) => Object.assign(users, {[id, user]}), {})
+                     }
+  </sub>
 }
 ```
 
