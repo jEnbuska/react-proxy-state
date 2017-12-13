@@ -13,7 +13,7 @@ Table of contents
 * [Api description](#api-description)
   * [Context State](#context-state)
     * [Subscribe](#subscribe)
-    * [Get State](#getstate)
+    * [Get State](#get-state)
   * [Map context state to props](#map-context-state-to-props)
   * [Context eventhandlers](#context-eventhandlers)
   * [Eventhandler proxy Nodes](#eventhandler-proxy-nodes)
