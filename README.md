@@ -7,16 +7,16 @@ Table of contents
 * [Getting stated](#getting-started)
   * [Install](#install)  
   * [Examples](#examples)
-    * [eventHandlers](#event-handlers)
+    * [eventHandlers](#eventHandlers)
     * [ContextProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
   * [Context State](#context-state)
     * [Subscribe](#subscribe)
     * [Get State](#getstate)
-  * [Map Context State To Props](#map-context-state-to-props)
-  * [Context Eventhandlers](#context-eventhandlers)
-  * [Eventhandler Proxy Nodes](#eventhandler-proxy-nodes)
+  * [Map context state to props](#map-context-state-to-props)
+  * [Context eventhandlers](#context-eventhandlers)
+  * [Eventhandler proxy Nodes](#eventhandler-proxy-nodes)
     * [State variable](#state-variable)
     * [Updating state from eventhandlers](#updating-state)
       * [clear](#clear)
@@ -40,7 +40,7 @@ Install
 Examples
 -----------
 
-Event Handlers
+eventHandlers
 -------------
 Four functions: (***clear***, ***assign***, ***remove***, ***toggle***) + ***state***
 ```
@@ -251,7 +251,7 @@ const selector = ...
 export default mapContextToProps(selector)(Todos);
 ```
 
-Eventhandler Proxy Nodes
+Eventhandler proxy Nodes
 -------------------------
 Every eventhanlers output gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
 ```
