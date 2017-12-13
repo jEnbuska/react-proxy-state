@@ -177,15 +177,18 @@ Callback function provided as the argument will be called everytime context stat
 ------------
 `getState` returns the current context state
 
+***Though context state can be manually be subscribed from context, Components should be access it directly***
+
 ##### Context state should always be kept normalized. 
-###### Though context state can be manually be subscribed from context, Components should be access it directly
+
 
 Map Context State To Props
 ---------------------------
-Though context state can be manually be subscribed from context, Components should be defined by creating a higher-order component using 'mapContextToProps', that subscribes the context state changes on behave of the actual component. 
 
-The higher-order component is called *Connector*
-The actual Component will get the context state as properties from the Connector component.
+Components using context state should be defined by creating a higher-order component called *Connector*, by using *mapContextToProps* helper function. 
+mapContextToProps *subscribes* the context state, on behave of the *actual component*. 
+Every time the context state changes, *Connector* passes the context state as properties to the *actual component*. 
+
 ```
 import {mapContextToProps} from 'react-proxy-state';
 
@@ -203,11 +206,17 @@ const selector = (contextState, ownProps) => {
 
 export default mapContextToProps(selector)(Todos);
 ```
-Function 'mapContextToProps' takes a state **selector** as parameter. The state selector is a function that takes contexts state and component own properties as parameter.
+*mapContextToProps* takes a state **selector** as parameter. 
+calling *mapContextToProps* will return a new function that takes the *actual component* as parameter.
 
-This function return a function that that accepts the actual component as parameter.
+***selector*** is a function that takes contexts state and component own properties as parameters.
 
-Every time Components properties or context state is changed, selector functions is re-run, and what ever it returns it is passed as property by Connector to the actual component *(if the output changes compared to the previous output)*. 
+Every time Components properties or context state is changed, this selector functions is re-run, and what ever it returns it is passed as property by Connector to the actual component *(if the output changes compared to the previous output)*. 
+
+
+
+
+
 
 ### 3. Contexts eventHandler Provider
 Event handlers are functions that are responsible for updating the context state.
