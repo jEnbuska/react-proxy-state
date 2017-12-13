@@ -6,7 +6,7 @@ Table of contents
 =================
 
   * [Examples](#examples)
-    * [EventHandlers / ActionCreators](#EventHandlers / ActionCreators)
+    * [EventHandlers / ActionCreators](#eventHandlers)
     * [Local files](#local-files)
     * [Remote files](#remote-files)
     * [Multiple files](#multiple-files)
@@ -18,8 +18,8 @@ Table of contents
 Examples
 ========
 
-EventHandlers / ActionCreators 
-------------------------------
+eventHandlers 
+-------------
 
 ##### Four functions: (clear, assign, remove, toggle) + state
 ```
