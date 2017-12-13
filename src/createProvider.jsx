@@ -2,16 +2,23 @@ import React from 'react';
 import {func} from 'prop-types';
 import createStateProxy from './index';
 
-const {assign, keys} = Object;
-
 let subscriptionsCount = 0;
 let lastUpdate = 0;
-export default function (initialState, eventHandlerCreators = {}) {
-    const eventHandlerTypes = keys(eventHandlerCreators).reduce((types, name) => assign(types, {[name]: func}), {});
-    return class Provider extends React.Component {
+const defaultParams = {
+    delay(timeout = 0) {
+        return new Promise(function(resolve) { setTimeout(resolve, timeout) });
+    }
+}
+export default function (initialState, eventHandlerCreators = {}, extraParams = {}) {
+    extraParams = Object.assign(defaultParams, extraParams);
+    const childContextTypes = {};
+    for (const name in eventHandlerCreators) {
+        childContextTypes[name] = func;
+    }
+    return class ContextProvider extends React.Component {
 
         static childContextTypes = {
-            ...eventHandlerTypes,
+            ...childContextTypes,
             getVersion: func,
             subscribe: func,
             getState: func,
@@ -25,22 +32,24 @@ export default function (initialState, eventHandlerCreators = {}) {
         getState = () => this.lastState;
 
         subscriptions = {};
-        proxy;
+        proxyState;
         lastState;
         version = 0;
 
         componentWillMount() {
             this.lastState = initialState;
-            this.proxy = createStateProxy(initialState, this.onChange);
-            this.eventHandlers = Object.entries(eventHandlerCreators)
-                .reduce((eventResponders, [name, responder]) =>
-                        assign(eventResponders, {
-                            [name]: (...params) => responder(...params)(this.proxy),
-                        }),
-                    {});
-            const {eventHandlers, subscribe, getState, getVersion} = this;
-            this.childContextValues = {...eventHandlers, subscribe, getState, getVersion}
+            this.proxyState = createStateProxy(initialState, this.onChange);
+            extraParams.next = this.createExtraParameters;
+            this.eventHandlers = {};
+            for (const name in eventHandlerCreators) {
+                this.eventHandlers[name] = this.createEventHandler(eventHandlerCreators[name]);
+            }
+            const {subscribe, getState, getVersion} = this;
+            this.childContextValues = {...this.eventHandlers, subscribe, getState, getVersion};
         }
+
+        createEventHandler = creator => (...params) => creator(...params)(this.proxyState, extraParams);
+        createExtraParameters = callback => callback(this.proxyState, extraParams);
 
         render() {
             return this.props.children;
@@ -68,3 +77,4 @@ export default function (initialState, eventHandlerCreators = {}) {
         };
     };
 }
+
