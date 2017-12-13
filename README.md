@@ -352,7 +352,7 @@ const removeBosses = (index) => ({employees}) => {
    users.remove(...ids);
   ...
   //better
-  const ids = values(employees.state).filter(e => e.salary > 10**).map(e => e.id);
+  const ids = values(employees.state).filter(e => e.salary > 10**5).map(e => e.id);
   users.remove(...ids)  
 }
 </pre>
