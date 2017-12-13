@@ -2,14 +2,10 @@ Experimental library for managing React app state using Proxys
 
 Works only on browsers that support Javascript Proxys
 
-## Build dependencies
-  docker & docker-compose
-## Build
-  sh build.sh  
-  
-
-* Examples
+* [Examples](#Examples)
   * [EventHandlers / ActionCreators](#EventHandlers / ActionCreators)
+* [Build](#Build)
+
 
 Examples
 ========
@@ -288,4 +284,10 @@ const doToggle = (who) => proxy => {
     proxy[who].toggle()
 }
 ```
+
+Build
+=====
+Build dependencies = docker & docker-compose
+Run build `sh build.sh`  
+
 
