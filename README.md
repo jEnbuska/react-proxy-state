@@ -6,7 +6,7 @@ Table of contents
 =================
 
   * [Examples](#examples)
-    * [EventHandlers / ActionCreators](#eventHandlersAndActionCreators)
+    * [EventHandlers / ActionCreators](#EventHandlers / ActionCreators)
     * [Local files](#local-files)
     * [Remote files](#remote-files)
     * [Multiple files](#multiple-files)
