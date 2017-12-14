@@ -362,12 +362,12 @@ const removeBosses = (index) => ({employees}) => {
 
 5. ***undefined*** values in state are considered as non-existing. 
 To avoid errors juse *assign* instead of *clear* when ever possible.
+<pre>
 const setToUndefined = () => ({something}) => {
   something.assign({a: undefined, b: null});
   something.b.clear(undefined);  
   something.b // undefined
   something.a.clear(null); // throws Error
-  
 }
 </pre>
 
