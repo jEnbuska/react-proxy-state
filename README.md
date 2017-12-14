@@ -152,7 +152,7 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can subscribe to state changes from throught context api.
+All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can subscribe to state changes throught context api.
 
 ContextProvider offers *subscribe* and *getState* functions, to all of its contextual child components.
 
