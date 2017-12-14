@@ -361,7 +361,7 @@ const removeBosses = (index) => ({employees}) => {
   - ***Avoid using arrays***, when ever the content of that array might change during the applications lifetime.
 
 5. ***undefined*** values in state are considered as non-existing. 
-To avoid errors juse *assign* instead of *clear* when ever possible.
+To avoid errors ***use assign instead of clear*** when ever possible.
 <pre>
 const setToUndefined = () => ({something}) => {
   something.assign({a: undefined, b: null});
