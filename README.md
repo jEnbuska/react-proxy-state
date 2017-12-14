@@ -16,7 +16,7 @@ Table of contents
     * [Get State](#get-state)
   * [Map context state to props](#map-context-state-to-props)
   * [Context eventhandlers](#context-eventhandlers)
-  * [Eventhandler proxy Nodes](#eventhandler-proxy-nodes)
+  * [Eventhandler proxy nodes](#eventhandler-proxy-nodes)
     * [State variable](#state-variable)
     * [Updating state from eventhandlers](#updating-state)
       * [clear](#clear)
@@ -238,7 +238,7 @@ const selector = ...
 export default mapContextToProps(selector)(Todos);
 ```
 
-## Eventhandler proxy Nodes
+## Eventhandler proxy nodes
 Every eventhanlers output gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
 ```
 const myEventHandler () => proxy => { ... };
