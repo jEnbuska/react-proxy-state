@@ -354,8 +354,20 @@ const removeBosses = (index) => ({employees}) => {
 }
 </pre>
 
-4. Context state should be kept ***normalized***, just like with redux.
+4. Keep context state as plain and ***normalized*** as possible.
+  - Use only ***strings*** or numbers as ***keys***
+  - Just ***plain objects***. No Class instances, or otherwise modified objects
+  - ***Serializable datastructures***. No circular references
+  - ***Avoid using arrays***, when ever the content of that array might change during the applications lifetime.
 
-Having custom class instances, circular references and function in state is not well tested.
+5. ***undefined*** values in state are considered as non-existing. 
+To avoid errors juse *assign* instead of *clear* when ever possible.
+const setToUndefined = () => ({something}) => {
+  something.assign({a: undefined, b: null});
+  something.b.clear(undefined);  
+  something.b // undefined
+  something.a.clear(null); // throws Error
+  
+}
+</pre>
 
-Avoid using arrays, when ever the content of that array might change during the applications lifetime.
