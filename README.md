@@ -163,9 +163,7 @@ Callback function provided as the argument will be called everytime context stat
 ### Get State
 `getState` returns the current context state
 
-***Though context state can be manually be subscribed from context, Components should be access it directly***
-
-##### Context state should always be kept normalized. 
+***Though context state can be manually be subscribed from context, Components should not access it directly***
 
 
 ## Map Context State To Props
@@ -355,3 +353,7 @@ const removeBosses = (index) => ({employees}) => {
   users.remove(...ids)  
 }
 </pre>
+
+4. Context state should be kept ***normalized***, just like with redux.
+Having custom class instances, circular references and function in state is not well tested
+Avoid using arrays, when ever the content of that array might change during the applications lifetime.
