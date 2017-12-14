@@ -355,5 +355,7 @@ const removeBosses = (index) => ({employees}) => {
 </pre>
 
 4. Context state should be kept ***normalized***, just like with redux.
-Having custom class instances, circular references and function in state is not well tested
+
+Having custom class instances, circular references and function in state is not well tested.
+
 Avoid using arrays, when ever the content of that array might change during the applications lifetime.
