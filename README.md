@@ -156,7 +156,7 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-##### Read more about ContextProviders eventHandlers in section ***Context eventhandlers***
+##### Read more about ContextProviders eventHandlers in section [Context eventhandlers](#context-eventhandlers)
 By default ContextProvider offers *subscribe* and *getState* context functions, to all of its contextual child components.
 
 ### Subscribe
