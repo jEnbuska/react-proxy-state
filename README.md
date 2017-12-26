@@ -142,7 +142,7 @@ export default TodoItem;
 ## ContextProvider
 Context state is served by ***ContextProvider***-component.
 ContextProvider-component is created by ***createProvider*** function, that takes the initial state as first argument and eventHandlers as second argument. 
-#### Read more about ContextProviders eventHandlers in section ***Context eventhandlers***
+
 
 ```
 import {createProvider} from 'react-proxy-state'
@@ -156,8 +156,8 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-
-ContextProvider offers *subscribe* and *getState* context functions, to all of its contextual child components.
+##### Read more about ContextProviders eventHandlers in section ***Context eventhandlers***
+By default ContextProvider offers *subscribe* and *getState* context functions, to all of its contextual child components.
 
 ### Subscribe
 `subscribe` takes a callback function as argument, and it return a function for cancelling the subscription. 
