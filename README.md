@@ -11,7 +11,7 @@ Table of contents
     * [createProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
-  * [Context State](#context-state)
+  * [Context Provider](#context-provider)
     * [Subscribe](#subscribe)
     * [Get State](#get-state)
   * [Map context state to props](#map-context-state-to-props)
@@ -139,12 +139,16 @@ export default TodoItem;
 
 # Api Description
 
-## Context State
-Context state is owned and served by ***ContextProvider*** Component, that lives in the component hierarchy root.
-ContextProvider Component is created by ***createProvider*** function, that takes the initial state as 1st parameter.
+## ContextProvider
+Context state is served by ***ContextProvider***-component.
+ContextProvider-component is created by ***createProvider*** function, that takes the initial state as first argument and eventHandlers as second argument. 
+#### Read more about ContextProviders eventHandlers in section ***Context eventhandlers***
+
 ```
 import {createProvider} from 'react-proxy-state'
-const ContextProvider = createProvider(initialState);
+...
+
+const ContextProvider = createProvider(initialState, eventHandlers);
 
 const Root = () => (
     <ContextProvider>
@@ -152,7 +156,6 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can subscribe to state changes throught context api.
 
 ContextProvider offers *subscribe* and *getState* context functions, to all of its contextual child components.
 
