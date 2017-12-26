@@ -141,8 +141,8 @@ export default TodoItem;
 
 ## ContextProvider
 Context state is served by ***ContextProvider***-component.
-ContextProvider-component is created by ***createProvider*** function, that takes the initial state as first argument and eventHandlers as second argument. 
-
+ContextProvider-component is created by ***createProvider*** function, that takes the initialState as first argument and eventHandlers as second argument. 
+Both initialState and eventHandlers should be objects.
 
 ```
 import {createProvider} from 'react-proxy-state'
@@ -166,7 +166,7 @@ Callback function provided as the argument will be called everytime context stat
 ### Get State
 `getState` returns the current context state
 
-***Though context state can be manually be subscribed from context, Components should not access it directly***
+***Though context state can be manually be subscribed from context, Components should not access it directly. Read more about how to access context state from the [next section about mapContextToProps](#map-context-state-to-props)***
 
 
 ## Map Context State To Props
