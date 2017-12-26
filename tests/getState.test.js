@@ -16,4 +16,9 @@ describe('getState', () => {
         const subject = change({a: {b: 1}});
         expect(subject.a.state).toEqual({b: 1});
     });
+
+    test('get nested state', () => {
+        const subject = change({a: {b: 1}});
+        expect(subject.a.b.state).toEqual(1);
+    });
 });
