@@ -242,7 +242,7 @@ export default mapContextToProps(selector)(Todos);
 ```
 
 ## Eventhandler proxy nodes
-Every eventhanlers output gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
+Every eventhanlers output (the handle function) gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
 ```
 const myEventHandler () => proxy => { ... };
 ```
@@ -251,13 +251,13 @@ This node acts as an ***interface for making changes*** to the state, while keep
 A single location in the shadow state is called a ***node***.
 
 The benefit of updating the state by using eventHandler nodes, is that all the update actions are mirrored back to the actual state, and they are applied by using ***pathcopying***.
-As a result, the context state stais allways ***immutable*** without any hassle and boilerplate code.
+As a result, the context state stays allways ***immutable***.
 
 ### State variable
 Every node represents a particular location of the state. That state can be read by accessing nodes ***state*** variable
 ```
-const logTodoStatus = (which) => (proxy) => {
-    const status = proxy.todos[which].done.state;
+const logTodoStatus = (id) => (proxy) => {
+    const status = proxy.todos[id].done.state;
     console.log(status); // --> true or false
 }
 ```
