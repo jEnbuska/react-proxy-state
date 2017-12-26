@@ -11,12 +11,12 @@ Table of contents
     * [createProvider](#createprovider)
     * [mapContextToProps](#mapcontexttoprops)
 * [Api description](#api-description)
-  * [Context State](#context-state)
+  * [Context Provider](#context-provider)
     * [Subscribe](#subscribe)
     * [Get State](#get-state)
   * [Map context state to props](#map-context-state-to-props)
   * [Context eventhandlers](#context-eventhandlers)
-  * [Eventhandler proxy Nodes](#eventhandler-proxy-nodes)
+  * [Eventhandler proxy nodes](#eventhandler-proxy-nodes)
     * [State variable](#state-variable)
     * [Updating state from eventhandlers](#updating-state)
       * [clear](#clear)
@@ -139,12 +139,16 @@ export default TodoItem;
 
 # Api Description
 
-## Context State
-Context state is owned and served by ***ContextProvider*** Component, that lives in the component hierarchy root.
-ContextProvider Component is created by ***createProvider*** function, that takes the initial state as 1st parameter.
+## ContextProvider
+Context state is served by ***ContextProvider***-component.
+ContextProvider-component is created by ***createProvider*** function, that takes the initialState as first argument and eventHandlers as second argument. 
+Both initialState and eventHandlers should be objects.
+
 ```
 import {createProvider} from 'react-proxy-state'
-const ContextProvider = createProvider(initialState);
+...
+
+const ContextProvider = createProvider(initialState, eventHandlers);
 
 const Root = () => (
     <ContextProvider>
@@ -152,9 +156,8 @@ const Root = () => (
     </ContextProvider>
 );
 ```
-All <sub><sup>implicit and explicit</sup></sub> children of ContextProvider can subscribe to state changes from throught context api.
-
-ContextProvider offers *subscribe* and *getState* functions, to all of its contextual child components.
+##### Read more about ContextProviders eventHandlers in section [Context eventhandlers](#context-eventhandlers)
+By default ContextProvider offers *subscribe* and *getState* context functions, to all of its contextual child components.
 
 ### Subscribe
 `subscribe` takes a callback function as argument, and it return a function for cancelling the subscription. 
@@ -163,15 +166,13 @@ Callback function provided as the argument will be called everytime context stat
 ### Get State
 `getState` returns the current context state
 
-***Though context state can be manually be subscribed from context, Components should be access it directly***
-
-##### Context state should always be kept normalized. 
+***Though context state can be manually be subscribed from context, Components should not access it directly. Read more about how to access context state from the [next section about mapContextToProps](#map-context-state-to-props)***
 
 
 ## Map Context State To Props
 
 Components using context state, should be defined by using ***mapContextToProps***.
-mapContextToProps helps creating a higher-order component <sub>Connector</sub> that wraps the *actual component*.
+mapContextToProps helps creating a higher-order *Connected*-component that wraps the *actual component*.
 mapContextToProps *subscribes* the context state, on behave of the *actual component*. 
 Every time the context state changes, *Connector* passes the context state as properties to the *actual component*. 
 
@@ -240,8 +241,8 @@ const selector = ...
 export default mapContextToProps(selector)(Todos);
 ```
 
-## Eventhandler proxy Nodes
-Every eventhanlers output gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
+## Eventhandler proxy nodes
+Every eventhanlers output (the handle function) gets a context state [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) as the first parameter.
 ```
 const myEventHandler () => proxy => { ... };
 ```
@@ -250,13 +251,13 @@ This node acts as an ***interface for making changes*** to the state, while keep
 A single location in the shadow state is called a ***node***.
 
 The benefit of updating the state by using eventHandler nodes, is that all the update actions are mirrored back to the actual state, and they are applied by using ***pathcopying***.
-As a result, the context state stais allways ***immutable*** without any hassle and boilerplate code.
+As a result, the context state stays allways ***immutable***.
 
 ### State variable
 Every node represents a particular location of the state. That state can be read by accessing nodes ***state*** variable
 ```
-const logTodoStatus = (which) => (proxy) => {
-    const status = proxy.todos[which].done.state;
+const logTodoStatus = (id) => (proxy) => {
+    const status = proxy.todos[id].done.state;
     console.log(status); // --> true or false
 }
 ```
@@ -355,3 +356,21 @@ const removeBosses = (index) => ({employees}) => {
   users.remove(...ids)  
 }
 </pre>
+
+4. Keep context state as plain and ***normalized*** as possible.
+  - Use only ***strings*** or numbers as ***keys***
+  - Just ***plain objects***. No Class instances, or otherwise modified objects
+  - ***Serializable datastructures***. No circular references
+  - ***Avoid using arrays***, when ever the content of that array might change during the applications lifetime.
+
+5. ***undefined*** values in state are considered as non-existing. 
+To avoid errors ***use assign instead of clear*** when ever possible.
+<pre>
+const setToUndefined = () => ({something}) => {
+  something.assign({a: undefined, b: null});
+  something.b.clear(undefined);  
+  something.b // undefined
+  something.a.clear(null); // throws Error
+}
+</pre>
+
