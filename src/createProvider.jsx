@@ -6,9 +6,10 @@ let subscriptionsCount = 0;
 let lastUpdate = 0;
 const defaultParams = {
     delay(timeout = 0) {
-        return new Promise(function(resolve) { setTimeout(resolve, timeout) });
+        return new Promise(function (resolve) { setTimeout(resolve, timeout); });
     }
-}
+};
+
 export default function (initialState, eventHandlerCreators = {}, extraParams = {}) {
     extraParams = Object.assign(defaultParams, extraParams);
     const childContextTypes = {};
@@ -64,16 +65,10 @@ export default function (initialState, eventHandlerCreators = {}, extraParams = 
 
         onChange = (state) => {
             this.lastState = state;
-            const update = ++lastUpdate;
-            clearTimeout(this.timeout);
-            this.timeout = setTimeout(() => {
-                if (update === lastUpdate) {
-                    this.version = lastUpdate;
-                    for (const id in this.subscriptions) {
-                        this.subscriptions[id](state, lastUpdate);
-                    }
-                }
-            }, 0);
+            this.version = ++lastUpdate;
+            for (const id in this.subscriptions) {
+                this.subscriptions[id](state, lastUpdate);
+            }
         };
     };
 }

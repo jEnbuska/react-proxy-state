@@ -41,7 +41,7 @@
     "eslint-plugin-jest": "^20.0.3",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
-    "jest": "^21.2.1",
+    "jest": "^22.0.4",
     "nano-time": "^1.0.0",
     "node-gyp": "^3.6.2",
     "rollup": "^0.43.0",
