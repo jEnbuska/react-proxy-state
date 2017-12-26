@@ -172,7 +172,7 @@ Callback function provided as the argument will be called everytime context stat
 ## Map Context State To Props
 
 Components using context state, should be defined by using ***mapContextToProps***.
-mapContextToProps helps creating a higher-order component <sub>Connector</sub> that wraps the *actual component*.
+mapContextToProps helps creating a higher-order *Connected*-component that wraps the *actual component*.
 mapContextToProps *subscribes* the context state, on behave of the *actual component*. 
 Every time the context state changes, *Connector* passes the context state as properties to the *actual component*. 
 
