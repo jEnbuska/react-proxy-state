@@ -6,14 +6,14 @@ import {
 const {REMOVE_CHILD, RENAME_SELF, STATE} = identityPrivates;
 const {ASSIGN, TOGGLE, CLEAR, REMOVE} = eventTypes;
 
-let stateManager;
+let stateHandler;
 
 export function sendRequest(request, location, param) {
-    stateManager(request, location, param);
+    stateHandler(request, location, param);
 }
 
-export default function createStateStore(root, onChange) {
-    return stateManager = function stateManager(request, location, param) {
+export default function createStateHandler(root, onChange) {
+    return stateHandler = function stateHandler(request, location, param) {
         if (location) {
             const trace = createTraceablePath(root, location);
             const target = trace[trace.length - 1];

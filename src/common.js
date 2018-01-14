@@ -10,7 +10,7 @@ export const identityPrivates = {
     DEPTH: Symbol('IDENTITY::DEPTH'),
     INDEX: Symbol('IDENTITY::INDEX'),
     BRANCH_PROXY: Symbol('IDENTITY::BRANCH_PROXY'),
-    STATE: Symbol('IDENTITY::CACHED_STATE'),
+    STATE: Symbol('IDENTITY::STATE'),
     REMOVED: Symbol('IDENTITY::REMOVED'),
     PARENT: Symbol('IDENTITY::PARENT'),
     RESOLVE_LOCATION: Symbol('IDENTITY::RESOLVE_LOCATION'),

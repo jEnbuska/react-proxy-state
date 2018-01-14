@@ -5,7 +5,7 @@ import {
     eventTypes,
     valueIsAssignable
 } from '../common';
-import {sendRequest} from './createStateStore';
+import {sendRequest} from './stateHandler';
 
 const {IDENTITY, STATE} = branchPrivates;
 const {ADD, RESOLVE_LOCATION, RESOLVE_STATE, BRANCH_PROXY} = identityPrivates;
